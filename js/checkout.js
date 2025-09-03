@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      // --- PERBAIKAN DI SINI ---
       const response = await fetch("data/produk.json");
       const allProducts = await response.json();
 
@@ -82,7 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       try {
-        const response = await fetch("http://localhost:3000/buat-transaksi", {
+        // ==========================================================
+        // === PERBAIKAN UTAMA ADA DI BARIS INI ===
+        const response = await fetch("/api/buat-transaksi", {
+          // ==========================================================
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderData),
