@@ -1,8 +1,9 @@
 // File: js/toko.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const productGrid = document.getElementById("product-grid");
+  const productGrid = document.getElementById("product-grid-container"); // Perbaikan: Menargetkan ID yang benar
   const searchInput = document.getElementById("search-input");
+  const filterButtons = document.querySelectorAll(".filter-btn");
 
   const formatRupiah = (angka) =>
     new Intl.NumberFormat("id-ID", {
@@ -11,44 +12,56 @@ document.addEventListener("DOMContentLoaded", () => {
       minimumFractionDigits: 0,
     }).format(angka);
 
-  const loadProducts = async (searchTerm = "") => {
+  const loadProducts = async (searchTerm = "", category = "semua") => {
     try {
       // --- PERBAIKAN DI SINI ---
-      const response = await fetch("/data/produk.json");
+      // Menghapus garis miring di depan path untuk membuatnya relatif
+      const response = await fetch("data/produk.json");
       if (!response.ok) {
         throw new Error("Gagal memuat data produk.");
       }
       const products = await response.json();
 
-      const filteredProducts = products.filter((product) =>
-        product.nama.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const filteredProducts = products.filter((product) => {
+        const matchesSearch = product.nama
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesCategory =
+          category === "semua" || product.kategori === category;
+        return matchesSearch && matchesCategory;
+      });
 
       productGrid.innerHTML = "";
       if (filteredProducts.length > 0) {
         filteredProducts.forEach((product) => {
           const productCard = `
-            <div class="product-card animate-on-scroll" data-id="${product.id}">
-              <a href="detail-produk.html?id=${
-                product.id
-              }" class="product-link">
-                <div class="product-image">
-                  <img src="${product.gambar}" alt="${product.nama}" />
-                </div>
+            <a href="detail-produk.html?id=${
+              product.id
+            }" class="product-card animate-on-scroll" data-id="${product.id}">
+                <img src="${product.gambar}" alt="${
+            product.nama
+          }" class="product-image">
                 <div class="product-info">
-                  <h3 class="product-title">${product.nama}</h3>
-                  <p class="product-price">${formatRupiah(product.harga)}</p>
+                    <p class="product-name">${product.nama}</p>
+                    <p class="product-price">${formatRupiah(product.harga)}</p>
+                    <div class="product-details">
+                        <div class="product-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${product.lokasi}</span>
+                        </div>
+                        <div class="product-stats">
+                            <i class="fas fa-star"></i>
+                            <span>${product.rating} | Terjual ${
+            product.terjual
+          }</span>
+                        </div>
+                    </div>
                 </div>
-              </a>
-              <div class="product-actions">
-                <button class="btn-toko btn-keranjang" data-id="${product.id}">
-                  <i class="fas fa-shopping-cart"></i> Tambah
-                </button>
-              </div>
-            </div>
+            </a>
           `;
           productGrid.insertAdjacentHTML("beforeend", productCard);
         });
+        App.initScrollAnimations(); // Inisialisasi ulang animasi untuk item baru
       } else {
         productGrid.innerHTML = "<p>Produk tidak ditemukan.</p>";
       }
@@ -59,17 +72,40 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   if (productGrid) {
-    loadProducts();
+    // Fungsi untuk meng-handle filter dan pencarian
+    const updateView = () => {
+      const searchTerm = searchInput?.value || "";
+      const activeCategory =
+        document.querySelector(".filter-btn.active")?.dataset.kategori ||
+        "semua";
+      loadProducts(searchTerm, activeCategory);
+    };
 
-    searchInput?.addEventListener("input", (e) => {
-      loadProducts(e.target.value);
+    // Event listener untuk input pencarian
+    searchInput?.addEventListener("input", updateView);
+
+    // Event listener untuk tombol filter
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        updateView();
+      });
     });
 
+    // Event listener untuk tombol 'Tambah ke Keranjang'
+    // (Catatan: Aksi ini lebih baik ditangani di app-core.js jika polanya sama)
     productGrid.addEventListener("click", (e) => {
-      if (e.target.closest(".btn-keranjang")) {
-        const productId = e.target.closest(".product-card").dataset.id;
+      // Menggunakan closest untuk target yang lebih fleksibel
+      const keranjangBtn = e.target.closest(".btn-keranjang");
+      if (keranjangBtn) {
+        e.preventDefault(); // Mencegah navigasi jika tombol di dalam link
+        const productId = keranjangBtn.dataset.id;
         App.addToCart(productId, 1);
       }
     });
+
+    // Muat produk saat halaman pertama kali dibuka
+    updateView();
   }
 });

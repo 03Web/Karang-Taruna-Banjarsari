@@ -7,7 +7,8 @@
     "rating": 4.9,
     "terjual": "500+",
     "lokasi": "Jakarta Barat",
-    "kategori": "kerajinan"
+    "kategori": "kerajinan",
+    "deskripsi": "Lenovo ThinkPad T490 hadir dengan prosesor Intel Core i5, memberikan performa tangguh untuk produktivitas bisnis Anda. Desain yang ramping dan bobot ringan membuatnya ideal untuk mobilitas tinggi, sementara fitur keamanan ThinkShield menjaga data Anda tetap aman. Layar Full HD memberikan visual yang jernih dan tajam."
   },
   {
     "id": "msi-thin-15-rtx3050",
@@ -17,7 +18,8 @@
     "rating": 4.7,
     "terjual": "250+",
     "lokasi": "Jakarta Pusat",
-    "kategori": "makanan"
+    "kategori": "makanan",
+    "deskripsi": "Rasakan pengalaman gaming imersif dengan MSI Thin 15. Ditenagai oleh prosesor Intel Core i7 Generasi ke-12 dan kartu grafis NVIDIA GeForce RTX 3050, laptop ini siap menjalankan game AAA terbaru. Sistem pendingin Cooler Boost 5 memastikan performa tetap stabil bahkan saat sesi gaming intens."
   },
   {
     "id": "hp-celeron-ram8",
@@ -27,7 +29,8 @@
     "rating": 4.8,
     "terjual": "100+",
     "lokasi": "Kab. Temanggung",
-    "kategori": "fashion"
+    "kategori": "fashion",
+    "deskripsi": "Laptop HP ini adalah pilihan tepat untuk kebutuhan komputasi sehari-hari seperti browsing, office, dan sekolah online. Dengan RAM 8GB, multitasking menjadi lebih lancar. Desainnya yang stylish dan portabel membuatnya mudah dibawa ke mana saja."
   },
   {
     "id": "msi-thin-15-i5-rtx2050",
@@ -37,6 +40,7 @@
     "rating": 4.9,
     "terjual": "150+",
     "lokasi": "Surabaya",
-    "kategori": "kerajinan"
+    "kategori": "kerajinan",
+    "deskripsi": "MSI Thin 15 dengan Intel Core i5 Generasi ke-12 dan NVIDIA GeForce RTX 2050 menawarkan keseimbangan sempurna antara performa dan harga. Ideal untuk gamer kasual dan kreator konten pemula. Nikmati visual yang mulus pada layar dengan refresh rate tinggi."
   }
 ]

@@ -1,30 +1,8 @@
 /**
  * @file app-core.js
  * @description Script inti untuk fungsionalitas website. Mengelola state, komponen, dan inisialisasi dasar.
- * @version 8.2.1 (Sync with Karang Taruna branding & Formspree integration)
+ * @version 9.0.0 (Perbaikan & Peningkatan Fitur E-commerce)
  */
-
-function applyCacheBuster() {
-  const timestamp = new Date().getTime();
-  // Menargetkan semua tag <link> yang memuat file CSS
-  document.querySelectorAll('link[href*=".css"]').forEach((link) => {
-    const url = new URL(link.href);
-    if (!url.searchParams.has("v")) {
-      // Hanya tambahkan jika belum ada versi
-      url.searchParams.append("v", timestamp);
-      link.href = url.href;
-    }
-  });
-  // Menargetkan semua tag <script> yang memuat file JS
-  document.querySelectorAll('script[src*=".js"]').forEach((script) => {
-    const url = new URL(script.src);
-    if (!url.searchParams.has("v")) {
-      // Hanya tambahkan jika belum ada versi
-      url.searchParams.append("v", timestamp);
-      script.src = url.href;
-    }
-  });
-}
 
 const App = (() => {
   // === STATE & CACHE ===
@@ -35,7 +13,7 @@ const App = (() => {
     informasi: [],
     pengurus: [],
     kontak: [],
-    lastScrollTop: 0, // State untuk scroll position
+    lastScrollTop: 0,
   };
 
   // === PENGATURAN SESI & INAKTIVITAS ===
@@ -68,6 +46,7 @@ const App = (() => {
     window.location.href = "index.html";
   }
 
+  // === MODAL KONTRIBUSI ===
   async function showContributionModal() {
     const modal = document.getElementById("contribution-modal");
     if (!modal) return;
@@ -105,6 +84,7 @@ const App = (() => {
     modal.classList.remove("hidden");
   }
 
+  // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
   function initWelcomeScreen() {
     const overlay = document.getElementById("welcome-overlay");
     if (!overlay) return;
@@ -197,7 +177,6 @@ const App = (() => {
 
         if (response.ok) {
           sessionStorage.setItem("isLoggedIn", "true");
-          // Tampilkan modal kontribusi, jangan langsung sembunyikan overlay
           showContributionModal();
         } else {
           throw new Error("Gagal mengirim data.");
@@ -212,7 +191,7 @@ const App = (() => {
     });
   }
 
-  // === FUNGSI HEADER BARU UNTUK MOBILE ===
+  // === FUNGSI HEADER MOBILE ===
   function handleMobileHeaderScroll() {
     const topHeader = document.querySelector(".mobile-top-header");
     if (!topHeader) return;
@@ -221,16 +200,14 @@ const App = (() => {
       window.pageYOffset || document.documentElement.scrollTop;
 
     if (currentScroll > state.lastScrollTop && currentScroll > 50) {
-      // Scroll Down
       topHeader.classList.add("hidden");
     } else {
-      // Scroll Up
       topHeader.classList.remove("hidden");
     }
-    state.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
+    state.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
   }
 
-  // === UTILITIES & HELPERS (SHARED) ===
+  // === UTILITIES & FUNGSI BERSAMA ===
   const loadComponent = async (url, elementId, callback) => {
     const element = document.getElementById(elementId);
     if (!element) return;
@@ -325,7 +302,9 @@ const App = (() => {
       parentLi.classList.remove("active");
       const isCurrentPage = linkPath === currentLocation;
       const isArtikelPageAndKegiatanLink =
-        currentLocation === "artikel.html" && linkPath === "kegiatan.html";
+        (currentLocation === "artikel.html" ||
+          currentLocation === "detail-produk.html") &&
+        (linkPath === "kegiatan.html" || linkPath === "toko.html");
       if (isCurrentPage || isArtikelPageAndKegiatanLink) {
         parentLi.classList.add("active");
         activeLinkElement = parentLi;
@@ -354,7 +333,7 @@ const App = (() => {
       },
       particles: {
         number: {
-          value: 50, // Jumlah bintang minimalis
+          value: 50,
         },
         color: {
           value: "#ffffff",
@@ -371,7 +350,6 @@ const App = (() => {
         move: {
           enable: false,
         },
-        // Efek kelip yang sederhana
         twinkle: {
           particles: {
             enable: true,
@@ -387,9 +365,28 @@ const App = (() => {
     });
   }
 
-  // FUNGSI BARU UNTUK NOTIFIKASI KERANJANG
+  // === FUNGSI E-COMMERCE (TERPUSAT) ===
+  const getCart = () => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  };
+
+  const addToCart = (productId, quantityToAdd) => {
+    let cart = getCart();
+    const itemIndex = cart.findIndex((item) => item.id === productId);
+
+    if (itemIndex > -1) {
+      cart[itemIndex].quantity += quantityToAdd;
+    } else {
+      cart.push({ id: productId, quantity: quantityToAdd });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartBadge();
+    console.log("Keranjang diperbarui:", cart);
+  };
+
   const updateCartBadge = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cart = getCart();
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     const badges = document.querySelectorAll(".cart-badge");
@@ -403,7 +400,7 @@ const App = (() => {
     });
   };
 
-  // === MAIN INITIALIZER ===
+  // === INITIALIZER UTAMA ===
   const initPage = () => {
     const isIndexPage =
       window.location.pathname.endsWith("/") ||
@@ -415,7 +412,6 @@ const App = (() => {
       return;
     }
 
-    // Buat dan tambahkan header atas mobile secara dinamis
     if (!document.querySelector(".mobile-top-header")) {
       const mobileHeader = document.createElement("header");
       mobileHeader.className = "mobile-top-header";
@@ -425,7 +421,7 @@ const App = (() => {
                     <a href="index.html">
                         <img src="foto/ChatGPTlogokarangtaruna.png" alt="Logo Karang Taruna Banjarsari" />
                         <div class="logo-text">
-                            <h1>Karang Taruna Banjarsari</h1>
+                            <div class="logo-main-text">Karang Taruna Banjarsari</div>
                         </div>
                     </a>
                 </div>
@@ -440,15 +436,7 @@ const App = (() => {
       document.body.prepend(mobileHeader);
     }
 
-    loadComponent("layout/header.html", "main-header", () => {
-      // Pindahkan navigasi dari header desktop ke dalam elemen nav di body untuk mobile
-      const mainHeaderNav = document.querySelector("#main-header nav");
-      if (mainHeaderNav && window.innerWidth <= 768) {
-        document.querySelector("#main-header").append(mainHeaderNav);
-      }
-      setActiveNavLink();
-    });
-
+    loadComponent("layout/header.html", "main-header", setActiveNavLink);
     loadComponent("layout/footer.html", "main-footer");
 
     if (document.getElementById("welcome-overlay")) {
@@ -457,7 +445,6 @@ const App = (() => {
       startInactivityTracker();
     }
 
-    // Tambahkan event listener untuk scroll HANYA di mobile
     if (window.innerWidth <= 768) {
       window.addEventListener("scroll", handleMobileHeaderScroll, {
         passive: true,
@@ -469,26 +456,25 @@ const App = (() => {
       setTimeout(initParticles, 500);
     }
 
-    // Jalankan inisialisasi spesifik halaman
     const pageId = document.body.dataset.pageId;
     if (pageId && typeof App.initializers[pageId] === "function") {
       App.initializers[pageId]();
     }
 
-    updateCartBadge(); // Panggil fungsi notifikasi saat halaman dimuat
+    updateCartBadge();
   };
 
-  // expose functions to be used by other files
   return {
     init: initPage,
     fetchData,
     renderItems,
     initScrollAnimations,
-    updateCartBadge, // Expose fungsi ini agar bisa dipanggil dari file lain
+    getCart,
+    addToCart,
+    updateCartBadge,
     cache,
-    initializers: {}, // Namespace for page-specific initializers
+    initializers: {},
   };
 })();
 
-// Event listener standar browser
 document.addEventListener("DOMContentLoaded", App.init);

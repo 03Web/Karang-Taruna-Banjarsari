@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       // --- PERBAIKAN DI SINI ---
-      const response = await fetch("/data/produk.json");
+      const response = await fetch("data/produk.json");
       const allProducts = await response.json();
 
       summaryItemsContainer.innerHTML = "";
