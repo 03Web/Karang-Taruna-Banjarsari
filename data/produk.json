@@ -1,0 +1,42 @@
+[
+  {
+    "id": "lenovo-thinkpad-t490",
+    "nama": "Laptop Lenovo Thinkpad T490 Core i5",
+    "harga": 2574000,
+    "gambar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2024/8/16/e06b72d2-28e6-4299-a417-76af4bf5799c.jpg",
+    "rating": 4.9,
+    "terjual": "500+",
+    "lokasi": "Jakarta Barat",
+    "kategori": "kerajinan"
+  },
+  {
+    "id": "msi-thin-15-rtx3050",
+    "nama": "MSI THIN 15 I7 12650H RTX3050",
+    "harga": 9099000,
+    "gambar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2024/5/30/8a71d87f-94a0-4c3e-b8d9-234731c63b72.jpg",
+    "rating": 4.7,
+    "terjual": "250+",
+    "lokasi": "Jakarta Pusat",
+    "kategori": "makanan"
+  },
+  {
+    "id": "hp-celeron-ram8",
+    "nama": "LAPTOP HP INTEL CELERON RAM 8GB",
+    "harga": 1850000,
+    "gambar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2024/8/28/54124355-829d-4786-834f-4d2b2cd33f38.jpg",
+    "rating": 4.8,
+    "terjual": "100+",
+    "lokasi": "Kab. Temanggung",
+    "kategori": "fashion"
+  },
+  {
+    "id": "msi-thin-15-i5-rtx2050",
+    "nama": "MSI THIN 15 I5 12450H RTX2050",
+    "harga": 8200000,
+    "gambar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2024/5/30/b3438f29-a1b9-45d4-ba79-a78b4081b7e6.jpg",
+    "rating": 4.9,
+    "terjual": "150+",
+    "lokasi": "Surabaya",
+    "kategori": "kerajinan"
+  }
+]

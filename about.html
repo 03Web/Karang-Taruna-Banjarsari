@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>
+      Struktur Organisasi & Pengurus Karang Taruna Banjarsari, Temanggung
+    </title>
+    <meta
+      name="description"
+      content="Lihat struktur organisasi dan daftar lengkap pengurus Karang Taruna Banjarsari periode terbaru. Kenali para pemuda-pemudi yang aktif membangun desa."
+    />
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+  </head>
+  <body data-page-id="about">
+    <div id="particles-js"></div>
+    <header id="main-header"></header>
+    <main>
+      <div class="container">
+        <h1 class="animate-on-scroll">Tentang Kami</h1>
+        <p style="margin-bottom: 40px" class="animate-on-scroll">
+          Karang Taruna Banjarsari adalah organisasi kepemudaan yang menjadi
+          wadah bagi para generasi muda untuk berkembang, berkreasi, dan
+          berkontribusi secara positif bagi lingkungan dan masyarakat Desa
+          Banjarsari.
+        </p>
+        <hr class="separator animate-on-scroll" />
+        <div class="visi-misi-container animate-on-scroll">
+          <div class="visi">
+            <h2>Visi</h2>
+            <p>
+              Menjadi organisasi pemuda yang mandiri, kreatif, inovatif, dan
+              menjadi pilar utama dalam Pembudayaan Desa dan pembangunan
+              kesejahteraan sosial di Desa Banjarsari.
+            </p>
+          </div>
+          <div class="misi">
+            <h2>Misi</h2>
+            <ul>
+              <li>
+                Mengembangkan potensi dan kreativitas pemuda di berbagai bidang.
+              </li>
+              <li>
+                Menyelenggarakan kegiatan sosial, keagamaan, Kesenian dan
+                olahraga.
+              </li>
+              <li>Membangun kemitraan strategis dengan berbagai pihak.</li>
+              <li>Menjaga kelestarian lingkungan dan kearifan lokal.</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="separator animate-on-scroll" />
+        <div class="struktur-organisasi animate-on-scroll">
+          <h2>Flowchart Struktur Organisasi</h2>
+          <div class="zoom-controls">
+            <button id="zoom-out-btn" class="zoom-btn" title="Perkecil">
+              -</button
+            ><span id="zoom-level">100%</span
+            ><button id="zoom-in-btn" class="zoom-btn" title="Perbesar">
+              +
+            </button>
+          </div>
+          <div class="pohon-container" id="pohon-organisasi-container"></div>
+        </div>
+      </div>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna
+            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+            jawab se-bisa mungkin.ada pepatah bilang"Malu bertanya sesat di
+            jalan" so,jangan sungkan untuk bertanya.
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
+      defer
+    ></script>
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>

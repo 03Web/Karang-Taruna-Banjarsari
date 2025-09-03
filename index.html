@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Karang Taruna Banjarsari, Temanggung - Website Resmi</title>
+    <meta
+      name="description"
+      content="Website resmi Karang Taruna Desa Banjarsari, Kecamatan Kandangan, Temanggung. Dapatkan informasi terbaru kegiatan, struktur pengurus, dan program kerja kami."
+    />
+    <meta
+      name="google-site-verification"
+      content="-uocqR_KNESDcZpShuCqPUfsAyRtxlSZX9qBl37VcE4"
+    />
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Karang Taruna Banjarsari",
+        "url": "https://karangtarunabanjarsari.fun/",
+        "logo": "https://karangtarunabanjarsari.fun/foto/logokarangtarunabjr.jpeg",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Banjarsari, Kec. Kandangan",
+          "addressLocality": "Temanggung",
+          "addressRegion": "Jawa Tengah",
+          "postalCode": "56281",
+          "addressCountry": "ID"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "karangtaruna.banjarsari@email.com",
+          "contactType": "Informasi Umum"
+        },
+        "sameAs": ["https://www.instagram.com/kartarbanjarr"]
+      }
+    </script>
+  </head>
+  <body data-page-id="home">
+    <div id="contribution-modal" class="hidden">
+      <div class="modal-content">
+        <span class="modal-close-btn">&times;</span>
+        <i class="fas fa-hands-helping modal-icon"></i>
+        <h2>Panggilan untuk Berkontribusi!</h2>
+        <p>
+          Website Karang Taruna Banjarsari adalah ruang digital milik kita
+          bersama. Kami percaya, ide terbaik datang dari banyak kepala.
+          <br /><br />
+          Apakah Anda mau ikut serta dalam pengembangannya?
+          <strong>Anda tidak perlu bisa coding!</strong>
+          Banyak cara untuk berkontribusi: menjadi penulis (copywriter) untuk
+          artikel, menambahkan dokumentasi foto/video, atau bahkan sekadar
+          menyumbang ide dan tweet lucu untuk ditampilkan.
+          <br /><br />
+          Jika <strong>"Ya"</strong>, Anda akan diarahkan ke admin web. Anda
+          bisa mengirimkan materi kontribusi dalam format apa pun (ide, tulisan,
+          foto, video, dll). Setiap bantuan, sekecil apapun, sangat berarti!
+        </p>
+        <div class="modal-actions">
+          <button id="contribute-yes-btn" class="btn btn-primary">
+            Ya, Saya Mau Berkontribusi!
+          </button>
+          <button id="contribute-no-btn" class="btn btn-secondary">
+            Mungkin Lain Kali
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="welcome-overlay" class="hidden">
+      <div class="main-container centered-flex">
+        <div class="form-container">
+          <div class="icon fa fa-user"></div>
+          <form class="centered-flex" id="welcome-form">
+            <div class="title">Form</div>
+            <div class="msg"></div>
+            <div class="field">
+              <input
+                type="text"
+                placeholder="Nama/Lainnya Bebas."
+                id="uname"
+                name="nama"
+              />
+              <span class="fa fa-user"></span>
+            </div>
+            <div class="field">
+              <select id="is_banjarsari" name="asal" required>
+                <option value="" disabled selected>
+                  -- Orang Banjarsari??? --
+                </option>
+                <option value="Ya">Ya ✅</option>
+                <option value="Bukan">Bukan ❌</option>
+                <option value="Naturalisasi😂">Naturalisasi 😂</option>
+              </select>
+            </div>
+            <div class="btn-container">
+              <input type="submit" id="login-btn" value="Masuk Web" />
+            </div>
+            <div class="signup">
+              Masuk Web karang Taruna? Atau<a
+                href="https://03web.github.io/Karang-Taruna-Banjarsari/"
+                >Exit</a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="particles-js"></div>
+    <header id="main-header"></header>
+
+    <main>
+      <div class="container">
+        <section class="hero-section animate-on-scroll">
+          <div class="hero-content">
+            <h1>Membangun Pemuda, Mengabdi pada Desa</h1>
+            <p>
+              Selamat datang di pusat aktivitas digital Karang Taruna
+              Banjarsari. Temukan info terbaru, suarakan aspirasi, dan jadilah
+              bagian dari gerakan kami.
+            </p>
+            <a href="about.html" class="hero-button"
+              >Selengkapnya Tentang Kami</a
+            >
+          </div>
+          <div class="hero-image">
+            <img
+              src="foto/ChatGPTlogokarangtaruna.png"
+              alt="Logo Karang Taruna Banjarsari"
+            />
+          </div>
+        </section>
+
+        <hr class="separator animate-on-scroll" />
+
+        <section class="quick-links-section animate-on-scroll">
+          <h2>Jelajahi Website Kami</h2>
+          <div class="quick-links-grid">
+            <a href="about.html" class="quick-link-item">
+              <i class="fas fa-info-circle"></i>
+              <span>Tentang Kami</span>
+            </a>
+            <a href="galeri.html" class="quick-link-item">
+              <i class="fas fa-camera-retro"></i>
+              <span>Galeri Foto & Video</span>
+            </a>
+            <a href="kegiatan.html" class="quick-link-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Artikel & Kegiatan</span>
+            </a>
+
+            <a href="aspirasi.html" class="quick-link-item">
+              <i class="fas fa-lightbulb"></i>
+              <span>Kotak Aspirasi</span>
+            </a>
+
+            <a href="kontak.html" class="quick-link-item">
+              <i class="fas fa-comments"></i>
+              <span>Hubungi Kami</span>
+            </a>
+          </div>
+        </section>
+        <hr class="separator animate-on-scroll" />
+
+        <section class="testimonial-section animate-on-scroll">
+          <h2>Apa Kata Mereka?</h2>
+          <p
+            style="
+              margin-bottom: 30px;
+              color: var(--dark-text);
+              font-style: italic;
+            "
+          >
+            Kumpulan twit menarik, absurd, lucu dan baik serius atau tidak yang
+            sedang ramai dibicarakan.
+          </p>
+          <div class="testimonial-carousel-wrapper">
+            <div
+              class="testimonial-carousel"
+              id="testimonial-carousel-container"
+            ></div>
+            <button
+              class="carousel-nav-btn prev"
+              id="testimonial-prev-btn"
+              aria-label="Sebelumnya"
+            >
+              &#10094;
+            </button>
+            <button
+              class="carousel-nav-btn next"
+              id="testimonial-next-btn"
+              aria-label="Selanjutnya"
+            >
+              &#10095;
+            </button>
+          </div>
+        </section>
+
+        <hr class="separator animate-on-scroll" />
+
+        <section class="highlight-section animate-on-scroll">
+          <h2><i class="fas fa-newspaper"></i> Artikel & Kegiatan Terkini</h2>
+          <div class="kegiatan-list-home" id="kegiatan-terbaru">
+            <p>Memuat kegiatan terbaru...</p>
+          </div>
+          <a href="kegiatan.html" class="view-all-button"
+            >Lihat Semua Artikel <i class="fas fa-arrow-right"></i
+          ></a>
+        </section>
+      </div>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna
+            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+            jalan" so,jangan sungkan untuk bertanya.
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
+      defer
+    ></script>
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+{
+  "pengurusInti": [
+    {
+      "jabatan": "Penasehat",
+      "nama": "Sunirman, S.Ag",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna/pak%20nirma.png"
+    },
+    {
+      "jabatan": "Penanggung Jawab",
+      "nama": "Suryono, S.Pd",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna/babok.jpeg"
+    },
+    {
+      "jabatan": "Ketua",
+      "nama": "Andri Apriyanto",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna/andri.jpeg"
+    },
+    {
+      "jabatan": "Wakil",
+      "nama": "Yunita Sari",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna/yunita.jpeg"
+    },
+    {
+      "jabatan": "Sekretaris",
+      "nama": "Dimas Suryo L.",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna//dimas.png"
+    },
+    {
+      "jabatan": "Bendahara",
+      "nama": "Yudi Arum S.",
+      "foto": "https://03web.github.io/amaz03/foto/karang-taruna/yuyukdol.jpeg"
+    }
+  ],
+  "bidang": [
+    {
+      "namaBidang": "Bidang Sosial",
+      "anggota": [
+        {
+          "nama": "Isrofi",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/ropi.png"
+        },
+        { "nama": "Mulyono", "jabatan": "Anggota", "foto": "" },
+        { "nama": "Mas Udi", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "Nana Mustakimah",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/nana.jpeg"
+        },
+        {
+          "nama": "Sifa Amadea P.",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/shivaa.png"
+        }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Perekonomian dan Kewirausahaan",
+      "anggota": [
+        {
+          "nama": "Dani Indri S.",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/danik.jpeg"
+        },
+        { "nama": "Tri Arifin", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "Harniyati",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/harni.jpeg"
+        },
+        {
+          "nama": "Amalis Saliyati",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/amal.png"
+        }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Olahraga dan Seni Budaya",
+      "anggota": [
+        {
+          "nama": "M. Ardan Maulana",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/ardan.png"
+        },
+        {
+          "nama": "Satria Nindy W.",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/nindyy.jpeg"
+        },
+        { "nama": "Iswanto heru", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "Wisnu",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/wisnu.jpeg"
+        },
+        { "nama": "Puput", "jabatan": "Anggota", "foto": "" }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Media",
+      "anggota": [
+        {
+          "nama": "Haidar Daffa",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/davamedia.png"
+        },
+        {
+          "nama": "Azizah Melan",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/melan.png"
+        },
+        { "nama": "Indra Kurniawan", "jabatan": "Anggota", "foto": "" }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Lingkungan Hidup Dan Kebersihan",
+      "anggota": [
+        { "nama": "Yogi Ivan", "jabatan": "Koordinator", "foto": "" },
+        { "nama": "Ibnu", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "Adit",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/adit.jpeg"
+        },
+        {
+          "nama": "Rezel",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/reyeltonggo.png"
+        },
+        { "nama": "Jojo", "jabatan": "Anggota", "foto": "" }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Agama Islam",
+      "anggota": [
+        {
+          "nama": "Iswanto",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/iswantobojonetitin.jpeg"
+        },
+        { "nama": "Aji", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "Aifa Nurul A.",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/aifa.png"
+        }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Agama Kristen",
+      "anggota": [
+        {
+          "nama": "Margaretha",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/margaretha_mentri_agama_kristen.png"
+        },
+        {
+          "nama": "Amazia",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/new0/amazsd.jpeg"
+        },
+        {
+          "nama": "Agatha",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/agatha.png"
+        },
+        {
+          "nama": "Nessa",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/nessa.jpeg"
+        }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Keamanan",
+      "anggota": [
+        {
+          "nama": "Budi Santoso",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/budirt3.jpeg"
+        },
+        {
+          "nama": "Rendi Sikun",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/rendi.jpeg"
+        },
+        {
+          "nama": "Satria Juang W.",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/juang.jpeg"
+        },
+        { "nama": "Beni Nurhidayat", "jabatan": "Anggota", "foto": "" },
+        { "nama": "Sendi", "jabatan": "Anggota", "foto": "" },
+        { "nama": "Imas", "jabatan": "Anggota", "foto": "" },
+        { "nama": "Enggar", "jabatan": "Anggota", "foto": "" }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Pendidikan",
+      "anggota": [
+        {
+          "nama": "Arlin fatoni",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/arlin.jpeg"
+        },
+        {
+          "nama": "Doni ismail",
+          "jabatan": "Anggota",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "namaBidang": "Bidang Organisasi Dan Kaderisasi",
+      "anggota": [
+        {
+          "nama": "Ari",
+          "jabatan": "Koordinator",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/arikakak.jpeg"
+        },
+        { "nama": "Titik", "jabatan": "Anggota", "foto": "" },
+        {
+          "nama": "M. Nur Fauzi",
+          "jabatan": "Anggota",
+          "foto": "https://03web.github.io/amaz03/foto/karang-taruna/pesek.jpeg"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "nama": "Andri Apri",
+    "jabatan": "Ketua Umum",
+    "deskripsi": "Hubungi untuk informasi umum,kerja sama, dan kemitraan.",
+    "foto": "https://03web.github.io/amaz03/foto/karang-taruna/andri.jpeg",
+    "alt": "Foto Ketua Andri Apri",
+    "whatsapp": "6285712414558",
+    "pesan_wa": "Halo Ketua, saya ingin bertanya seputar Karang Taruna Banjarsari."
+  },
+  {
+    "nama": "Yunita",
+    "jabatan": "Wakil Ketua",
+    "deskripsi": "Hubungi untuk informasi umum, kerja sama dll.",
+    "foto": "https://03web.github.io/amaz03/foto/karang-taruna/yunita.jpeg",
+    "alt": "Foto Wakil Ketua Yunita",
+    "whatsapp": "6288233496802",
+    "pesan_wa": "Halo, saya ingin bertanya mengenai kegiatan."
+  },
+  {
+    "nama": "Amaz",
+    "jabatan": "Admin Website",
+    "deskripsi": "seputar website, tambah konten website, laporan bug/error, atau saran? Hubungi saya.",
+    "foto": "https://03web.github.io/amaz03/foto/new0/amazsd.jpeg",
+    "alt": "Foto Admin Website Amaz",
+    "whatsapp": "6285876983793",
+    "pesan_wa": "Halo, saya ingin melaporkan isu terkait website yang bug/tambah konten/dll."
+  }
+]

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>
+      Galeri Foto & Video Kegiatan Karang Taruna Banjarsari, Temanggung
+    </title>
+    <meta
+      name="description"
+      content="Dokumentasi foto dan video dari berbagai kegiatan Karang Taruna Banjarsari. Lihat momen seru acara 17 Agustus, kesenian, rapat, dan lainnya."
+    />
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lightgallery.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-thumbnail.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+  </head>
+  <body data-page-id="galeri">
+    <div id="particles-js"></div>
+    <header id="main-header"></header>
+    <main>
+      <div class="container">
+        <h1 class="animate-on-scroll">Galeri Kami</h1>
+        <p style="margin-bottom: 40px" class="animate-on-scroll">
+          Dokumentasi visual dari berbagai kegiatan Karang Taruna Banjarsari.
+        </p>
+        <hr class="separator animate-on-scroll" />
+        <h2 class="animate-on-scroll">Dokumentasi Foto</h2>
+        <div id="album-grid"></div>
+        <hr class="separator animate-on-scroll" />
+        <h2 class="animate-on-scroll">Dokumentasi Video</h2>
+        <div class="sort-container animate-on-scroll">
+          <label for="video-sorter">Urutkan berdasarkan:</label>
+          <select id="video-sorter" class="sorter">
+            <option value="terbaru">Terbaru ke Lama</option>
+            <option value="terlama">Lama ke Terbaru</option>
+          </select>
+        </div>
+        <div class="gallery-grid" id="video-grid"></div>
+      </div>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna
+            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+            jalan" so,jangan sungkan untuk bertanya.
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/lightgallery.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/thumbnail/lg-thumbnail.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
+      defer
+    ></script>
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>

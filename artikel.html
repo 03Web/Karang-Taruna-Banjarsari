@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <title>Memuat Artikel... - Karang Taruna Banjarsari</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+  </head>
+  <body data-page-id="artikel">
+    <div id="particles-js"></div>
+    <div class="artikel-reaksi" id="artikel-reaksi-container"></div>
+    <header id="main-header"></header>
+    <main>
+      <div class="artikel-container" id="artikel-dinamis-container">
+        <h2 style="text-align: center">Memuat artikel...</h2>
+        <p style="text-align: center">Harap tunggu sebentar.</p>
+      </div>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna
+            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+            jalan" so,jangan sungkan untuk bertanya.
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>

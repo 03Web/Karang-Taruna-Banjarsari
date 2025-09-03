@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>
+      Artikel & Jadwal Kegiatan Karang Taruna Banjarsari, Temanggung
+    </title>
+    <meta
+      name="description"
+      content="Kumpulan artikel dan jadwal kegiatan terbaru dari Karang Taruna Banjarsari. Ikuti terus update acara 17 Agustus, bakti sosial, dan program lainnya."
+    />
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+  </head>
+  <body data-page-id="kegiatan">
+    <div id="particles-js"></div>
+    <header id="main-header"></header>
+    <main>
+      <div class="container">
+        <h1 class="animate-on-scroll">Daftar Bacaan</h1>
+        <p style="margin-bottom: 20px" class="animate-on-scroll">
+          Jelajahi berbagai artikel karang taruna banjarsari baik yang :
+          "berhubungan dengan karang taruna,topik sedang ramai di bicarakan,
+          random artikel dan informasi lainnya."
+        </p>
+        <div class="filter-container animate-on-scroll">
+          <div class="sort-container">
+            <label for="kategori-filter">Kategori:</label>
+            <select id="kategori-filter" class="sorter">
+              <option value="semua">Semua Kategori</option>
+              <option value="Acara">Acara</option>
+              <option value="Tentang Banjarsari">Tentang Banjarsari</option>
+              <option value="Opini">Opini</option>
+              <option value="Edukasi">Edukasi</option>
+              <option value="Berita">Berita</option>
+            </select>
+          </div>
+          <div class="sort-container">
+            <label for="kegiatan-sorter">Urutkan :</label>
+            <select id="kegiatan-sorter" class="sorter">
+              <option value="terbaru">Terbaru ke Lama</option>
+              <option value="terlama">Lama ke Terbaru</option>
+            </select>
+          </div>
+        </div>
+        <div class="kegiatan-list" id="kegiatan-list"></div>
+      </div>
+    </main>
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna
+            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+            jalan" so,jangan sungkan untuk bertanya.
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
+      defer
+    ></script>
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>
