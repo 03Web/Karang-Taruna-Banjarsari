@@ -2,8 +2,9 @@ const express = require("express");
 const midtransClient = require("midtrans-client");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const fs = require("fs").promises; // 1. Menggunakan modul 'fs' untuk membaca file
+const fs = require("fs").promises;
 const path = require("path");
+require("dotenv").config(); // <-- TAMBAHKAN BARIS INI DI ATAS
 
 const app = express();
 const port = 3000;
@@ -12,17 +13,17 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// PERBAIKAN: Ganti dengan Server Key dan Client Key Midtrans Anda
-const SERVER_KEY = "";
-const CLIENT_KEY = "";
+// Ambil kunci dari environment variables (.env)
+const SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
+const CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY;
 
-if (
-  !SERVER_KEY.startsWith("SB-Mid-server-") ||
-  !CLIENT_KEY.startsWith("SB-Mid-client-")
-) {
-  console.warn(
-    "PERINGATAN: Kunci Midtrans sepertinya belum diganti. Pastikan Anda menggunakan kunci asli dari akun Sandbox Anda."
+// Validasi apakah kunci sudah diatur
+if (!SERVER_KEY || !CLIENT_KEY) {
+  console.error(
+    "KESALAHAN: MIDTRANS_SERVER_KEY atau MIDTRANS_CLIENT_KEY tidak ditemukan."
   );
+  console.error("Pastikan Anda sudah membuat file .env dan mengisinya.");
+  process.exit(1); // Hentikan server jika kunci tidak ada
 }
 
 // Inisialisasi Snap Midtrans
@@ -41,7 +42,6 @@ app.post("/buat-transaksi", async (req, res) => {
       return res.status(400).json({ error: "Keranjang belanja kosong." });
     }
 
-    // 2. Membaca file produk.json langsung dari sistem file
     const productFilePath = path.join(__dirname, "data", "produk.json");
     const productDataJson = await fs.readFile(productFilePath, "utf-8");
     const allProducts = JSON.parse(productDataJson);
@@ -50,12 +50,11 @@ app.post("/buat-transaksi", async (req, res) => {
     const items = cart.map((item) => {
       const productData = allProducts.find((p) => p.id === item.id);
       if (!productData) {
-        // Jika produk tidak ditemukan, kirim error
         throw new Error(`Produk dengan ID ${item.id} tidak ditemukan.`);
       }
       totalAmount += productData.harga * item.quantity;
       return {
-        id: productData.id.toString(), // ID harus string
+        id: productData.id.toString(),
         price: productData.harga,
         quantity: item.quantity,
         name: productData.nama,
