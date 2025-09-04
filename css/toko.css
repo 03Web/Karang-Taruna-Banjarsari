@@ -738,3 +738,167 @@
     margin-bottom: 0;
   }
 }
+/* === GAYA GALERI FOTO PRODUK (BARU) === */
+
+/* Ini adalah wadah utama untuk bagian gambar */
+.product-image-section {
+  display: flex;
+  flex-direction: column; /* Mengatur agar gambar utama di atas, thumbnail di bawah */
+  gap: 15px; /* Jarak antara gambar utama dan thumbnail */
+}
+
+/* Ini adalah gambar utama yang besar */
+#main-product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Membuat gambar selalu persegi */
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: opacity 0.3s ease; /* Efek transisi saat gambar ganti */
+}
+
+/* Ini adalah wadah untuk semua gambar kecil (thumbnail) */
+.product-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(
+    5,
+    1fr
+  ); /* Tampilkan 5 gambar kecil per baris */
+  gap: 10px; /* Jarak antar gambar kecil */
+}
+
+/* Ini adalah setiap gambar kecil (thumbnail) */
+.thumbnail-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid transparent; /* Garis batas transparan */
+  cursor: pointer; /* Ubah cursor jadi tangan saat diarahkan */
+  transition: all 0.3s ease;
+}
+
+/* Efek saat mouse diarahkan ke gambar kecil */
+.thumbnail-item:hover {
+  border-color: var(--dark-text);
+  transform: scale(1.05);
+}
+
+/* Gaya untuk gambar kecil yang sedang aktif/dipilih */
+.thumbnail-item.active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(0, 170, 255, 0.5); /* Efek bersinar */
+}
+/* === GAYA TOMBOL CHAT PENJUAL (BARU) === */
+.btn-chat {
+  background-color: #25d366; /* Warna hijau khas WhatsApp */
+  color: white;
+  border: 1px solid #25d366;
+  display: flex; /* Agar ikon dan teks sejajar */
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Jarak antara ikon dan teks */
+}
+
+.btn-chat:hover {
+  background-color: #1ebe57; /* Warna hijau lebih gelap saat hover */
+  border-color: #1ebe57;
+  color: white;
+}
+
+/* Penyesuaian untuk tombol keranjang agar ukurannya konsisten */
+.btn-keranjang {
+  min-width: 140px; /* Atur lebar minimum agar rapi */
+}
+/* === GAYA TOMBOL AKSI TAMBAHAN (BARU) === */
+
+/* Tombol Beli Langsung */
+.btn-beli-langsung {
+  background-color: var(--primary-color);
+  color: var(--dark-bg);
+  flex-grow: 2; /* Membuatnya sedikit lebih lebar dari tombol lain */
+}
+.btn-beli-langsung:hover {
+  background-color: #0099e6;
+}
+
+/* Penyesuaian untuk Tombol Keranjang agar lebih simpel */
+.add-to-cart-btn {
+  flex-grow: 1; /* Lebih kecil */
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Penyesuaian untuk Tombol Chat */
+.btn-chat {
+  flex-grow: 1; /* Lebih kecil */
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Penyesuaian di mobile floating bar */
+.floating-action-bar .action-buttons {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.floating-action-bar .btn-toko {
+  flex-grow: 1;
+  width: 50%;
+}
+/* ================================================= */
+/* === GAYA BARU UNTUK SEMUA TOMBOL AKSI PRODUK  === */
+/* ================================================= */
+
+/* --- Tampilan Desktop --- */
+
+.buttons-group {
+  display: flex; /* Tombol-tombolnya sendiri disusun ke samping */
+  gap: 10px;
+  width: 100%;
+}
+
+.buttons-group > .btn-toko,
+.buttons-group > a.btn-toko {
+  flex: 1; /* Biarkan ketiga tombol berbagi ruang secara merata */
+}
+
+/* --- Tampilan Mobile (Floating Bar) --- */
+.action-buttons-mobile {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.btn-toko {
+  flex-grow: 1; /* Semua tombol di mobile punya lebar sama */
+  padding: 12px 5px; /* Padding disesuaikan agar muat */
+  font-size: 0.85em; /* Ukuran font dikecilkan sedikit */
+  white-space: nowrap; /* Mencegah teks turun baris */
+}
+
+/* --- Gaya Spesifik per Tombol (Berlaku untuk Desktop & Mobile) --- */
+
+.btn-keranjang:hover {
+  background-color: rgba(0, 170, 255, 0.1);
+}
+
+/* Tombol Chat (Aksi Bantuan) */
+
+.btn-chat:hover {
+  background-color: #1ebe57;
+  border-color: #1ebe57;
+  color: white;
+}
+
+/* Tombol Beli Langsung (Aksi Utama) */
+
+.btn-beli-langsung:hover {
+  background-color: #0099e6;
+}
+
+/* Penyesuaian ikon agar rapi */
+.btn-toko i {
+  margin-right: 5px;
+}

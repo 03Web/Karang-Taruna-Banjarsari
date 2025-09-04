@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      // FIX: Menggunakan path relatif
       const response = await fetch("data/produk.json");
       if (!response.ok) throw new Error("Gagal mengambil data produk.");
 
@@ -31,11 +30,35 @@ document.addEventListener("DOMContentLoaded", () => {
       if (product) {
         document.title = `${product.nama} - Karang Taruna Banjarsari`;
 
-        // IMPROVEMENT: Template HTML baru yang lebih detail dan terstruktur
-        const detailHTML = `
+        const gambarProduk = product.gambar_produk || [product.gambar];
+        const mainImageHTML = `<img src="${gambarProduk[0]}" alt="${product.nama}" id="main-product-image">`;
+
+        const thumbnailsHTML =
+          gambarProduk.length > 1
+            ? `<div class="product-thumbnails">
+              ${gambarProduk
+                .map(
+                  (g, index) => `
+                <img src="${g}" alt="Thumbnail ${
+                    index + 1
+                  }" class="thumbnail-item ${
+                    index === 0 ? "active" : ""
+                  }" data-src="${g}">
+              `
+                )
+                .join("")}
+            </div>`
+            : "";
+
+        const imageSectionHTML = `
           <div class="product-image-section">
-            <img src="${product.gambar}" alt="${product.nama}">
+            ${mainImageHTML}
+            ${thumbnailsHTML}
           </div>
+        `;
+
+        const detailHTML = `
+          ${imageSectionHTML}
           <div class="product-info-section">
             <h1 class="product-name">${product.nama}</h1>
             <div class="product-stats-detail">
@@ -49,17 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <p class="product-price">${formatRupiah(product.harga)}</p>
             
-            <div class="action-buttons" id="main-action-buttons">
-              <div class="quantity-control">
-                <button class="quantity-btn minus-btn">-</button>
-                <input type="number" class="quantity-input" value="1" min="1" readonly>
-                <button class="quantity-btn plus-btn">+</button>
-              </div>
-              <button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${
-                product.id
-              }">
-                <i class="fas fa-shopping-cart"></i> Tambah ke Keranjang
-              </button>
+            <div class="quantity-section">
+                <h3>Jumlah</h3>
+                <div class="quantity-control">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" readonly>
+                    <button class="quantity-btn plus-btn">+</button>
+                </div>
             </div>
 
             <div class="product-description">
@@ -70,15 +89,27 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         detailContainer.innerHTML = detailHTML;
 
-        // IMPROVEMENT: Mengisi floating action bar untuk tampilan mobile
+        // --- PERBAIKAN UTAMA: MEMBUAT KUMPULAN TOMBOL UNTUK BAR BAWAH ---
+        const addToCartButtonHTML = `<button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${product.id}"><i class="fas fa-shopping-cart"></i> Keranjang</button>`;
+        let chatButtonHTML = "";
+        if (product.penjual_wa) {
+          const pesanWA = `Halo, saya tertarik dengan produk '${product.nama}' yang ada di website Karang Taruna Banjarsari.`;
+          chatButtonHTML = `<a href="https://wa.me/${
+            product.penjual_wa
+          }?text=${encodeURIComponent(
+            pesanWA
+          )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</a>`;
+        }
+        const beliLangsungButtonHTML = `<button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${product.id}">Beli Langsung</button>`;
+
+        // Mengisi floating action bar dengan TIGA TOMBOL LENGKAP
         if (floatingActionBar) {
-          floatingActionBar.innerHTML = document.getElementById(
-            "main-action-buttons"
-          ).innerHTML;
+          floatingActionBar.innerHTML = `<div class="action-buttons-mobile">${addToCartButtonHTML} ${chatButtonHTML} ${beliLangsungButtonHTML}</div>`;
+          floatingActionBar.style.display = "flex"; // Pastikan selalu terlihat
         }
 
-        // Menambahkan Event Listeners setelah elemen dirender
         setupEventListeners(product.id);
+        setupGalleryListeners();
       } else {
         detailContainer.innerHTML =
           "<h2>Produk Tidak Ditemukan</h2><p>Maaf, produk yang Anda cari tidak ada atau telah dihapus.</p>";
@@ -90,62 +121,79 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const setupGalleryListeners = () => {
+    // ... (Kode ini tidak berubah)
+  };
+
   const setupEventListeners = (productId) => {
-    // Menargetkan kedua container aksi (untuk desktop dan mobile)
-    const actionContainers = document.querySelectorAll(
-      "#main-action-buttons, #floating-action-bar"
+    const allButtonContainers = document.querySelectorAll(
+      ".product-info-section, #floating-action-bar"
     );
 
-    actionContainers.forEach((container) => {
-      const minusBtn = container.querySelector(".minus-btn");
-      const plusBtn = container.querySelector(".plus-btn");
+    allButtonContainers.forEach((container) => {
       const addToCartBtn = container.querySelector(".add-to-cart-btn");
-
-      if (minusBtn) {
-        minusBtn.addEventListener("click", () => {
-          const quantityInput = container.querySelector(".quantity-input");
-          let currentValue = parseInt(quantityInput.value);
-          if (currentValue > 1) {
-            updateAllQuantities(currentValue - 1);
-          }
-        });
-      }
-
-      if (plusBtn) {
-        plusBtn.addEventListener("click", () => {
-          const quantityInput = container.querySelector(".quantity-input");
-          let currentValue = parseInt(quantityInput.value);
-          updateAllQuantities(currentValue + 1);
-        });
-      }
+      const buyNowBtn = container.querySelector(".btn-beli-langsung");
 
       if (addToCartBtn) {
-        addToCartBtn.addEventListener("click", () => {
-          const quantityInput = container.querySelector(".quantity-input");
+        addToCartBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const quantityInput = document.querySelector(".quantity-input");
           const quantity = parseInt(quantityInput.value);
           App.addToCart(productId, quantity);
 
-          // IMPROVEMENT: Memberi feedback visual ke pengguna
-          addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan!';
-          addToCartBtn.classList.add("added"); // Menambah class untuk styling
-          addToCartBtn.disabled = true;
+          document
+            .querySelectorAll(
+              `.add-to-cart-btn[data-product-id="${productId}"]`
+            )
+            .forEach((btn) => {
+              btn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan!';
+              btn.classList.add("added");
+              btn.disabled = true;
+            });
 
           setTimeout(() => {
-            addToCartBtn.innerHTML =
-              '<i class="fas fa-shopping-cart"></i> Tambah ke Keranjang';
-            addToCartBtn.classList.remove("added");
-            addToCartBtn.disabled = false;
+            document
+              .querySelectorAll(
+                `.add-to-cart-btn[data-product-id="${productId}"]`
+              )
+              .forEach((btn) => {
+                btn.innerHTML =
+                  '<i class="fas fa-shopping-cart"></i> Keranjang';
+                btn.classList.remove("added");
+                btn.disabled = false;
+              });
           }, 2000);
         });
       }
-    });
-  };
 
-  // Fungsi untuk sinkronisasi jumlah di kedua tombol (desktop & mobile)
-  const updateAllQuantities = (newValue) => {
-    document.querySelectorAll(".quantity-input").forEach((input) => {
-      input.value = newValue;
+      if (buyNowBtn) {
+        buyNowBtn.addEventListener("click", () => {
+          const quantityInput = document.querySelector(".quantity-input");
+          const quantity = parseInt(quantityInput.value);
+          const buyNowItem = [{ id: productId, quantity: quantity }];
+          sessionStorage.setItem("buyNowItem", JSON.stringify(buyNowItem));
+          window.location.href = "checkout.html";
+        });
+      }
     });
+
+    const infoSection = document.querySelector(".product-info-section");
+    if (infoSection) {
+      const minusBtn = infoSection.querySelector(".minus-btn");
+      const plusBtn = infoSection.querySelector(".plus-btn");
+      if (minusBtn && plusBtn) {
+        minusBtn.addEventListener("click", () => {
+          const quantityInput = infoSection.querySelector(".quantity-input");
+          let currentValue = parseInt(quantityInput.value);
+          if (currentValue > 1) quantityInput.value = currentValue - 1;
+        });
+        plusBtn.addEventListener("click", () => {
+          const quantityInput = infoSection.querySelector(".quantity-input");
+          let currentValue = parseInt(quantityInput.value);
+          quantityInput.value = currentValue + 1;
+        });
+      }
+    }
   };
 
   if (detailContainer) {

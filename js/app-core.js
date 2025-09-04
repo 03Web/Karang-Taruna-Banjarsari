@@ -478,3 +478,50 @@ const App = (() => {
 })();
 
 document.addEventListener("DOMContentLoaded", App.init);
+// ===================================================
+// === SISTEM NOTIFIKASI GLOBAL (KODE BARU) ===
+// ===================================================
+function showNotification(message, type = "success") {
+  // 1. Buat elemen HTML untuk notifikasi
+  const notification = document.createElement("div");
+  notification.className = `notification-banner ${type}`;
+  notification.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>${message}</span>
+    <button class="notification-close-btn">&times;</button>
+  `;
+
+  // 2. Tambahkan notifikasi ke halaman
+  document.body.appendChild(notification);
+
+  // 3. Tambahkan event listener untuk tombol close
+  notification
+    .querySelector(".notification-close-btn")
+    .addEventListener("click", () => {
+      notification.classList.remove("show");
+      // Hapus elemen setelah animasi selesai
+      setTimeout(() => notification.remove(), 500);
+    });
+
+  // 4. Tampilkan notifikasi dengan sedikit jeda
+  setTimeout(() => {
+    notification.classList.add("show");
+  }, 100);
+
+  // 5. Sembunyikan notifikasi secara otomatis setelah 5 detik
+  setTimeout(() => {
+    notification.classList.remove("show");
+    setTimeout(() => notification.remove(), 500);
+  }, 5000);
+}
+
+// Cek apakah ada notifikasi yang perlu ditampilkan saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("showPaymentSuccess") === "true") {
+    // Hapus "tanda" agar tidak muncul lagi saat di-refresh
+    sessionStorage.removeItem("showPaymentSuccess");
+
+    // Tampilkan notifikasi sukses
+    showNotification("Pembayaran berhasil! Terima kasih telah berbelanja.");
+  }
+});

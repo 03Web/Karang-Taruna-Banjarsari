@@ -16,12 +16,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }).format(angka);
 
   const loadCheckoutSummary = async () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // --- AWAL PERUBAHAN LOGIKA ---
+    // Cek apakah ada item "Beli Langsung" di penyimpanan sementara
+    const buyNowItemJSON = sessionStorage.getItem("buyNowItem");
+    let cart;
 
-    if (
-      cart.length === 0 &&
-      window.location.pathname.includes("checkout.html")
-    ) {
+    if (buyNowItemJSON) {
+      // Jika ada, gunakan item itu untuk checkout
+      console.log("Mode: Beli Langsung");
+      cart = JSON.parse(buyNowItemJSON);
+    } else {
+      // Jika tidak ada, gunakan keranjang belanja utama seperti biasa
+      console.log("Mode: Keranjang Belanja");
+      cart = JSON.parse(localStorage.getItem("cart")) || [];
+    }
+    // --- AKHIR PERUBAHAN LOGIKA ---
+
+    if (cart.length === 0) {
       window.location.href = "toko.html";
       return;
     }
@@ -39,20 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
         subtotal += productData.harga * item.quantity;
 
         const summaryItemHTML = `
-                    <div class="summary-item">
-                        <div class="summary-item-img"><img src="${
-                          productData.gambar
-                        }" alt="${productData.nama}"></div>
-                        <div class="summary-item-info"><p class="item-name">${
-                          productData.nama
-                        }</p><p class="item-qty">Jumlah: ${
-          item.quantity
-        }</p></div>
-                        <span class="summary-item-price">${formatRupiah(
-                          productData.harga * item.quantity
-                        )}</span>
-                    </div>
-                `;
+            <div class="summary-item">
+                <div class="summary-item-img"><img src="${
+                  productData.gambar_produk
+                    ? productData.gambar_produk[0]
+                    : productData.gambar
+                }" alt="${productData.nama}"></div>
+                <div class="summary-item-info"><p class="item-name">${
+                  productData.nama
+                }</p><p class="item-qty">Jumlah: ${item.quantity}</p></div>
+                <span class="summary-item-price">${formatRupiah(
+                  productData.harga * item.quantity
+                )}</span>
+            </div>
+        `;
         summaryItemsContainer.insertAdjacentHTML("beforeend", summaryItemHTML);
       });
 
@@ -68,8 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const payButton = document.querySelector(".btn-checkout");
+      const buyNowItemJSON = sessionStorage.getItem("buyNowItem");
+      let cartForTransaction = buyNowItemJSON
+        ? JSON.parse(buyNowItemJSON)
+        : JSON.parse(localStorage.getItem("cart"));
 
+      const payButton = document.querySelector(".btn-checkout");
       payButton.disabled = true;
       payButton.textContent = "Memproses...";
 
@@ -77,49 +92,50 @@ document.addEventListener("DOMContentLoaded", () => {
         customerName: document.getElementById("nama-lengkap").value,
         customerPhone: document.getElementById("nomor-wa").value,
         customerAddress: document.getElementById("alamat").value,
-        cart: JSON.parse(localStorage.getItem("cart")),
+        cart: cartForTransaction,
       };
 
       try {
-        // ==========================================================
-        // === PERBAIKAN UTAMA ADA DI BARIS INI ===
         const response = await fetch("/api/buat-transaksi", {
-          // ==========================================================
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderData),
         });
 
         const data = await response.json();
-
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(data.error || "Gagal membuat transaksi di server.");
-        }
 
         window.snap.pay(data.token, {
           onSuccess: function (result) {
-            alert("Pembayaran berhasil! Terima kasih telah berbelanja.");
-            console.log(result);
-            localStorage.removeItem("cart");
-            App.updateCartBadge();
+            // HAPUS ALERT LAMA DAN GANTI DENGAN INI:
+            // Kita simpan "tanda" di sessionStorage bahwa pembayaran sukses.
+            sessionStorage.setItem("showPaymentSuccess", "true");
+
+            // Hapus keranjang yang relevan setelah pembayaran sukses
+            if (buyNowItemJSON) {
+              sessionStorage.removeItem("buyNowItem"); // Hapus data sementara
+            } else {
+              localStorage.removeItem("cart"); // Hapus keranjang utama
+              App.updateCartBadge();
+            }
+
+            // Langsung arahkan ke halaman utama
             window.location.href = "index.html";
           },
           onPending: function (result) {
-            alert(
-              "Pembayaran Anda sedang diproses. Silakan selesaikan pembayaran."
-            );
-            console.log(result);
+            /* ... kode tidak berubah ... */
           },
           onError: function (result) {
             alert("Pembayaran gagal! Silakan coba lagi.");
-            console.log(result);
             payButton.disabled = false;
             payButton.textContent = "Bayar Sekarang";
           },
           onClose: function () {
-            console.log(
-              "Jendela pembayaran ditutup tanpa menyelesaikan transaksi."
-            );
+            // Jika pembayaran ditutup, hapus data sementara jika ada
+            if (buyNowItemJSON) {
+              sessionStorage.removeItem("buyNowItem");
+            }
             payButton.disabled = false;
             payButton.textContent = "Bayar Sekarang";
           },

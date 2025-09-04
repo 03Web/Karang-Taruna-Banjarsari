@@ -2975,3 +2975,60 @@ body[data-page-id="aspirasi"] .container {
 #keranjang-belanja-mobile .cart-badge {
   border-color: #0e0e0e; /* Warna latar header mobile */
 }
+/* ========================================= */
+/* ===         GAYA NOTIFIKASI BARU      === */
+/* ========================================= */
+.notification-banner {
+  position: fixed;
+  top: 80px; /* Muncul di bawah header desktop */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: #fff;
+  z-index: 10001; /* Tampil di atas segalanya */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+}
+
+.notification-banner.show {
+  opacity: 1;
+  transform: translateX(-50%);
+}
+
+.notification-banner.success {
+  background-color: #28a745; /* Hijau untuk sukses */
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.notification-banner i {
+  font-size: 1.5em;
+}
+
+.notification-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  margin-left: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+.notification-close-btn:hover {
+  opacity: 1;
+}
+
+/* Penyesuaian untuk mobile */
+@media (max-width: 768px) {
+  .notification-banner {
+    top: 60px; /* Muncul di bawah header mobile */
+    width: 90%;
+  }
+}
