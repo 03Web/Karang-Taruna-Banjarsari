@@ -9,7 +9,7 @@
       "https://jasamarketingonline.produkrakyat.id/wp-content/uploads/2024/03/WhatsApp-Image-2024-01-24-at-13.43.51-1-840x473.jpeg",
       "https://pbs.twimg.com/media/Gz_YoB4bkAERYXV?format=jpg&name=small"
     ],
-    "penjual_wa": "+85876983793",
+    "penjual_wa": "085876983793",
     "rating": 4.9,
     "terjual": "500+",
     "lokasi": "Desa Banjarsari",
@@ -26,7 +26,7 @@
       "https://cdnv.detik.com/videoservice/AdminTV/2025/03/20/80637e0756264f199ca224839617e076-20250320104539-0s.jpg?w=650&q=80",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm82meZwDrl9scsKcDUX5uzqI161wkrU-D-Q&s"
     ],
-    "penjual_wa": "+85876983793",
+    "penjual_wa": "085876983793",
     "rating": 4.7,
     "terjual": "250+",
     "lokasi": "Desa Banjarsari rt 02 rw 01",
@@ -35,29 +35,54 @@
   },
   {
     "id": "sound-system-acara",
-    "nama": "Paket Sound System Acara Besar",
-    "harga": 1850000,
-    "gambar": "https://alexandra.bridestory.com/image/upload/assets/upload-Ejkc44b13.jpg",
-    "gambar_produk": ["", "", ""],
-    "penjual_wa": "+85876983793",
+    "nama": "Paket Sound Horeg max 150 desibel",
+    "harga": 30850000,
+    "gambar": "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg",
+    "gambar_produk": [
+      "https://kuyou.id/content/images/thomas-alva-edi-sound-20250730015831.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIM5L1BP3Fya8JApxpcqx9komtWiwIC0xSsQ&s",
+      "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg"
+    ],
+    "penjual_wa": "085876983793",
     "rating": 4.8,
     "terjual": "100+",
     "lokasi": "Desa Banjarsari rt 03 rw 02",
     "kategori": "sewa",
-    "deskripsi": "Paket sound system lengkap dengan 4 speaker aktif, 2 subwoofer, mixer 16 channel, 4 mic wireless, dan operator. Ideal untuk acara desa skala besar."
+    "deskripsi": "Sound system SUPER HOREG 🔊 yang bikin THT langganan! 👂🏥 Dengan 150db membuat tetangga ikut joget sampai 3 RT. Paket lengkap: 4 speaker aktif penggetar jiwa, 2 subwoofer pengguncang bumi, mixer 16ch, & 4 mic wireless. Sertakan kartu BPJS ya! 😅🎵"
   },
   {
     "id": "meja-kursi-paket",
-    "nama": "Set 50 Meja & 200 Kursi Plastik",
+    "nama": "Set 50 Meja & 200 Kursi tidak lengkap",
     "harga": 8200000,
     "gambar": "https://siopen.balangankab.go.id/storage/merchant/products/2024/05/29/e33fb311ccdab17c95e40bc9ebf28c83.jpg",
-    "gambar_produk": ["", "", ""],
+    "gambar_produk": [
+      "https://sewaalatpestamalang.com/wp-content/uploads/2019/11/WhatsApp-Image-2019-11-11-at-09.03.13-1.jpeg",
+      "https://meja.co/wp-content/uploads/2024/12/Template-website-40-1.jpg",
+      "https://suryajaya.top/wp-content/uploads/2023/12/Persewaan-Meja-Kotak-Ukuran-80x120cm-Murah-Dan-Terdekat-Jakarta-15-12-2023-c-1024x1024.jpg"
+    ],
     "penjual_wa": "+85876983793",
     "rating": 4.9,
     "terjual": "150+",
     "lokasi": "Desa Banjarsari rt 01 rw 02",
     "kategori": "sewa",
     "deskripsi": "Paket 50 meja panjang dan 200 kursi plastik berkualitas. Ideal untuk acara gathering, pernikahan, atau kegiatan desa lainnya. Termasuk layanan pengiriman dan setup."
+  },
+  {
+    "id": "tembakau-gunung",
+    "nama": "tembakau asli temanggung 100gr - 1kg premium",
+    "harga": 15000,
+    "gambar": "https://images.tokopedia.net/img/cache/700/product-1/2019/12/5/4996870/4996870_cbeb3b36-9709-439e-a3fa-425798ae3c73_1512_1512.jpg",
+    "gambar_produk": [
+      "https://jatengprov.go.id/wp-content/uploads/2020/08/1598352627374-IMG-20200825-WA0010_detail.png",
+      "https://imgcdn.espos.id/@espos/images/2025/06/20250615123127-tembakau-temanggung.jpg?quality=60",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzzwZKgDuW8xv2F6StBkeD1MmqnKVzV_4P3w&s"
+    ],
+    "penjual_wa": "+85876983793",
+    "rating": 4.6,
+    "terjual": "250+",
+    "lokasi": "Desa Banjarsari rt 05",
+    "kategori": "makanan",
+    "deskripsi": "Tembakau asli Temanggung kualitas premium dengan berbagai grade. Tersedia dalam kemasan 100gr (15rb) hingga 1kg (1jt). Kualitas super grade dengan aroma khas pegunungan Temanggung. Cocok untuk kolektor dan penikmat tembakau berkualitas."
   },
   {
     "id": "kopi-arabika-temanggung",
@@ -110,18 +135,5 @@
     "lokasi": "Desa Banjarsari rt 01",
     "kategori": "makanan",
     "deskripsi": "Sambel pecel traditional tanpa pengawet, terbuat dari kacang tanah pilihan. Cocok untuk pecel dan gado-gado."
-  },
-  {
-    "id": "tempe-kering",
-    "nama": "Tempe Kering Kriuk 200gr",
-    "harga": 25000,
-    "gambar": "https://cf.shopee.co.id/file/f043cf23a8123850cfe1f5a88322a76e",
-    "gambar_produk": ["", "", ""],
-    "penjual_wa": "+85876983793",
-    "rating": 4.6,
-    "terjual": "250+",
-    "lokasi": "Desa Banjarsari rt 05",
-    "kategori": "makanan",
-    "deskripsi": "Tempe kering renyah dengan bumbu tradisional. Tahan lama dan cocok untuk camilan sehat."
   }
 ]

@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
+        // --- DIUBAH: Mengembalikan struktur seperti semula ---
         const detailHTML = `
           ${imageSectionHTML}
           <div class="product-info-section">
@@ -72,57 +73,74 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <p class="product-price">${formatRupiah(product.harga)}</p>
             
-            <div class="quantity-section">
-                <h3>Jumlah</h3>
+            <div class="product-description">
+              <h3>Deskripsi Produk</h3>
+              <p>${product.deskripsi}</p>
+            </div>
+
+            <div class="action-buttons">
                 <div class="quantity-control">
                     <button class="quantity-btn minus-btn">-</button>
                     <input type="number" class="quantity-input" value="1" min="1" readonly>
                     <button class="quantity-btn plus-btn">+</button>
                 </div>
+                <button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${
+                  product.id
+                }"><i class="fas fa-shopping-cart"></i> Keranjang</button>
             </div>
-
-            <div class="product-description">
-              <h3>Deskripsi Produk</h3>
-              <p>${product.deskripsi}</p>
+             <div class="action-buttons-beli">
+                <button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${
+                  product.id
+                }">Beli Langsung</button>
+                ${
+                  product.penjual_wa
+                    ? `<a href="https://wa.me/${
+                        product.penjual_wa
+                      }?text=${encodeURIComponent(
+                        `Halo, saya tertarik dengan produk '${product.nama}'`
+                      )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat Penjual</a>`
+                    : ""
+                }
             </div>
           </div>
         `;
         detailContainer.innerHTML = detailHTML;
 
-        // --- PERBAIKAN UTAMA: MEMBUAT KUMPULAN TOMBOL UNTUK BAR BAWAH ---
-        const addToCartButtonHTML = `<button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${product.id}"><i class="fas fa-shopping-cart"></i> Keranjang</button>`;
-        let chatButtonHTML = "";
-        if (product.penjual_wa) {
-          const pesanWA = `Halo, saya tertarik dengan produk '${product.nama}' yang ada di website Karang Taruna Banjarsari.`;
-          chatButtonHTML = `<a href="https://wa.me/${
-            product.penjual_wa
-          }?text=${encodeURIComponent(
-            pesanWA
-          )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</a>`;
-        }
-        const beliLangsungButtonHTML = `<button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${product.id}">Beli Langsung</button>`;
-
-        // Mengisi floating action bar dengan TIGA TOMBOL LENGKAP
+        const mobileButtonsHTML = `
+            <button class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</button>
+            <button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${product.id}"><i class="fas fa-shopping-cart"></i> Keranjang</button>
+            <button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${product.id}">Beli Langsung</button>
+        `;
         if (floatingActionBar) {
-          floatingActionBar.innerHTML = `<div class="action-buttons-mobile">${addToCartButtonHTML} ${chatButtonHTML} ${beliLangsungButtonHTML}</div>`;
-          floatingActionBar.style.display = "flex"; // Pastikan selalu terlihat
+          floatingActionBar.innerHTML = `<div class="action-buttons-mobile">${mobileButtonsHTML}</div>`;
         }
 
         setupEventListeners(product.id);
         setupGalleryListeners();
       } else {
         detailContainer.innerHTML =
-          "<h2>Produk Tidak Ditemukan</h2><p>Maaf, produk yang Anda cari tidak ada atau telah dihapus.</p>";
+          "<h2>Produk Tidak Ditemukan</h2><p>Maaf, produk yang Anda cari tidak ada.</p>";
       }
     } catch (error) {
       console.error("Error:", error);
       detailContainer.innerHTML =
-        "<h2>Gagal Memuat</h2><p>Terjadi kesalahan saat memuat detail produk. Silakan coba lagi nanti.</p>";
+        "<h2>Gagal Memuat</h2><p>Terjadi kesalahan saat memuat detail produk.</p>";
     }
   };
 
   const setupGalleryListeners = () => {
-    // ... (Kode ini tidak berubah)
+    const mainImage = document.getElementById("main-product-image");
+    const thumbnails = document.querySelectorAll(".thumbnail-item");
+
+    if (!mainImage || thumbnails.length === 0) return;
+
+    thumbnails.forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        thumbnails.forEach((t) => t.classList.remove("active"));
+        thumb.classList.add("active");
+        mainImage.src = thumb.dataset.src;
+      });
+    });
   };
 
   const setupEventListeners = (productId) => {
@@ -177,22 +195,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    const infoSection = document.querySelector(".product-info-section");
-    if (infoSection) {
-      const minusBtn = infoSection.querySelector(".minus-btn");
-      const plusBtn = infoSection.querySelector(".plus-btn");
-      if (minusBtn && plusBtn) {
-        minusBtn.addEventListener("click", () => {
-          const quantityInput = infoSection.querySelector(".quantity-input");
-          let currentValue = parseInt(quantityInput.value);
-          if (currentValue > 1) quantityInput.value = currentValue - 1;
-        });
-        plusBtn.addEventListener("click", () => {
-          const quantityInput = infoSection.querySelector(".quantity-input");
-          let currentValue = parseInt(quantityInput.value);
-          quantityInput.value = currentValue + 1;
-        });
-      }
+    const quantityControl = document.querySelector(".quantity-control");
+    if (quantityControl) {
+      const minusBtn = quantityControl.querySelector(".minus-btn");
+      const plusBtn = quantityControl.querySelector(".plus-btn");
+      const quantityInput = quantityControl.querySelector(".quantity-input");
+
+      minusBtn.addEventListener("click", () => {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) quantityInput.value = currentValue - 1;
+      });
+      plusBtn.addEventListener("click", () => {
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+      });
     }
   };
 
