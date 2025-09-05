@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
-        // --- DIUBAH: Mengembalikan struktur seperti semula ---
         const detailHTML = `
           ${imageSectionHTML}
           <div class="product-info-section">
@@ -106,11 +105,27 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         detailContainer.innerHTML = detailHTML;
 
+        // --- PERBAIKAN DI SINI ---
+        // Tombol "Chat" diubah menjadi <a> tag agar bisa diklik
         const mobileButtonsHTML = `
-            <button class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</button>
-            <button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${product.id}"><i class="fas fa-shopping-cart"></i> Keranjang</button>
-            <button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${product.id}">Beli Langsung</button>
+            ${
+              product.penjual_wa
+                ? `<a href="https://wa.me/${
+                    product.penjual_wa
+                  }?text=${encodeURIComponent(
+                    `Halo, saya tertarik dengan produk '${product.nama}'`
+                  )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</a>`
+                : ""
+            }
+            <button class="btn-toko btn-keranjang add-to-cart-btn" data-product-id="${
+              product.id
+            }"><i class="fas fa-shopping-cart"></i> Keranjang</button>
+            <button class="btn-toko btn-beli btn-beli-langsung" data-product-id="${
+              product.id
+            }">Beli Langsung</button>
         `;
+        // --- AKHIR PERBAIKAN ---
+
         if (floatingActionBar) {
           floatingActionBar.innerHTML = `<div class="action-buttons-mobile">${mobileButtonsHTML}</div>`;
         }

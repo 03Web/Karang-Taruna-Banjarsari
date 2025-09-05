@@ -23,6 +23,7 @@
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/chatbot.css" />
+    <link rel="stylesheet" href="css/komentar.css" />
   </head>
   <body data-page-id="kegiatan">
     <div id="particles-js"></div>
@@ -57,6 +58,34 @@
         </div>
         <div class="kegiatan-list" id="kegiatan-list"></div>
       </div>
+      <div class="container" id="comment-section-container">
+        <hr class="separator animate-on-scroll" />
+        <section class="comment-section animate-on-scroll">
+          <h3><i class="fas fa-comments"></i> Tinggalkan Komentar</h3>
+          <form id="comment-form-element" class="comment-form">
+            <div class="form-group">
+              <label for="comment-nama">Nama (Opsional, boleh anonim)</label>
+              <input type="text" id="comment-nama" placeholder="Nama Anda..." />
+            </div>
+            <div class="form-group">
+              <label for="comment-pesan">Komentar Anda</label>
+              <textarea
+                id="comment-pesan"
+                placeholder="Tulis komentar Anda di sini..."
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="comment-submit-btn">
+              Kirim Komentar
+            </button>
+            <div class="comment-form-status"></div>
+          </form>
+
+          <div id="comment-list-container" class="comment-list">
+            <p>Memuat komentar...</p>
+          </div>
+        </section>
+      </div>
     </main>
     <footer id="main-footer"></footer>
 
@@ -88,6 +117,10 @@
       src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
       defer
     ></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="js/komentar.js" defer></script>
     <script src="js/app-core.js" defer></script>
     <script src="js/page-initializers.js" defer></script>
     <script src="js/chatbot_knowledge.js" defer></script>

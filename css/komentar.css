@@ -1,0 +1,163 @@
+/* File: css/komentar.css (Tampilan Baru Terinspirasi YouTube/Instagram) */
+
+/* Wadah Utama Bagian Komentar */
+.comment-section {
+  max-width: 900px;
+  margin: 40px auto;
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+}
+
+.comment-section h3 {
+  font-size: 1.4em;
+  color: var(--light-text);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Form untuk Menulis Komentar Baru */
+.comment-form {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.comment-avatar-input {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  color: var(--primary-color);
+}
+
+.comment-input-wrapper {
+  width: 100%;
+}
+
+.comment-form textarea {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 0;
+  color: var(--light-text);
+  font-size: 0.9em;
+  resize: none;
+  transition: border-color 0.3s ease;
+  min-height: 25px;
+  overflow-y: hidden; /* Sembunyikan scrollbar */
+}
+
+.comment-form textarea:focus {
+  border-bottom-color: var(--primary-color);
+  outline: none;
+}
+
+.comment-actions {
+  display: none; /* Sembunyikan sampai textarea di-klik */
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+  width: 100%;
+  max-width: 200px;
+  padding: 8px 12px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--light-text);
+  font-size: 0.8em;
+}
+
+.comment-submit-btn {
+  padding: 8px 20px;
+  background-color: var(--primary-color);
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.comment-submit-btn:hover:not(:disabled) {
+  background-color: #0088cc;
+}
+
+.comment-submit-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.comment-form-status {
+  font-size: 0.8em;
+  color: #28a745;
+}
+
+/* Daftar Komentar */
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.comment-content {
+  flex-grow: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.comment-author {
+  font-weight: bold;
+  color: var(--light-text);
+  font-size: 0.85em;
+}
+
+.comment-date {
+  font-size: 0.75em;
+  color: var(--dark-text);
+}
+
+.comment-body {
+  font-size: 0.9em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: var(--light-text);
+}

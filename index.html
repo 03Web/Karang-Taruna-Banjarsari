@@ -25,6 +25,7 @@
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/chatbot.css" />
+    <link rel="stylesheet" href="css/komentar.css" />
 
     <script type="application/ld+json">
       {
@@ -227,6 +228,36 @@
           ></a>
         </section>
       </div>
+      <div class="container" id="comment-section-container">
+        <hr class="separator animate-on-scroll" />
+        <section class="comment-section animate-on-scroll">
+          <h3><span id="comment-count">0</span> Komentar</h3>
+          <form id="comment-form-element" class="comment-form">
+            <div class="comment-avatar-input">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="comment-input-wrapper">
+              <textarea
+                id="comment-pesan"
+                placeholder="Tambahkan komentar..."
+                required
+              ></textarea>
+              <div class="comment-actions">
+                <input
+                  type="text"
+                  id="comment-nama"
+                  placeholder="Nama (opsional)"
+                />
+                <button type="submit" class="comment-submit-btn">Kirim</button>
+              </div>
+            </div>
+          </form>
+
+          <div id="comment-list-container" class="comment-list">
+            <p>Memuat komentar...</p>
+          </div>
+        </section>
+      </div>
     </main>
     <footer id="main-footer"></footer>
 
@@ -258,6 +289,10 @@
       src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
       defer
     ></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="js/komentar.js" defer></script>
     <script src="js/app-core.js" defer></script>
     <script src="js/page-initializers.js" defer></script>
     <script src="js/chatbot_knowledge.js" defer></script>

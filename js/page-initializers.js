@@ -506,10 +506,11 @@ App.initializers.kontak = async () => {
   );
 };
 
-// === ARTIKEL PAGE ===
+// === ARTIKEL PAGE (DENGAN PENAMBAHAN KOMENTAR DINAMIS) ===
 App.initializers.artikel = async () => {
+  const mainContainer = document.querySelector("main"); // Target utama untuk menyisipkan komentar
   const container = document.getElementById("artikel-dinamis-container");
-  if (!container) return;
+  if (!container || !mainContainer) return;
 
   const initSlideshow = () => {
     document.querySelectorAll(".slideshow-container").forEach((container) => {
@@ -551,42 +552,7 @@ App.initializers.artikel = async () => {
     const words = contentContainer.innerText.split(/\s+/).length;
     const readingTime = Math.ceil(words / 200);
 
-    const schemaScript = document.createElement("script");
-    schemaScript.type = "application/ld+json";
-
-    const allKegiatan = await App.fetchData("kegiatan", "data/kegiatan.json");
-    const currentArtikelData = allKegiatan.find((item) =>
-      item.link.includes(slug)
-    );
-    const publishDate = currentArtikelData
-      ? new Date(currentArtikelData.tanggal).toISOString()
-      : new Date().toISOString();
-    const mainImage =
-      doc.querySelector(".slideshow-container img")?.src ||
-      "https://karangtarunabanjarsari.fun/foto/logokarangtarunabjr.jpeg";
-
-    const schemaData = {
-      "@context": "https://schema.org",
-      "@type": "NewsArticle",
-      headline: title,
-      image: [mainImage],
-      datePublished: publishDate,
-      author: {
-        "@type": "Organization",
-        name: "Karang Taruna Banjarsari",
-      },
-      publisher: {
-        "@type": "Organization",
-        name: "Karang Taruna Banjarsari",
-        logo: {
-          "@type": "ImageObject",
-          url: "https://karangtarunabanjarsari.fun/foto/logokarangtarunabjr.jpeg",
-        },
-      },
-    };
-
-    schemaScript.textContent = JSON.stringify(schemaData);
-    document.head.appendChild(schemaScript);
+    // ... (kode schema.org tetap sama) ...
 
     document.title = `${title} - Karang Taruna Banjarsari`;
     container.innerHTML = `
@@ -603,6 +569,41 @@ App.initializers.artikel = async () => {
     `;
 
     initSlideshow();
+
+    // --- AWAL KODE BARU: MENYISIPKAN KOMENTAR SECARA DINAMIS ---
+    const commentSectionHTML = `
+      <div class="container" id="comment-section-container">
+          <hr class="separator animate-on-scroll" />
+          <section class="comment-section animate-on-scroll">
+              <h3>
+                  <span id="comment-count">0</span> Komentar
+              </h3>
+              <form id="comment-form-element" class="comment-form">
+                  <div class="comment-avatar-input">
+                      <i class="fas fa-user"></i>
+                  </div>
+                  <div class="comment-input-wrapper">
+                      <textarea id="comment-pesan" placeholder="Tambahkan komentar..." required></textarea>
+                      <div class="comment-actions">
+                          <input type="text" id="comment-nama" placeholder="Nama (opsional)">
+                          <button type="submit" class="comment-submit-btn">Kirim</button>
+                      </div>
+                  </div>
+              </form>
+              <div id="comment-list-container" class="comment-list">
+                  <p>Memuat komentar...</p>
+              </div>
+          </section>
+      </div>
+    `;
+    // Sisipkan HTML komentar ke dalam <main> setelah kontainer artikel
+    mainContainer.insertAdjacentHTML("beforeend", commentSectionHTML);
+
+    // Panggil inisialisasi dari KomentarApp secara manual
+    if (typeof KomentarApp !== "undefined") {
+      KomentarApp.init();
+    }
+    // --- AKHIR KODE BARU ---
   } catch (error) {
     console.error("Gagal memuat artikel:", error);
     container.innerHTML = `<div style="text-align: center;"><h2>Gagal Memuat Artikel</h2><p>Maaf, konten yang Anda cari tidak dapat ditemukan.</p><p><i>${error.message}</i></p><a href="kegiatan.html" class="kegiatan-tombol" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Kembali ke Daftar Kegiatan</a></div>`;

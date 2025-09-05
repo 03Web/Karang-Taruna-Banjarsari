@@ -292,7 +292,7 @@
 // --- KOMPONEN 1: PENGATURAN DASAR (DIUBAH UNTUK DEEPSEEK) ---
 document.addEventListener("DOMContentLoaded", () => {
   // --- PENGATURAN DASAR ---
-  const DEEPSEEK_API_KEY = "sk-fcf076aa559c4100a1fa478d3b0855dd";
+  const DEEPSEEK_API_KEY = "sk-4918ff93e69548219197797500689dc6";
   const API_URL = "https://api.deepseek.com/v1/chat/completions";
 
   // --- Ambil elemen-elemen dari HTML ---
@@ -304,8 +304,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatbotContainer = document.getElementById("chatbot-container");
 
   // Hentikan eksekusi jika elemen penting tidak ditemukan
-  if (!sendBtn || !chatInput || !chatWindow || !openBtn || !closeBtn || !chatbotContainer) {
-    console.error("Salah satu elemen chatbot tidak ditemukan. Inisialisasi dibatalkan.");
+  if (
+    !sendBtn ||
+    !chatInput ||
+    !chatWindow ||
+    !openBtn ||
+    !closeBtn ||
+    !chatbotContainer
+  ) {
+    console.error(
+      "Salah satu elemen chatbot tidak ditemukan. Inisialisasi dibatalkan."
+    );
     return;
   }
 
@@ -382,7 +391,7 @@ Tujuan akhir Anda adalah mengubah setiap interaksi dari sekadar sesi tanya-jawab
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
+          Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
         },
         body: JSON.stringify({
           model: "deepseek-chat",
@@ -401,7 +410,6 @@ Tujuan akhir Anda adalah mengubah setiap interaksi dari sekadar sesi tanya-jawab
 
       const data = await response.json();
       return data.choices[0].message.content;
-
     } catch (error) {
       console.error("Gagal menghubungi AI:", error);
       return "Terjadi kesalahan koneksi. Pastikan internet Anda stabil.";
