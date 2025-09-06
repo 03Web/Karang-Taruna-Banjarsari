@@ -1,5 +1,6 @@
 [
   {
+    "id": "testimoni-odydc",
     "avatar": "https://pbs.twimg.com/profile_images/1962386615549980672/mx0AQkJM_400x400.jpg",
     "name": "Ody Dwicahyo",
     "handle": "@odydc",
@@ -7,6 +8,7 @@
     "link": "https://x.com/odydc/status/1932423141646602580"
   },
   {
+    "id": "testimoni-wordfangs",
     "avatar": "https://pbs.twimg.com/profile_images/1893345822294892544/Ov_VSeEv_400x400.jpg",
     "name": "Baskara Putra / Hindia",
     "handle": "@wordfangs",
@@ -14,13 +16,15 @@
     "link": "https://x.com/wordfangs/status/1902643894325858720"
   },
   {
+    "id": "testimoni-neohistoria",
     "avatar": "https://pbs.twimg.com/profile_banners/1495326248100589569/1645348781/600x200",
     "name": "neohistoria Indonesia",
     "handle": "@neohistoria_id",
-    "text": "“Bila kaum muda yang telah belajar di sekolah dan menganggap dirinya terlalu tinggi dan pintar untuk melebur dengan masyarakat yang bekerja dengan cangkul dan hanya memiliki cita-cita yang sederhana, maka lebih baik pendidikan itu tidak diberikan sama sekali” <br><br>- Tan Malaka",
+    "text": "Bila kaum muda yang telah belajar di sekolah dan menganggap dirinya terlalu tinggi dan pintar untuk melebur dengan masyarakat yang bekerja dengan cangkul dan hanya memiliki cita-cita yang sederhana, maka lebih baik pendidikan itu tidak diberikan sama sekali <br><br>- Tan Malaka",
     "link": "https://x.com/neohistoria_id/status/1757321089515205054"
   },
   {
+    "id": "testimoni-bagusmuljadi",
     "avatar": "https://pbs.twimg.com/profile_images/1859277325935751168/cRUlAiKP_400x400.jpg",
     "name": "Prof.Bagus Muljadi",
     "handle": "@bagus_muljadi",
@@ -28,6 +32,7 @@
     "link": "https://x.com/bagus_muljadi/status/1959032665488703771"
   },
   {
+    "id": "testimoni-physinhistory1",
     "avatar": "https://pbs.twimg.com/profile_images/1456245154377916417/oPMz8-kf_400x400.jpg",
     "name": "Physics In History",
     "handle": "@PhysInHistory",
@@ -35,14 +40,16 @@
     "link": "https://x.com/PhysInHistory/status/1866550624038326731"
   },
   {
+    "id": "testimoni-gitawirjawan",
     "avatar": "https://pbs.twimg.com/profile_images/796282062076452864/0OC_ENH2_400x400.jpg",
     "name": "Gita Wirjawan",
     "handle": "@GWirjawan",
-    "text": "Selama beberapa tahun terakhir berbincang dengan berbagai tokoh, termasuk para peraih Nobel, ada beberapa pelajaran yang saya tangkap:<br><br> Pertama, mereka tahu cara memanfaatkan keberuntungan atau sering disebut “serendipity” yang datang pada mereka. Ditambah dengan dedikasi yang membawa mereka hingga memenangkan Nobel.<br><br>Kedua, mereka peka terhadap kondisi dan masa depan dari status quo saat ini. <br>And they take action.<br><br>Menjadi peraih Nobel berarti menemukan sesuatu yang baru, tapi juga diimbangi dengan manfaat apa yang bisa dibawa untuk dunia.<br>Dan karakteristik ini juga saya jumpai saat berbincang di Endgame, mereka cenderung mempertanyakan dan menantang norma yang ada.",
+    "text": "Selama beberapa tahun terakhir berbincang dengan berbagai tokoh, termasuk para peraih Nobel, ada beberapa pelajaran yang saya tangkap:<br><br> Pertama, mereka tahu cara memanfaatkan keberuntungan atau sering disebut  \"serendipity\" yang datang pada mereka. Ditambah dengan dedikasi yang membawa mereka hingga memenangkan Nobel.<br><br>Kedua, mereka peka terhadap kondisi dan masa depan dari status quo saat ini. <br>And they take action.<br><br>Menjadi peraih Nobel berarti menemukan sesuatu yang baru, tapi juga diimbangi dengan manfaat apa yang bisa dibawa untuk dunia.<br>Dan karakteristik ini juga saya jumpai saat berbincang di Endgame, mereka cenderung mempertanyakan dan menantang norma yang ada.",
     "link": "https://x.com/GWirjawan/status/1900184433967456323"
   },
 
   {
+    "id": "testimoni-statsfeed",
     "avatar": "https://pbs.twimg.com/profile_images/1335168437220421632/VCHg78Nf_400x400.jpg",
     "name": "World of Statistics",
     "handle": "@stats_feed",
@@ -50,6 +57,7 @@
     "link": "https://x.com/stats_feed/status/1933028839283741089"
   },
   {
+    "id": "testimoni-pramoctavy",
     "avatar": "https://pbs.twimg.com/profile_images/1670452118082428928/HZBqfh4y_400x400.jpg",
     "name": "Pramudya A. Oktavinanda",
     "handle": "@PramOctavy",
@@ -57,6 +65,7 @@
     "link": "https://x.com/PramOctavy/status/1279984908987846656"
   },
   {
+    "id": "testimoni-ryuhasan",
     "avatar": "https://pbs.twimg.com/profile_images/1618848762897768449/1YNdCdD-_400x400.jpg",
     "name": "Ryu Hasan",
     "handle": "@ryuhasan",
@@ -64,6 +73,7 @@
     "link": "https://x.com/ryuhasan/status/1050216699365117952"
   },
   {
+    "id": "testimoni-physinhistory2",
     "avatar": "https://pbs.twimg.com/profile_images/1456245154377916417/oPMz8-kf_400x400.jpg",
     "name": "Physics In History",
     "handle": "@PhysInHistory",
@@ -71,6 +81,7 @@
     "link": "https://x.com/PhysInHistory/status/1909813698404762059"
   },
   {
+    "id": "testimoni-cristiano",
     "avatar": "https://pbs.twimg.com/profile_images/1940344470290989057/1OUP8RgK_400x400.jpg",
     "name": "Cristiano Ronaldo",
     "handle": "@Cristiano",

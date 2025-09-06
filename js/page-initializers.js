@@ -22,7 +22,7 @@ App.initializers.home = async () => {
 
     if (testimonialData && testimonialData.length > 0) {
       const createTestimonialTemplate = (item) => `
-      <div class="testimonial-card">
+      <div class="testimonial-card" data-content-id="${item.id}">
           <div class="testimonial-header">
             <img src="${item.avatar}" alt="Avatar ${item.name}" loading="lazy">
             <div class="testimonial-user">
@@ -34,6 +34,10 @@ App.initializers.home = async () => {
             <p data-fulltext="${item.text}"></p>
           </div>
          <div class="testimonial-footer">
+            <div class="reaction-buttons">
+                <button class="reaction-btn like-btn"><i class="fas fa-thumbs-up"></i> <span class="like-count">0</span></button>
+                <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
+            </div>
             <a href="${item.link}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i> Lihat di X</a>
           </div>
         </div>
@@ -42,6 +46,9 @@ App.initializers.home = async () => {
       testimonialContainer.innerHTML = testimonialData
         .map(createTestimonialTemplate)
         .join("");
+      
+      // Panggil fungsi update UI untuk setiap testimoni
+      testimonialData.forEach(item => App.updateReactionUI(item.id));
 
       // === LOGIKA CAROUSEL DAN BACA SELENGKAPNYA ===
       setTimeout(() => {
@@ -52,7 +59,6 @@ App.initializers.home = async () => {
         let autoPlayInterval;
         const firstItem = items[0];
 
-        // --- FUNGSI BARU UNTUK "BACA SELENGKAPNYA" DENGAN LOGIKA AKORDEON ---
         const initializeReadMore = () => {
           const charLimit = 150;
 
@@ -71,7 +77,6 @@ App.initializers.home = async () => {
 
               const readMoreBtn = p.querySelector(".read-more-btn");
               readMoreBtn.addEventListener("click", () => {
-                // Tutup semua kartu lain yang sedang terbuka
                 items.forEach((otherCard) => {
                   if (otherCard !== card) {
                     otherCard
@@ -79,8 +84,6 @@ App.initializers.home = async () => {
                       .classList.remove("expanded");
                   }
                 });
-
-                // Buka atau tutup kartu yang diklik
                 body.classList.toggle("expanded");
                 stopAutoPlay();
               });
@@ -180,29 +183,37 @@ App.initializers.kegiatan = async () => {
     container.innerHTML = "<p>Gagal memuat daftar kegiatan.</p>";
     return;
   }
-
-  const createKegiatanTemplate = (item) => `
-    <a href="${
-      item.link
-    }" class="kegiatan-item animate-on-scroll" data-kategori="${
-    item.kategori
-  }" data-tanggal="${item.tanggal}">
-      <div class="kegiatan-foto">
-        <img src="${item.gambar}" alt="${
-    item.alt_gambar || "Gambar " + item.judul
-  }" loading="lazy">
+  
+  const createKegiatanTemplate = (item) => {
+    const contentId = item.link.split('slug=')[1] || `artikel_${new Date(item.tanggal).getTime()}`;
+    return `
+    <div class="kegiatan-item-wrapper" data-content-id="${contentId}">
+      <a href="${
+        item.link
+      }" class="kegiatan-item animate-on-scroll" data-kategori="${
+      item.kategori
+    }" data-tanggal="${item.tanggal}">
+        <div class="kegiatan-foto">
+          <img src="${item.gambar}" alt="${
+      item.alt_gambar || "Gambar " + item.judul
+    }" loading="lazy">
+        </div>
+        <div class="kegiatan-konten">
+          <h3>${item.judul}</h3>
+          <span class="kegiatan-meta">${new Date(item.tanggal).toLocaleDateString(
+            "id-ID",
+            { day: "numeric", month: "long", year: "numeric" }
+          )}</span>
+          <p>${item.deskripsi}</p>
+          <span class="kegiatan-tombol">Baca Selengkapnya</span>
+        </div>
+      </a>
+      <div class="reaction-buttons" style="padding: 0 20px 15px 20px; background-color: var(--card-bg); border-radius: 0 0 8px 8px; border-top: 1px solid var(--border-color);">
+          <button class="reaction-btn like-btn"><i class="fas fa-thumbs-up"></i> <span class="like-count">0</span></button>
+          <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
       </div>
-      <div class="kegiatan-konten">
-        <h3>${item.judul}</h3>
-        <span class="kegiatan-meta">${new Date(item.tanggal).toLocaleDateString(
-          "id-ID",
-          { day: "numeric", month: "long", year: "numeric" }
-        )}</span>
-        <p>${item.deskripsi}</p>
-        <span class="kegiatan-tombol">Baca Selengkapnya</span>
-      </div>
-    </a>
-  `;
+    </div>
+  `};
 
   const renderKegiatan = () => {
     const sortOrder = sorter.value;
@@ -225,12 +236,22 @@ App.initializers.kegiatan = async () => {
       createKegiatanTemplate,
       "Tidak ada kegiatan yang cocok dengan filter Anda."
     );
+
+    // Panggil update UI untuk setiap artikel
+    sortedData.forEach(item => {
+        const contentId = item.link.split('slug=')[1] || `artikel_${new Date(item.tanggal).getTime()}`;
+        App.updateReactionUI(contentId);
+    });
   };
 
   sorter.addEventListener("change", renderKegiatan);
   kategoriFilter.addEventListener("change", renderKegiatan);
   renderKegiatan();
 };
+
+// ... Sisa kode untuk `page-initializers.js` Anda yang lain tetap sama ...
+// (Galeri, About, Kontak, Artikel, Aspirasi)
+// Pastikan tidak ada duplikasi fungsi, hanya ganti yang sudah ada jika diperlukan.
 
 // === GALERI PAGE (USING LIGHTGALLERY) ===
 App.initializers.galeri = async () => {
@@ -508,7 +529,7 @@ App.initializers.kontak = async () => {
 
 // === ARTIKEL PAGE (DENGAN PENAMBAHAN KOMENTAR DINAMIS) ===
 App.initializers.artikel = async () => {
-  const mainContainer = document.querySelector("main"); // Target utama untuk menyisipkan komentar
+  const mainContainer = document.querySelector("main");
   const container = document.getElementById("artikel-dinamis-container");
   if (!container || !mainContainer) return;
 
@@ -552,15 +573,17 @@ App.initializers.artikel = async () => {
     const words = contentContainer.innerText.split(/\s+/).length;
     const readingTime = Math.ceil(words / 200);
 
-    // ... (kode schema.org tetap sama) ...
-
     document.title = `${title} - Karang Taruna Banjarsari`;
     container.innerHTML = `
-        <div class="artikel-header">
+        <div class="artikel-header" data-content-id="${slug}">
             <h1>${title}</h1>
             <div class="artikel-meta-info">
                 <span><i class="fas fa-calendar-alt"></i> ${date}</span>
                 <span><i class="fas fa-clock"></i> Estimasi ${readingTime} menit baca</span>
+            </div>
+            <div class="reaction-buttons">
+              <button class="reaction-btn like-btn"><i class="fas fa-thumbs-up"></i> <span class="like-count">0</span></button>
+              <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
             </div>
         </div>
         ${doc.querySelector(".slideshow-container")?.outerHTML || ""}
@@ -569,8 +592,8 @@ App.initializers.artikel = async () => {
     `;
 
     initSlideshow();
+    App.updateReactionUI(slug); // Panggil update UI untuk artikel ini
 
-    // --- AWAL KODE BARU: MENYISIPKAN KOMENTAR SECARA DINAMIS ---
     const commentSectionHTML = `
       <div class="container" id="comment-section-container">
           <hr class="separator animate-on-scroll" />
@@ -596,14 +619,11 @@ App.initializers.artikel = async () => {
           </section>
       </div>
     `;
-    // Sisipkan HTML komentar ke dalam <main> setelah kontainer artikel
     mainContainer.insertAdjacentHTML("beforeend", commentSectionHTML);
 
-    // Panggil inisialisasi dari KomentarApp secara manual
     if (typeof KomentarApp !== "undefined") {
       KomentarApp.init();
     }
-    // --- AKHIR KODE BARU ---
   } catch (error) {
     console.error("Gagal memuat artikel:", error);
     container.innerHTML = `<div style="text-align: center;"><h2>Gagal Memuat Artikel</h2><p>Maaf, konten yang Anda cari tidak dapat ditemukan.</p><p><i>${error.message}</i></p><a href="kegiatan.html" class="kegiatan-tombol" style="margin-top: 20px;"><i class="fas fa-arrow-left"></i> Kembali ke Daftar Kegiatan</a></div>`;

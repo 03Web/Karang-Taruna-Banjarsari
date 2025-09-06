@@ -1,7 +1,7 @@
 /**
  * @file app-core.js
- * @description Script inti dengan UI pencarian slide-down minimalis.
- * @version 12.1.0 (Fix Logo Teks Terpotong)
+ * @description Script inti dengan UI pencarian slide-down minimalis, feedback, dan reaksi.
+ * @version 13.0.0 (Fitur Reaksi Ditambahkan)
  */
 
 const App = (() => {
@@ -14,6 +14,73 @@ const App = (() => {
     pengurus: [],
     kontak: [],
     lastScrollTop: 0,
+  };
+  
+  // === FUNGSI INTI UNTUK REAKSI (LIKE/DISLIKE) ===
+  const handleReaction = (contentId, type) => {
+    const votedKey = `voted_${contentId}`;
+    if (localStorage.getItem(votedKey)) {
+      console.log("Anda sudah memberikan reaksi untuk konten ini.");
+      return;
+    }
+
+    const reactionRef = firebase.database().ref(`reactions/${contentId}/${type}s`);
+    reactionRef.transaction((currentCount) => {
+      return (currentCount || 0) + 1;
+    }).then(() => {
+      localStorage.setItem(votedKey, type);
+      updateReactionUI(contentId);
+    }).catch(error => console.error("Firebase transaction failed: ", error));
+  };
+
+  const updateReactionUI = (contentId) => {
+    const votedKey = `voted_${contentId}`;
+    const userVote = localStorage.getItem(votedKey);
+    const elements = document.querySelectorAll(`[data-content-id="${contentId}"]`);
+
+    elements.forEach(container => {
+      const likeBtn = container.querySelector('.like-btn');
+      const dislikeBtn = container.querySelector('.dislike-btn');
+      const likeCountSpan = container.querySelector('.like-count');
+      const dislikeCountSpan = container.querySelector('.dislike-count');
+
+      if (!likeBtn || !dislikeBtn) return;
+
+      firebase.database().ref(`reactions/${contentId}`).once('value', snapshot => {
+        const counts = snapshot.val() || { likes: 0, dislikes: 0 };
+        if (likeCountSpan) likeCountSpan.textContent = counts.likes || 0;
+        if (dislikeCountSpan) dislikeCountSpan.textContent = counts.dislikes || 0;
+
+        if (userVote) {
+          likeBtn.disabled = true;
+          dislikeBtn.disabled = true;
+          likeBtn.classList.remove('liked', 'disliked');
+          dislikeBtn.classList.remove('liked', 'disliked');
+          if (userVote === 'like') {
+            likeBtn.classList.add('liked');
+          } else if (userVote === 'dislike') {
+            dislikeBtn.classList.add('disliked');
+          }
+        }
+      });
+    });
+  };
+  
+  const setupReactionListeners = () => {
+      document.body.addEventListener('click', (e) => {
+          const likeBtn = e.target.closest('.like-btn');
+          const dislikeBtn = e.target.closest('.dislike-btn');
+          
+          if (likeBtn && !likeBtn.disabled) {
+              const container = likeBtn.closest('[data-content-id]');
+              if (container) handleReaction(container.dataset.contentId, 'like');
+          }
+          
+          if (dislikeBtn && !dislikeBtn.disabled) {
+              const container = dislikeBtn.closest('[data-content-id]');
+              if (container) handleReaction(container.dataset.contentId, 'dislike');
+          }
+      });
   };
 
   // === PENGATURAN SESI & INAKTIVITAS ===
@@ -86,57 +153,10 @@ const App = (() => {
 
   // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
   function initWelcomeScreen() {
+    const LOGIN_FORM_ENABLED = false;
+
     const overlay = document.getElementById("welcome-overlay");
     if (!overlay) return;
-
-    const uname = document.querySelector("#uname");
-    const isBanjarsari = document.querySelector("#is_banjarsari");
-    const btnContainer = document.querySelector(".btn-container");
-    const btn = document.querySelector("#login-btn");
-    const form = document.querySelector("#welcome-form");
-    const msg = document.querySelector(".msg");
-
-    if (!uname || !isBanjarsari || !btn || !form || !msg) return;
-
-    btn.disabled = true;
-
-    function shiftButton() {
-      if (btn.disabled) {
-        const positions = [
-          "shift-left",
-          "shift-top",
-          "shift-right",
-          "shift-bottom",
-        ];
-        const currentPosition = positions.find((dir) =>
-          btn.classList.contains(dir)
-        );
-        const nextPosition =
-          positions[
-            (positions.indexOf(currentPosition) + 1) % positions.length
-          ];
-        btn.classList.remove(currentPosition || "no-shift");
-        btn.classList.add(nextPosition);
-      }
-    }
-
-    function showMsg() {
-      const isEmpty = uname.value === "" || isBanjarsari.value === "";
-      btn.classList.toggle("no-shift", !isEmpty);
-
-      if (isEmpty) {
-        btn.disabled = true;
-        msg.style.color = "rgb(218 49 49)";
-        msg.innerText =
-          "Untuk Masuk Web Pastikan Semua Form Terisi⚠!! Terserah Mau di Isi Apa Saja Bebas.";
-      } else {
-        msg.innerText =
-          "TERIMAKASIH🙏, Sekarang Anda Bisa Masuk Web Karang Taruna Banjarsari.";
-        msg.style.color = "#92ff92";
-        btn.disabled = false;
-        btn.classList.add("no-shift");
-      }
-    }
 
     const isIndexPage =
       window.location.pathname.endsWith("/") ||
@@ -145,50 +165,108 @@ const App = (() => {
     if (sessionStorage.getItem("isLoggedIn")) {
       overlay.classList.add("hidden");
       startInactivityTracker();
-    } else if (isIndexPage) {
-      overlay.classList.remove("hidden");
-    } else {
-      logoutUser();
+      return;
+    }
+    
+    if (!isIndexPage) {
+        logoutUser();
+        return;
     }
 
-    btnContainer.addEventListener("mouseover", shiftButton);
-    form.addEventListener("input", showMsg);
+    if (!LOGIN_FORM_ENABLED) {
+        sessionStorage.setItem("isLoggedIn", "true");
+        showContributionModal();
+    } else {
+        overlay.classList.remove("hidden");
 
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      if (btn.disabled) return;
+        const uname = document.querySelector("#uname");
+        const isBanjarsari = document.querySelector("#is_banjarsari");
+        const btnContainer = document.querySelector(".btn-container");
+        const btn = document.querySelector("#login-btn");
+        const form = document.querySelector("#welcome-form");
+        const msg = document.querySelector(".msg");
 
-      msg.innerText = "Processing...";
-      msg.style.color = "#92ff92";
-      btn.value = "Mengirim...";
-      btn.disabled = true;
+        if (!uname || !isBanjarsari || !btn || !form || !msg) return;
 
-      const formData = new FormData(form);
-      const FORMSPREE_URL = "https://formspree.io/f/myzpjnqg";
+        btn.disabled = true;
 
-      try {
-        const response = await fetch(FORMSPREE_URL, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Accept: "application/json",
-          },
-        });
-
-        if (response.ok) {
-          sessionStorage.setItem("isLoggedIn", "true");
-          showContributionModal();
-        } else {
-          throw new Error("Gagal mengirim data.");
+        function shiftButton() {
+          if (btn.disabled) {
+            const positions = [
+              "shift-left",
+              "shift-top",
+              "shift-right",
+              "shift-bottom",
+            ];
+            const currentPosition = positions.find((dir) =>
+              btn.classList.contains(dir)
+            );
+            const nextPosition =
+              positions[
+                (positions.indexOf(currentPosition) + 1) % positions.length
+              ];
+            btn.classList.remove(currentPosition || "no-shift");
+            btn.classList.add(nextPosition);
+          }
         }
-      } catch (error) {
-        console.error("Formspree error:", error);
-        msg.innerText = "Gagal mengirim data. Silakan coba lagi.";
-        msg.style.color = "rgb(218 49 49)";
-        btn.value = "Login";
-        btn.disabled = false;
-      }
-    });
+
+        function showMsg() {
+          const isEmpty = uname.value === "" || isBanjarsari.value === "";
+          btn.classList.toggle("no-shift", !isEmpty);
+
+          if (isEmpty) {
+            btn.disabled = true;
+            msg.style.color = "rgb(218 49 49)";
+            msg.innerText =
+              "Untuk Masuk Web Pastikan Semua Form Terisi⚠!! Terserah Mau di Isi Apa Saja Bebas.";
+          } else {
+            msg.innerText =
+              "TERIMAKASIH🙏, Sekarang Anda Bisa Masuk Web Karang Taruna Banjarsari.";
+            msg.style.color = "#92ff92";
+            btn.disabled = false;
+            btn.classList.add("no-shift");
+          }
+        }
+
+        btnContainer.addEventListener("mouseover", shiftButton);
+        form.addEventListener("input", showMsg);
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          if (btn.disabled) return;
+
+          msg.innerText = "Processing...";
+          msg.style.color = "#92ff92";
+          btn.value = "Mengirim...";
+          btn.disabled = true;
+
+          const formData = new FormData(form);
+          const FORMSPREE_URL = "https://formspree.io/f/myzpjnqg";
+
+          try {
+            const response = await fetch(FORMSPREE_URL, {
+              method: "POST",
+              body: formData,
+              headers: {
+                Accept: "application/json",
+              },
+            });
+
+            if (response.ok) {
+              sessionStorage.setItem("isLoggedIn", "true");
+              showContributionModal();
+            } else {
+              throw new Error("Gagal mengirim data.");
+            }
+          } catch (error) {
+            console.error("Formspree error:", error);
+            msg.innerText = "Gagal mengirim data. Silakan coba lagi.";
+            msg.style.color = "rgb(218 49 49)";
+            btn.value = "Login";
+            btn.disabled = false;
+          }
+        });
+    }
   }
 
   // === FUNGSI HEADER MOBILE ===
@@ -480,6 +558,125 @@ const App = (() => {
     }
   }
 
+  // === FUNGSI BARU: MODAL FEEDBACK BERDASARKAN JUMLAH KUNJUNGAN HALAMAN ===
+  const initExitFeedbackModal = () => {
+    const TRIGGER_AFTER_X_PAGES = 4;
+
+    if (sessionStorage.getItem("feedbackSubmitted")) {
+      return;
+    }
+
+    let pageViews = parseInt(sessionStorage.getItem("pageViewCount") || "0");
+    pageViews++;
+    sessionStorage.setItem("pageViewCount", pageViews);
+
+    if (
+      pageViews < TRIGGER_AFTER_X_PAGES ||
+      sessionStorage.getItem("feedbackModalShown")
+    ) {
+      return;
+    }
+
+    const modalHTML = `
+      <div id="exit-feedback-modal">
+        <div class="feedback-modal-content">
+          <i class="fas fa-star modal-icon" style="font-size: 2.5em; color: var(--secondary-color); margin-bottom: 15px;"></i>
+          <h2>Tunggu Sebentar!</h2>
+          <p>Anda telah menjelajahi website kami. Kami sangat menghargai masukan Anda untuk pengembangan selanjutnya.</p>
+          
+          <form id="feedback-form">
+            <div class="star-rating" id="feedback-star-rating">
+              <i class="fas fa-star" data-value="1"></i>
+              <i class="fas fa-star" data-value="2"></i>
+              <i class="fas fa-star" data-value="3"></i>
+              <i class="fas fa-star" data-value="4"></i>
+              <i class="fas fa-star" data-value="5"></i>
+            </div>
+            <div class="form-group">
+              <textarea id="feedback-text" placeholder="Ada masukan lain? (Opsional)"></textarea>
+            </div>
+            <div class="feedback-modal-actions">
+              <button type="button" class="btn btn-secondary" id="close-feedback-btn">Lain Kali</button>
+              <button type="submit" class="btn btn-primary" id="submit-feedback-btn">Kirim Masukan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    const modal = document.getElementById("exit-feedback-modal");
+    const form = document.getElementById("feedback-form");
+    const stars = document.querySelectorAll("#feedback-star-rating .fa-star");
+    const closeBtn = document.getElementById("close-feedback-btn");
+    const submitBtn = document.getElementById("submit-feedback-btn");
+    let currentRating = 0;
+
+    const showModal = () => {
+      modal.classList.add("visible");
+      sessionStorage.setItem("feedbackModalShown", "true");
+    };
+
+    const hideModal = () => {
+      modal.classList.remove("visible");
+    };
+
+    showModal();
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => {
+        currentRating = parseInt(star.dataset.value);
+        stars.forEach((s) => {
+          s.classList.toggle(
+            "selected",
+            parseInt(s.dataset.value) <= currentRating
+          );
+        });
+      });
+    });
+
+    closeBtn.addEventListener("click", hideModal);
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (currentRating === 0) {
+        alert("Mohon berikan rating bintang terlebih dahulu.");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Mengirim...";
+
+      const feedbackData = {
+        rating: currentRating,
+        masukan: document.getElementById("feedback-text").value.trim(),
+        halaman: window.location.pathname,
+        tanggal: new Date().toISOString(),
+      };
+
+      firebase
+        .database()
+        .ref("feedbackWebsite")
+        .push(feedbackData)
+        .then(() => {
+          const content = modal.querySelector(".feedback-modal-content");
+          content.innerHTML = `
+            <i class="fas fa-check-circle modal-icon" style="font-size: 3em; color: #28a745;"></i>
+            <h2>Terima Kasih!</h2>
+            <p>Masukan Anda sangat berarti bagi kami.</p>
+          `;
+          sessionStorage.setItem("feedbackSubmitted", "true");
+          setTimeout(hideModal, 2500);
+        })
+        .catch((error) => {
+          console.error("Firebase Error:", error);
+          alert("Gagal mengirim masukan. Silakan coba lagi.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Kirim Masukan";
+        });
+    });
+  };
+  
   // === INITIALIZER UTAMA ===
   const initPage = () => {
     const isIndexPage =
@@ -561,6 +758,8 @@ const App = (() => {
     }
 
     updateCartBadge();
+    initExitFeedbackModal();
+    setupReactionListeners(); // <-- Panggil fungsi listener reaksi
   };
 
   return {
@@ -571,6 +770,7 @@ const App = (() => {
     getCart,
     addToCart,
     updateCartBadge,
+    updateReactionUI, // <-- Pastikan ini diekspos
     cache,
     initializers: {},
   };

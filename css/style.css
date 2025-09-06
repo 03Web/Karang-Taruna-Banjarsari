@@ -163,7 +163,7 @@ header nav ul li a span {
 
 .social-media {
   display: flex;
-  gap: 15px; /* Jarak diperkecil */
+  gap: 14px; /* Jarak diperkecil */
   align-items: center;
 }
 
@@ -3241,4 +3241,188 @@ body[data-page-id="aspirasi"] .container {
 }
 .suggestion-item:hover .item-type {
   color: #333;
+}
+/* === GAYA MODAL FEEDBACK KELUAR (BARU) === */
+#exit-feedback-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  padding: 20px;
+  pointer-events: none;
+}
+
+#exit-feedback-modal.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.feedback-modal-content {
+  background-color: var(--card-bg);
+  padding: 30px 40px;
+  border-radius: 12px;
+  text-align: center;
+  width: 90%;
+  max-width: 450px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+#exit-feedback-modal.visible .feedback-modal-content {
+  transform: scale(1);
+}
+
+.feedback-modal-content h2 {
+  font-size: 1.6em;
+  margin-bottom: 10px;
+  color: var(--light-text);
+}
+
+.feedback-modal-content p {
+  font-style: normal;
+  font-size: 0.95em;
+  margin-bottom: 25px;
+  color: var(--dark-text);
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 2.5em;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.star-rating .fa-star {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.star-rating .fa-star:hover,
+.star-rating .fa-star.selected {
+  color: var(--secondary-color); /* Warna kuning */
+  transform: scale(1.2);
+}
+
+#feedback-form .form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+#feedback-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  background-color: var(--dark-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--light-text);
+  font-family: "Poppins", sans-serif;
+  resize: vertical;
+}
+
+.feedback-modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+/* === GAYA TOMBOL REAKSI (LIKE/DISLIKE) BARU === */
+.reaction-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-style: normal;
+}
+
+.reaction-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--dark-text);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8em;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.reaction-btn:hover:not(:disabled) {
+  background-color: var(--border-color);
+  color: var(--light-text);
+}
+
+.reaction-btn i {
+  font-size: 1.1em;
+}
+
+/* Gaya saat tombol sudah dipilih */
+.reaction-btn.liked,
+.reaction-btn.liked:hover {
+  background-color: #007bff; /* Biru */
+  border-color: #007bff;
+  color: #fff;
+}
+
+.reaction-btn.disliked,
+.reaction-btn.disliked:hover {
+  background-color: #dc3545; /* Merah */
+  border-color: #dc3545;
+  color: #fff;
+}
+
+.reaction-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* === GAYA BARU UNTUK PILIHAN IDENTITAS PENGGUNA === */
+.identity-selector {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* Agar responsif di layar kecil */
+  align-items: center;
+}
+
+.identity-selector select {
+  flex-grow: 1; /* Biarkan select box mengambil ruang yang tersedia */
+  padding: 8px 12px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--light-text);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+.identity-selector input[type="text"] {
+  flex-grow: 2; /* Buat input nama sedikit lebih lebar */
+  padding: 8px 12px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--light-text);
+  font-size: 0.8em;
+  display: none; /* Sembunyikan secara default */
+}
+
+/* Tampilkan input nama jika class .custom-name-active aktif */
+.identity-selector.custom-name-active input[type="text"] {
+  display: block;
 }
