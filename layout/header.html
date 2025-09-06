@@ -47,7 +47,11 @@
     </ul>
   </nav>
 
-  <div class="social-media">
+<div class="social-media">
+    <a href="#" id="search-trigger-desktop" aria-label="Cari">
+      <i class="fas fa-search"></i>
+    </a>
+    </div>
     <a
       href="https://www.instagram.com/kartarbanjarr?utm_source=ig_web_button_share_sheet&igsh=dzA2aGwwMjdtYzZj"
       target="_blank"
@@ -75,5 +79,31 @@
       <i class="fas fa-shopping-cart"></i>
       <span class="cart-badge hidden">0</span>
     </a>
+  </div>
+</div>
+
+<div id="search-modal" class="hidden">
+  <div class="search-modal-content">
+    <span class="modal-close-btn" id="search-modal-close-btn">&times;</span>
+    <i class="fas fa-search modal-icon"></i>
+    <h2>Cari di Website</h2>
+    <p>
+      Masukkan kata kunci yang ingin Anda cari di seluruh halaman dan artikel.
+    </p>
+    <form id="search-form-modal" autocomplete="off">
+      <div class="search-bar" style="position: relative">
+        <input
+          type="text"
+          id="search-input-modal"
+          placeholder="Ketik di sini..."
+          required
+        />
+        <i class="fas fa-search"></i>
+        <div id="search-suggestions"></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 20px">
+        Cari
+      </button>
+    </form>
   </div>
 </div>

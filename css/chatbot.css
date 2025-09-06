@@ -10,7 +10,7 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   display: none;
   flex-direction: column;
-  z-index: 9999;
+  z-index: 9999; /* Lapisan jendela chat */
   font-family: "Poppins", sans-serif;
 }
 #chatbot-header {
@@ -81,9 +81,9 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
 #open-chatbot-btn {
   position: fixed;
-  /* DESKTOP: Digeser sedikit ke kiri */
   bottom: 30px;
   right: 40px;
   width: 60px;
@@ -94,18 +94,19 @@
   border: none;
   font-size: 2em;
   cursor: pointer;
-  z-index: 9998;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
+
+  /* === INI KUNCI PERBAIKANNYA === */
+  z-index: 9990; /* Diturunkan agar di bawah modal pencarian */
 }
 
 /* Aturan khusus untuk layar mobile */
 @media (max-width: 768px) {
   #open-chatbot-btn {
-    /* MOBILE: Digeser ke atas agar tidak menutupi menu bawah */
     bottom: 80px;
     right: 20px;
   }

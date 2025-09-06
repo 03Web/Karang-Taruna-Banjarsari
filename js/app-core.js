@@ -1,7 +1,7 @@
 /**
  * @file app-core.js
- * @description Script inti untuk fungsionalitas website. Mengelola state, komponen, dan inisialisasi dasar.
- * @version 9.0.0 (Perbaikan & Peningkatan Fitur E-commerce)
+ * @description Script inti dengan UI pencarian slide-down minimalis.
+ * @version 12.1.0 (Fix Logo Teks Terpotong)
  */
 
 const App = (() => {
@@ -400,6 +400,86 @@ const App = (() => {
     });
   };
 
+  // === FUNGSI PENCARIAN (FINAL) ===
+  function initSearch() {
+    const desktopSearchBtn = document.getElementById("search-trigger-desktop");
+    const searchModal = document.getElementById("search-modal");
+    if (desktopSearchBtn && searchModal) {
+      const closeModalBtn = document.getElementById("search-modal-close-btn");
+      const searchForm = document.getElementById("search-form-modal");
+      const searchInput = document.getElementById("search-input-modal");
+      const suggestionsContainer =
+        document.getElementById("search-suggestions");
+      const openModal = () => {
+        searchModal.classList.remove("hidden");
+        setTimeout(() => searchInput.focus(), 100);
+      };
+      const closeModal = () => {
+        searchModal.classList.add("hidden");
+        searchInput.value = "";
+        suggestionsContainer.style.display = "none";
+      };
+      desktopSearchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal();
+      });
+      closeModalBtn.addEventListener("click", closeModal);
+      searchModal.addEventListener("click", (e) => {
+        if (e.target === searchModal) closeModal();
+      });
+      searchForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+        }
+      });
+      searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+        if (query.length < 2) {
+          suggestionsContainer.style.display = "none";
+          return;
+        }
+        if (typeof SearchApp !== "undefined") {
+          const results = SearchApp.search(query).slice(0, 5);
+          if (results.length > 0) {
+            suggestionsContainer.innerHTML = results
+              .map(
+                (item) =>
+                  `<a href="${item.url}" class="suggestion-item"><span class="item-title">${item.title}</span><span class="item-type">${item.type}</span></a>`
+              )
+              .join("");
+            suggestionsContainer.style.display = "block";
+          } else {
+            suggestionsContainer.style.display = "none";
+          }
+        }
+      });
+      document.addEventListener("click", (e) => {
+        if (!searchForm.contains(e.target)) {
+          suggestionsContainer.style.display = "none";
+        }
+      });
+    }
+
+    const mobileSearchBtn = document.getElementById("search-trigger-mobile");
+    const searchPanel = document.getElementById("search-panel");
+    if (mobileSearchBtn && searchPanel) {
+      const closeBtn = document.getElementById("search-panel-close-btn");
+      const searchInput = document.getElementById("search-panel-input");
+      mobileSearchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchPanel.classList.toggle("active");
+        if (searchPanel.classList.contains("active")) {
+          searchInput.focus();
+        }
+      });
+      closeBtn.addEventListener("click", () => {
+        searchPanel.classList.remove("active");
+      });
+    }
+  }
+
   // === INITIALIZER UTAMA ===
   const initPage = () => {
     const isIndexPage =
@@ -419,14 +499,15 @@ const App = (() => {
             <div class="mobile-header-container">
                 <div class="logo">
                     <a href="index.html">
-                        <img src="foto/ChatGPTlogokarangtaruna.png" alt="Logo Karang Taruna Banjarsari" />
-                        <div class="logo-text">
-                            <div class="logo-main-text">Karang Taruna Banjarsari</div>
-                        </div>
+                        <img src="foto/ChatGPTlogokarangtaruna.png" alt="Logo Karang Taruna" />
+                        <span class="logo-main-text">Karang Taruna Banjarsari</span>
                     </a>
                 </div>
                 <div class="mobile-header-actions">
-                    <a href="keranjang.html" id="keranjang-belanja-mobile" class="cart-icon-wrapper" aria-label="Keranjang Belanja">
+                    <a href="#" id="search-trigger-mobile" aria-label="Cari">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <a href="keranjang.html" id="keranjang-belanja-mobile" class="cart-icon-wrapper" aria-label="Keranjang">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-badge hidden">0</span>
                     </a>
@@ -436,7 +517,25 @@ const App = (() => {
       document.body.prepend(mobileHeader);
     }
 
-    loadComponent("layout/header.html", "main-header", setActiveNavLink);
+    if (!document.getElementById("search-panel")) {
+      const searchPanel = document.createElement("div");
+      searchPanel.id = "search-panel";
+      searchPanel.innerHTML = `
+            <form action="search.html" method="GET" class="search-panel-form">
+                <div style="position: relative; width: 100%;">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" id="search-panel-input" placeholder="Cari di seluruh website..." autocomplete="off">
+                </div>
+                <button type="button" id="search-panel-close-btn" aria-label="Tutup Pencarian">&times;</button>
+            </form>
+        `;
+      document.body.prepend(searchPanel);
+    }
+
+    loadComponent("layout/header.html", "main-header", () => {
+      setActiveNavLink();
+      initSearch();
+    });
     loadComponent("layout/footer.html", "main-footer");
 
     if (document.getElementById("welcome-overlay")) {
@@ -478,11 +577,9 @@ const App = (() => {
 })();
 
 document.addEventListener("DOMContentLoaded", App.init);
-// ===================================================
-// === SISTEM NOTIFIKASI GLOBAL (KODE BARU) ===
-// ===================================================
+
+// === SISTEM NOTIFIKASI GLOBAL ===
 function showNotification(message, type = "success") {
-  // 1. Buat elemen HTML untuk notifikasi
   const notification = document.createElement("div");
   notification.className = `notification-banner ${type}`;
   notification.innerHTML = `
@@ -490,38 +587,25 @@ function showNotification(message, type = "success") {
     <span>${message}</span>
     <button class="notification-close-btn">&times;</button>
   `;
-
-  // 2. Tambahkan notifikasi ke halaman
   document.body.appendChild(notification);
-
-  // 3. Tambahkan event listener untuk tombol close
   notification
     .querySelector(".notification-close-btn")
     .addEventListener("click", () => {
       notification.classList.remove("show");
-      // Hapus elemen setelah animasi selesai
       setTimeout(() => notification.remove(), 500);
     });
-
-  // 4. Tampilkan notifikasi dengan sedikit jeda
   setTimeout(() => {
     notification.classList.add("show");
   }, 100);
-
-  // 5. Sembunyikan notifikasi secara otomatis setelah 5 detik
   setTimeout(() => {
     notification.classList.remove("show");
     setTimeout(() => notification.remove(), 500);
   }, 5000);
 }
 
-// Cek apakah ada notifikasi yang perlu ditampilkan saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
   if (sessionStorage.getItem("showPaymentSuccess") === "true") {
-    // Hapus "tanda" agar tidak muncul lagi saat di-refresh
     sessionStorage.removeItem("showPaymentSuccess");
-
-    // Tampilkan notifikasi sukses
     showNotification("Pembayaran berhasil! Terima kasih telah berbelanja.");
   }
 });

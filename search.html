@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hasil Pencarian - Karang Taruna Banjarsari</title>
+    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chatbot.css" />
+  </head>
+  <body data-page-id="search">
+    <div id="particles-js"></div>
+    <header id="main-header"></header>
+
+    <main>
+      <div class="container">
+        <h1 class="animate-on-scroll">Hasil Pencarian</h1>
+        <p class="animate-on-scroll" id="search-query-display"></p>
+        <div id="search-results-container" class="kegiatan-list">
+          <p>Memuat hasil pencarian...</p>
+        </div>
+      </div>
+    </main>
+
+    <footer id="main-footer"></footer>
+
+    <div id="chatbot-container">
+      <div id="chatbot-header">
+        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+      </div>
+      <div id="chatbot-body">
+        <div id="chat-window">
+          <div class="bot-message">
+            Halo! Ada yang bisa saya bantu seputar Karang Taruna Banjarsari?
+          </div>
+        </div>
+        <div id="chat-input-container">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ketik pertanyaanmu..."
+          /><button id="send-chat-btn">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+
+    <script src="js/app-core.js" defer></script>
+    <script src="js/page-initializers.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/chatbot_knowledge.js" defer></script>
+    <script src="js/chatbot_sederhana.js" defer></script>
+  </body>
+</html>
