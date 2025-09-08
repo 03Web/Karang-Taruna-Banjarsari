@@ -1,7 +1,7 @@
 /**
  * @file app-core.js
  * @description Script inti dengan UI pencarian slide-down minimalis, feedback, dan reaksi.
- * @version 13.0.0 (Fitur Reaksi Ditambahkan)
+ * @version 14.0.1 (Perbaikan Pencatatan Identitas pada Reaksi)
  */
 
 const App = (() => {
@@ -14,74 +14,272 @@ const App = (() => {
     pengurus: [],
     kontak: [],
     lastScrollTop: 0,
+    currentUser: {
+      // State baru untuk identitas pengguna
+      identity: "anonim", // 'anonim', 'warga', 'custom'
+      displayName: "Anonim",
+    },
   };
-  
-  // === FUNGSI INTI UNTUK REAKSI (LIKE/DISLIKE) ===
-  const handleReaction = (contentId, type) => {
+
+  // =======================================================
+  // === BAGIAN BARU: INTERACTION & IDENTITY MANAGER ===
+  // =======================================================
+  const InteractionManager = (() => {
+    let interactionPromise = null;
+
+    function showIdentityModal(actionName = "berinteraksi") {
+      const modal = document.getElementById("identity-modal");
+      if (!modal) return;
+
+      // Set judul modal sesuai aksi
+      modal.querySelector(
+        "#identity-modal-title"
+      ).textContent = `Anda perlu memilih identitas untuk ${actionName}`;
+
+      // Ambil data dari localStorage
+      const savedUser = JSON.parse(localStorage.getItem("karangTarunaUser"));
+      const nameInput = modal.querySelector("#identity-custom-name");
+      const identitySelect = modal.querySelector("#identity-selector");
+
+      if (savedUser && savedUser.displayName) {
+        // Jika ada nama tersimpan, tambahkan sebagai pilihan
+        let savedOption = identitySelect.querySelector('option[value="saved"]');
+        if (!savedOption) {
+          savedOption = document.createElement("option");
+          savedOption.value = "saved";
+          identitySelect.insertBefore(savedOption, identitySelect.options[1]);
+        }
+        savedOption.textContent = `Lanjutkan sebagai: ${savedUser.displayName}`;
+        identitySelect.value = "saved";
+        nameInput.style.display = "none";
+      } else {
+        // Hapus opsi "saved" jika tidak ada nama
+        identitySelect.querySelector('option[value="saved"]')?.remove();
+        identitySelect.value = "warga"; // Default ke warga
+      }
+
+      modal.classList.add("visible");
+
+      // Buat promise baru yang akan di-resolve saat pengguna memilih
+      return new Promise((resolve) => {
+        interactionPromise = { resolve };
+      });
+    }
+
+    function handleIdentitySelection() {
+      const modal = document.getElementById("identity-modal");
+      if (!modal || !interactionPromise) return;
+
+      const identitySelect = modal.querySelector("#identity-selector");
+      const nameInput = modal.querySelector("#identity-custom-name");
+      const selectedValue = identitySelect.value;
+      let user;
+
+      if (selectedValue === "custom" && !nameInput.value.trim()) {
+        alert("Harap masukkan nama Anda.");
+        return;
+      }
+
+      switch (selectedValue) {
+        case "custom":
+          user = {
+            identity: "custom",
+            displayName: nameInput.value.trim(),
+          };
+          break;
+        case "warga":
+          user = {
+            identity: "warga",
+            displayName: "Warga Banjarsari",
+          };
+          break;
+        case "saved":
+          user = JSON.parse(localStorage.getItem("karangTarunaUser"));
+          break;
+        default: // anonim
+          user = {
+            identity: "anonim",
+            displayName: "Anonim",
+          };
+      }
+
+      // Simpan pilihan (kecuali anonim) ke localStorage
+      if (user.identity !== "anonim") {
+        localStorage.setItem("karangTarunaUser", JSON.stringify(user));
+      }
+
+      App.state.currentUser = user; // Update state global
+      interactionPromise.resolve(user); // Resolve promise dengan data user
+      closeModal();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("identity-modal");
+      if (modal) modal.classList.remove("visible");
+      if (interactionPromise) {
+        interactionPromise.resolve(null); // Resolve dengan null jika ditutup
+        interactionPromise = null;
+      }
+    }
+
+    function init() {
+      // Cek apakah modal sudah ada, jika belum, buat
+      if (!document.getElementById("identity-modal")) {
+        const modalHTML = `
+          <div id="identity-modal">
+            <div class="identity-modal-content">
+              <span class="modal-close-btn" id="identity-modal-close-btn">&times;</span>
+              <i class="fas fa-user-check modal-icon"></i>
+              <h2 id="identity-modal-title">Pilih Identitas Anda</h2>
+              <p>Pilih bagaimana Anda ingin dikenal saat berinteraksi di website ini.</p>
+              <div class="identity-form-group">
+                <select id="identity-selector">
+                  <option value="warga">Sebagai Warga Banjarsari</option>
+                  <option value="anonim">Sebagai Anonim</option>
+                  <option value="custom">Gunakan nama lain...</option>
+                </select>
+                <input type="text" id="identity-custom-name" placeholder="Masukkan nama Anda..." style="display:none; margin-top:10px;">
+              </div>
+              <div class="modal-actions">
+                <button id="identity-confirm-btn" class="btn btn-primary">Konfirmasi</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+      }
+
+      // Tambahkan event listeners
+      document
+        .getElementById("identity-confirm-btn")
+        .addEventListener("click", handleIdentitySelection);
+      document
+        .getElementById("identity-modal-close-btn")
+        .addEventListener("click", closeModal);
+      document
+        .getElementById("identity-selector")
+        .addEventListener("change", (e) => {
+          const nameInput = document.getElementById("identity-custom-name");
+          nameInput.style.display =
+            e.target.value === "custom" ? "block" : "none";
+        });
+    }
+
+    return {
+      init,
+      requestIdentity: showIdentityModal,
+    };
+  })();
+
+  // === FUNGSI INTI UNTUK REAKSI (LIKE/DISLIKE) - [DIPERBAIKI] ===
+  const handleReaction = async (contentId, type) => {
     const votedKey = `voted_${contentId}`;
     if (localStorage.getItem(votedKey)) {
-      console.log("Anda sudah memberikan reaksi untuk konten ini.");
+      showNotification(
+        "Anda sudah memberikan reaksi untuk konten ini.",
+        "info"
+      );
       return;
     }
 
-    const reactionRef = firebase.database().ref(`reactions/${contentId}/${type}s`);
-    reactionRef.transaction((currentCount) => {
-      return (currentCount || 0) + 1;
-    }).then(() => {
-      localStorage.setItem(votedKey, type);
-      updateReactionUI(contentId);
-    }).catch(error => console.error("Firebase transaction failed: ", error));
+    try {
+      // MINTA IDENTITAS DULU
+      const user = await InteractionManager.requestIdentity("memberi reaksi");
+      if (!user) return; // Pengguna membatalkan atau menutup modal
+
+      // [PERBAIKAN] Referensi ke counter dan log
+      const countRef = firebase
+        .database()
+        .ref(`reactions/${contentId}/${type}s_count`);
+      const logRef = firebase.database().ref(`reactions/${contentId}/log`);
+
+      // [PERBAIKAN] Jalankan transaksi untuk counter
+      countRef
+        .transaction((currentCount) => {
+          return (currentCount || 0) + 1;
+        })
+        .then(() => {
+          // [BARU] Simpan log identitas setelah transaksi berhasil
+          logRef.push({
+            displayName: user.displayName,
+            identity: user.identity,
+            type: type,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+          });
+
+          localStorage.setItem(votedKey, type);
+          updateReactionUI(contentId);
+          showNotification("Terima kasih atas reaksi Anda!", "success");
+        })
+        .catch((error) => {
+          console.error("Firebase transaction failed: ", error);
+          showNotification("Gagal memberikan reaksi. Coba lagi.", "error");
+        });
+    } catch (e) {
+      console.log("Interaksi dibatalkan", e);
+    }
   };
 
+  // === FUNGSI UPDATE UI REAKSI - [DIPERBAIKI] ===
   const updateReactionUI = (contentId) => {
     const votedKey = `voted_${contentId}`;
     const userVote = localStorage.getItem(votedKey);
-    const elements = document.querySelectorAll(`[data-content-id="${contentId}"]`);
+    const elements = document.querySelectorAll(
+      `[data-content-id="${contentId}"]`
+    );
 
-    elements.forEach(container => {
-      const likeBtn = container.querySelector('.like-btn');
-      const dislikeBtn = container.querySelector('.dislike-btn');
-      const likeCountSpan = container.querySelector('.like-count');
-      const dislikeCountSpan = container.querySelector('.dislike-count');
+    elements.forEach((container) => {
+      const likeBtn = container.querySelector(".like-btn");
+      const dislikeBtn = container.querySelector(".dislike-btn");
+      const likeCountSpan = container.querySelector(".like-count");
+      const dislikeCountSpan = container.querySelector(".dislike-count");
 
       if (!likeBtn || !dislikeBtn) return;
 
-      firebase.database().ref(`reactions/${contentId}`).once('value', snapshot => {
-        const counts = snapshot.val() || { likes: 0, dislikes: 0 };
-        if (likeCountSpan) likeCountSpan.textContent = counts.likes || 0;
-        if (dislikeCountSpan) dislikeCountSpan.textContent = counts.dislikes || 0;
+      // [PERBAIKAN] Baca dari path yang baru
+      firebase
+        .database()
+        .ref(`reactions/${contentId}`)
+        .once("value", (snapshot) => {
+          const data = snapshot.val() || { likes_count: 0, dislikes_count: 0 };
+          if (likeCountSpan) likeCountSpan.textContent = data.likes_count || 0;
+          if (dislikeCountSpan)
+            dislikeCountSpan.textContent = data.dislikes_count || 0;
 
-        if (userVote) {
-          likeBtn.disabled = true;
-          dislikeBtn.disabled = true;
-          likeBtn.classList.remove('liked', 'disliked');
-          dislikeBtn.classList.remove('liked', 'disliked');
-          if (userVote === 'like') {
-            likeBtn.classList.add('liked');
-          } else if (userVote === 'dislike') {
-            dislikeBtn.classList.add('disliked');
+          if (userVote) {
+            likeBtn.disabled = true;
+            dislikeBtn.disabled = true;
+            likeBtn.classList.remove("liked", "disliked");
+            dislikeBtn.classList.remove("liked", "disliked");
+            if (userVote === "like") {
+              likeBtn.classList.add("liked");
+            } else if (userVote === "dislike") {
+              dislikeBtn.classList.add("disliked");
+            }
           }
-        }
-      });
+        });
     });
   };
-  
+
   const setupReactionListeners = () => {
-      document.body.addEventListener('click', (e) => {
-          const likeBtn = e.target.closest('.like-btn');
-          const dislikeBtn = e.target.closest('.dislike-btn');
-          
-          if (likeBtn && !likeBtn.disabled) {
-              const container = likeBtn.closest('[data-content-id]');
-              if (container) handleReaction(container.dataset.contentId, 'like');
-          }
-          
-          if (dislikeBtn && !dislikeBtn.disabled) {
-              const container = dislikeBtn.closest('[data-content-id]');
-              if (container) handleReaction(container.dataset.contentId, 'dislike');
-          }
-      });
+    document.body.addEventListener("click", (e) => {
+      const likeBtn = e.target.closest(".like-btn");
+      const dislikeBtn = e.target.closest(".dislike-btn");
+
+      if (likeBtn && !likeBtn.disabled) {
+        const container = likeBtn.closest("[data-content-id]");
+        if (container) handleReaction(container.dataset.contentId, "like");
+      }
+
+      if (dislikeBtn && !dislikeBtn.disabled) {
+        const container = dislikeBtn.closest("[data-content-id]");
+        if (container) handleReaction(container.dataset.contentId, "dislike");
+      }
+    });
   };
+
+  // --- SISA KODE app-core.js ANDA TETAP SAMA, TIDAK ADA PERUBAHAN ---
+  // ... (Kode untuk Inaktivitas, Modal Kontribusi, Welcome Screen, Header, Utilities, dll) ...
 
   // === PENGATURAN SESI & INAKTIVITAS ===
   const TIMEOUT_DURATION = 20 * 60 * 1000; // 20 menit
@@ -167,105 +365,105 @@ const App = (() => {
       startInactivityTracker();
       return;
     }
-    
+
     if (!isIndexPage) {
-        logoutUser();
-        return;
+      logoutUser();
+      return;
     }
 
     if (!LOGIN_FORM_ENABLED) {
-        sessionStorage.setItem("isLoggedIn", "true");
-        showContributionModal();
+      sessionStorage.setItem("isLoggedIn", "true");
+      showContributionModal();
     } else {
-        overlay.classList.remove("hidden");
+      overlay.classList.remove("hidden");
 
-        const uname = document.querySelector("#uname");
-        const isBanjarsari = document.querySelector("#is_banjarsari");
-        const btnContainer = document.querySelector(".btn-container");
-        const btn = document.querySelector("#login-btn");
-        const form = document.querySelector("#welcome-form");
-        const msg = document.querySelector(".msg");
+      const uname = document.querySelector("#uname");
+      const isBanjarsari = document.querySelector("#is_banjarsari");
+      const btnContainer = document.querySelector(".btn-container");
+      const btn = document.querySelector("#login-btn");
+      const form = document.querySelector("#welcome-form");
+      const msg = document.querySelector(".msg");
 
-        if (!uname || !isBanjarsari || !btn || !form || !msg) return;
+      if (!uname || !isBanjarsari || !btn || !form || !msg) return;
 
+      btn.disabled = true;
+
+      function shiftButton() {
+        if (btn.disabled) {
+          const positions = [
+            "shift-left",
+            "shift-top",
+            "shift-right",
+            "shift-bottom",
+          ];
+          const currentPosition = positions.find((dir) =>
+            btn.classList.contains(dir)
+          );
+          const nextPosition =
+            positions[
+              (positions.indexOf(currentPosition) + 1) % positions.length
+            ];
+          btn.classList.remove(currentPosition || "no-shift");
+          btn.classList.add(nextPosition);
+        }
+      }
+
+      function showMsg() {
+        const isEmpty = uname.value === "" || isBanjarsari.value === "";
+        btn.classList.toggle("no-shift", !isEmpty);
+
+        if (isEmpty) {
+          btn.disabled = true;
+          msg.style.color = "rgb(218 49 49)";
+          msg.innerText =
+            "Untuk Masuk Web Pastikan Semua Form Terisi⚠!! Terserah Mau di Isi Apa Saja Bebas.";
+        } else {
+          msg.innerText =
+            "TERIMAKASIH🙏, Sekarang Anda Bisa Masuk Web Karang Taruna Banjarsari.";
+          msg.style.color = "#92ff92";
+          btn.disabled = false;
+          btn.classList.add("no-shift");
+        }
+      }
+
+      btnContainer.addEventListener("mouseover", shiftButton);
+      form.addEventListener("input", showMsg);
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        if (btn.disabled) return;
+
+        msg.innerText = "Processing...";
+        msg.style.color = "#92ff92";
+        btn.value = "Mengirim...";
         btn.disabled = true;
 
-        function shiftButton() {
-          if (btn.disabled) {
-            const positions = [
-              "shift-left",
-              "shift-top",
-              "shift-right",
-              "shift-bottom",
-            ];
-            const currentPosition = positions.find((dir) =>
-              btn.classList.contains(dir)
-            );
-            const nextPosition =
-              positions[
-                (positions.indexOf(currentPosition) + 1) % positions.length
-              ];
-            btn.classList.remove(currentPosition || "no-shift");
-            btn.classList.add(nextPosition);
-          }
-        }
+        const formData = new FormData(form);
+        const FORMSPREE_URL = "https://formspree.io/f/myzpjnqg";
 
-        function showMsg() {
-          const isEmpty = uname.value === "" || isBanjarsari.value === "";
-          btn.classList.toggle("no-shift", !isEmpty);
+        try {
+          const response = await fetch(FORMSPREE_URL, {
+            method: "POST",
+            body: formData,
+            headers: {
+              Accept: "application/json",
+            },
+          });
 
-          if (isEmpty) {
-            btn.disabled = true;
-            msg.style.color = "rgb(218 49 49)";
-            msg.innerText =
-              "Untuk Masuk Web Pastikan Semua Form Terisi⚠!! Terserah Mau di Isi Apa Saja Bebas.";
+          if (response.ok) {
+            sessionStorage.setItem("isLoggedIn", "true");
+            showContributionModal();
           } else {
-            msg.innerText =
-              "TERIMAKASIH🙏, Sekarang Anda Bisa Masuk Web Karang Taruna Banjarsari.";
-            msg.style.color = "#92ff92";
-            btn.disabled = false;
-            btn.classList.add("no-shift");
+            throw new Error("Gagal mengirim data.");
           }
+        } catch (error) {
+          console.error("Formspree error:", error);
+          msg.innerText = "Gagal mengirim data. Silakan coba lagi.";
+          msg.style.color = "rgb(218 49 49)";
+          btn.value = "Login";
+          btn.disabled = false;
         }
-
-        btnContainer.addEventListener("mouseover", shiftButton);
-        form.addEventListener("input", showMsg);
-
-        form.addEventListener("submit", async function (e) {
-          e.preventDefault();
-          if (btn.disabled) return;
-
-          msg.innerText = "Processing...";
-          msg.style.color = "#92ff92";
-          btn.value = "Mengirim...";
-          btn.disabled = true;
-
-          const formData = new FormData(form);
-          const FORMSPREE_URL = "https://formspree.io/f/myzpjnqg";
-
-          try {
-            const response = await fetch(FORMSPREE_URL, {
-              method: "POST",
-              body: formData,
-              headers: {
-                Accept: "application/json",
-              },
-            });
-
-            if (response.ok) {
-              sessionStorage.setItem("isLoggedIn", "true");
-              showContributionModal();
-            } else {
-              throw new Error("Gagal mengirim data.");
-            }
-          } catch (error) {
-            console.error("Formspree error:", error);
-            msg.innerText = "Gagal mengirim data. Silakan coba lagi.";
-            msg.style.color = "rgb(218 49 49)";
-            btn.value = "Login";
-            btn.disabled = false;
-          }
-        });
+      });
     }
   }
 
@@ -676,7 +874,7 @@ const App = (() => {
         });
     });
   };
-  
+
   // === INITIALIZER UTAMA ===
   const initPage = () => {
     const isIndexPage =
@@ -752,6 +950,8 @@ const App = (() => {
       setTimeout(initParticles, 500);
     }
 
+    InteractionManager.init(); // PANGGIL INISIALISASI MANAGER DI SINI
+
     const pageId = document.body.dataset.pageId;
     if (pageId && typeof App.initializers[pageId] === "function") {
       App.initializers[pageId]();
@@ -759,7 +959,7 @@ const App = (() => {
 
     updateCartBadge();
     initExitFeedbackModal();
-    setupReactionListeners(); // <-- Panggil fungsi listener reaksi
+    setupReactionListeners(); // Panggil fungsi listener reaksi
   };
 
   return {
@@ -770,8 +970,10 @@ const App = (() => {
     getCart,
     addToCart,
     updateCartBadge,
-    updateReactionUI, // <-- Pastikan ini diekspos
+    updateReactionUI,
+    InteractionManager, // Ekspor InteractionManager
     cache,
+    state, // Ekspor state agar bisa diakses
     initializers: {},
   };
 })();
@@ -780,10 +982,18 @@ document.addEventListener("DOMContentLoaded", App.init);
 
 // === SISTEM NOTIFIKASI GLOBAL ===
 function showNotification(message, type = "success") {
+  // Pastikan hanya ada satu notifikasi dalam satu waktu
+  document.querySelector(".notification-banner")?.remove();
+
   const notification = document.createElement("div");
   notification.className = `notification-banner ${type}`;
+  const iconClass = {
+    success: "fa-check-circle",
+    info: "fa-info-circle",
+    error: "fa-exclamation-circle",
+  };
   notification.innerHTML = `
-    <i class="fas fa-check-circle"></i>
+    <i class="fas ${iconClass[type] || "fa-info-circle"}"></i>
     <span>${message}</span>
     <button class="notification-close-btn">&times;</button>
   `;

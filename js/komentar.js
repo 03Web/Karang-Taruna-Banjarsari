@@ -1,4 +1,4 @@
-// File: js/komentar.js (Dengan Kunci Database Berdasarkan Slug Artikel)
+// File: js/komentar.js (Dengan Integrasi Modal Identitas)
 
 const KomentarApp = (() => {
   const firebaseConfig = {
@@ -121,54 +121,59 @@ const KomentarApp = (() => {
     const textarea = form.querySelector("#comment-pesan");
     const actions = form.querySelector(".comment-actions");
 
-    const autoResizeTextarea = () => {
-      textarea.style.height = "auto";
-      textarea.style.height = textarea.scrollHeight + "px";
-    };
-
-    textarea.addEventListener("focus", () => {
-      actions.style.display = "flex";
-    });
-
-    textarea.addEventListener("input", autoResizeTextarea);
-
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const submitButton = form.querySelector(".comment-submit-btn");
-      const namaInput = form.querySelector("#comment-nama");
       const pesanInput = textarea;
 
-      const pageId = getPageId();
-      const komentarDbRef = db.ref(`komentar/${pageId}`);
+      if (!pesanInput.value.trim()) {
+        alert("Komentar tidak boleh kosong.");
+        return;
+      }
 
-      const dataToSend = {
-        nama:
-          namaInput.value.trim() || "anonim" + Math.floor(Math.random() * 1000),
-        pesan: pesanInput.value.trim(),
-        timestamp: firebase.database.ServerValue.TIMESTAMP,
-      };
+      try {
+        // PANGGIL MODAL UNTUK MEMINTA IDENTITAS
+        const user = await App.InteractionManager.requestIdentity(
+          "berkomentar"
+        );
+        if (!user) return; // Pengguna membatalkan
 
-      if (!dataToSend.pesan) return;
+        const pageId = getPageId();
+        const komentarDbRef = db.ref(`komentar/${pageId}`);
 
-      submitButton.disabled = true;
-      submitButton.textContent = "Mengirim...";
+        const dataToSend = {
+          nama: user.displayName, // Gunakan nama dari modal
+          pesan: pesanInput.value.trim(),
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+        };
 
-      komentarDbRef
-        .push(dataToSend)
-        .then(() => {
-          form.reset();
-          textarea.style.height = "auto";
-          actions.style.display = "none";
-        })
-        .catch((error) => {
-          console.error("Firebase Error:", error);
-          alert("Gagal mengirim komentar. Silakan coba lagi.");
-        })
-        .finally(() => {
-          submitButton.disabled = false;
-          submitButton.textContent = "Kirim";
-        });
+        submitButton.disabled = true;
+        submitButton.textContent = "Mengirim...";
+
+        komentarDbRef
+          .push(dataToSend)
+          .then(() => {
+            form.reset();
+          })
+          .catch((error) => {
+            console.error("Firebase Error:", error);
+            alert("Gagal mengirim komentar. Silakan coba lagi.");
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = "Kirim";
+          });
+      } catch (error) {
+        console.log("Interaksi dibatalkan oleh pengguna.");
+      }
     });
+
+    // Tampilkan 'actions' dan sembunyikan input nama lama
+    if (actions) {
+      actions.style.display = "flex";
+      const namaInput = form.querySelector("#comment-nama");
+      if (namaInput) namaInput.style.display = "none";
+    }
   };
 
   const init = () => {

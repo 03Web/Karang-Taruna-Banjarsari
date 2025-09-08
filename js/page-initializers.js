@@ -46,9 +46,9 @@ App.initializers.home = async () => {
       testimonialContainer.innerHTML = testimonialData
         .map(createTestimonialTemplate)
         .join("");
-      
+
       // Panggil fungsi update UI untuk setiap testimoni
-      testimonialData.forEach(item => App.updateReactionUI(item.id));
+      testimonialData.forEach((item) => App.updateReactionUI(item.id));
 
       // === LOGIKA CAROUSEL DAN BACA SELENGKAPNYA ===
       setTimeout(() => {
@@ -183,9 +183,11 @@ App.initializers.kegiatan = async () => {
     container.innerHTML = "<p>Gagal memuat daftar kegiatan.</p>";
     return;
   }
-  
+
   const createKegiatanTemplate = (item) => {
-    const contentId = item.link.split('slug=')[1] || `artikel_${new Date(item.tanggal).getTime()}`;
+    const contentId =
+      item.link.split("slug=")[1] ||
+      `artikel_${new Date(item.tanggal).getTime()}`;
     return `
     <div class="kegiatan-item-wrapper" data-content-id="${contentId}">
       <a href="${
@@ -200,10 +202,13 @@ App.initializers.kegiatan = async () => {
         </div>
         <div class="kegiatan-konten">
           <h3>${item.judul}</h3>
-          <span class="kegiatan-meta">${new Date(item.tanggal).toLocaleDateString(
-            "id-ID",
-            { day: "numeric", month: "long", year: "numeric" }
-          )}</span>
+          <span class="kegiatan-meta">${new Date(
+            item.tanggal
+          ).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}</span>
           <p>${item.deskripsi}</p>
           <span class="kegiatan-tombol">Baca Selengkapnya</span>
         </div>
@@ -213,7 +218,8 @@ App.initializers.kegiatan = async () => {
           <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
       </div>
     </div>
-  `};
+  `;
+  };
 
   const renderKegiatan = () => {
     const sortOrder = sorter.value;
@@ -238,9 +244,11 @@ App.initializers.kegiatan = async () => {
     );
 
     // Panggil update UI untuk setiap artikel
-    sortedData.forEach(item => {
-        const contentId = item.link.split('slug=')[1] || `artikel_${new Date(item.tanggal).getTime()}`;
-        App.updateReactionUI(contentId);
+    sortedData.forEach((item) => {
+      const contentId =
+        item.link.split("slug=")[1] ||
+        `artikel_${new Date(item.tanggal).getTime()}`;
+      App.updateReactionUI(contentId);
     });
   };
 
@@ -250,8 +258,7 @@ App.initializers.kegiatan = async () => {
 };
 
 // ... Sisa kode untuk `page-initializers.js` Anda yang lain tetap sama ...
-// (Galeri, About, Kontak, Artikel, Aspirasi)
-// Pastikan tidak ada duplikasi fungsi, hanya ganti yang sudah ada jika diperlukan.
+// (Galeri, About, Kontak, Artikel)
 
 // === GALERI PAGE (USING LIGHTGALLERY) ===
 App.initializers.galeri = async () => {
@@ -632,7 +639,7 @@ App.initializers.artikel = async () => {
   }
 };
 
-// === ASPIRASI PAGE ===
+// === ASPIRASI PAGE (DIUBAH) ===
 App.initializers.aspirasi = () => {
   const introContainer = document.getElementById("collapsible-intro");
   if (introContainer) {
@@ -673,6 +680,12 @@ App.initializers.aspirasi = () => {
   const form = document.getElementById("aspirasi-form");
   const formStatus = document.getElementById("form-status");
   const submitButton = document.getElementById("submit-aspirasi-btn");
+
+  // Sembunyikan input nama lama
+  const namaInputLama = document.getElementById("nama");
+  if (namaInputLama) {
+    namaInputLama.parentElement.style.display = "none";
+  }
 
   if (!aspirasiContainer || !form || !submitButton) {
     console.error("Elemen penting untuk halaman aspirasi tidak ditemukan!");
@@ -736,38 +749,58 @@ App.initializers.aspirasi = () => {
     }
   });
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    submitButton.disabled = true;
-    formStatus.textContent = "Mengirim...";
-    formStatus.className = "form-status";
 
-    const dataToSend = {
-      nama: document.getElementById("nama").value.trim(),
-      subjek: document.getElementById("subjek").value.trim(),
-      pesan: document.getElementById("pesan").value.trim(),
-      tanggal_masuk: new Date().toISOString(),
-    };
+    // Validasi input yang tersisa
+    const subjek = document.getElementById("subjek").value.trim();
+    const pesan = document.getElementById("pesan").value.trim();
+    if (!subjek || !pesan) {
+      alert("Subjek dan Pesan tidak boleh kosong.");
+      return;
+    }
 
-    aspirasiDbRef
-      .push(dataToSend)
-      .then(() => {
-        formStatus.textContent =
-          "Terima kasih! Aspirasi Anda telah berhasil dipublikasikan.";
-        formStatus.classList.add("status-sukses");
-        form.reset();
-      })
-      .catch((error) => {
-        console.error("Firebase Error:", error);
-        formStatus.textContent = "Gagal mengirim aspirasi. Silakan coba lagi.";
-        formStatus.classList.add("status-gagal");
-      })
-      .finally(() => {
-        submitButton.disabled = false;
-        setTimeout(() => {
-          formStatus.textContent = "";
-          formStatus.className = "form-status";
-        }, 6000);
-      });
+    try {
+      // MINTA IDENTITAS PENGGUNA
+      const user = await App.InteractionManager.requestIdentity(
+        "menyampaikan aspirasi"
+      );
+      if (!user) return; // Pengguna membatalkan
+
+      submitButton.disabled = true;
+      formStatus.textContent = "Mengirim...";
+      formStatus.className = "form-status";
+
+      const dataToSend = {
+        nama: user.displayName, // Gunakan nama dari modal
+        subjek: subjek,
+        pesan: pesan,
+        tanggal_masuk: new Date().toISOString(),
+      };
+
+      aspirasiDbRef
+        .push(dataToSend)
+        .then(() => {
+          formStatus.textContent =
+            "Terima kasih! Aspirasi Anda telah berhasil dipublikasikan.";
+          formStatus.classList.add("status-sukses");
+          form.reset();
+        })
+        .catch((error) => {
+          console.error("Firebase Error:", error);
+          formStatus.textContent =
+            "Gagal mengirim aspirasi. Silakan coba lagi.";
+          formStatus.classList.add("status-gagal");
+        })
+        .finally(() => {
+          submitButton.disabled = false;
+          setTimeout(() => {
+            formStatus.textContent = "";
+            formStatus.className = "form-status";
+          }, 6000);
+        });
+    } catch (error) {
+      console.log("Interaksi dibatalkan oleh pengguna.");
+    }
   });
 };
