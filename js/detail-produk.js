@@ -11,6 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
       minimumFractionDigits: 0,
     }).format(angka);
 
+  // FUNGSI BARU UNTUK MEMBERSIHKAN NOMOR WA
+  const cleanWhatsAppNumber = (number) => {
+    if (!number) return "";
+    // Hapus semua karakter yang bukan angka
+    let cleaned = number.toString().replace(/\D/g, "");
+    // Jika dimulai dengan 0, ganti dengan 62
+    if (cleaned.startsWith("0")) {
+      cleaned = "62" + cleaned.substring(1);
+    }
+    // Jika sudah dimulai dengan 62, biarkan
+    return cleaned;
+  };
+
   const loadProductDetails = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get("id");
@@ -57,6 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
+        // PANGGIL FUNGSI PEMBERSIH DI SINI
+        const cleanWA = cleanWhatsAppNumber(product.penjual_wa);
+
         const detailHTML = `
           ${imageSectionHTML}
           <div class="product-info-section">
@@ -92,10 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   product.id
                 }">Beli Langsung</button>
                 ${
-                  product.penjual_wa
-                    ? `<a href="https://wa.me/${
-                        product.penjual_wa
-                      }?text=${encodeURIComponent(
+                  cleanWA // GUNAKAN VARIABEL BERSIH
+                    ? `<a href="https://wa.me/${cleanWA}?text=${encodeURIComponent(
                         `Halo, saya tertarik dengan produk '${product.nama}'`
                       )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat Penjual</a>`
                     : ""
@@ -105,14 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         detailContainer.innerHTML = detailHTML;
 
-        // --- PERBAIKAN DI SINI ---
-        // Tombol "Chat" diubah menjadi <a> tag agar bisa diklik
         const mobileButtonsHTML = `
             ${
-              product.penjual_wa
-                ? `<a href="https://wa.me/${
-                    product.penjual_wa
-                  }?text=${encodeURIComponent(
+              cleanWA // GUNAKAN VARIABEL BERSIH
+                ? `<a href="https://wa.me/${cleanWA}?text=${encodeURIComponent(
                     `Halo, saya tertarik dengan produk '${product.nama}'`
                   )}" target="_blank" class="btn-toko btn-chat"><i class="fab fa-whatsapp"></i> Chat</a>`
                 : ""
@@ -124,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
               product.id
             }">Beli Langsung</button>
         `;
-        // --- AKHIR PERBAIKAN ---
 
         if (floatingActionBar) {
           floatingActionBar.innerHTML = `<div class="action-buttons-mobile">${mobileButtonsHTML}</div>`;
