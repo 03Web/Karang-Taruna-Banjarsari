@@ -155,15 +155,20 @@ const KNOWLEDGE_BASE = `
       ================================
       NARAHUBUNG & KONTAK RESMI
       ================================
-      - **Andri Apri (Ketua Umum):**
-          - **Tugas:** Informasi umum, kerja sama, dan kemitraan.
-          - **WhatsApp:** 6285712414558
-      - **Yunita (Wakil Ketua):**
-          - **Tugas:** Informasi umum, kerja sama, dan seputar kegiatan.
-          - **WhatsApp:** 6288233496802
-      - **Amazia (Admin Website):**
-          - **Tugas:** Seputar website, penambahan konten, laporan bug/error, atau saran.
-          - **WhatsApp:** 6285876983793
+      - **Andri Apriyanto (Ketua Umum):** Hubungi untuk informasi umum, kerja sama, dan kemitraan. (WhatsApp: 6285712414558)
+      - **Yunita Sari (Wakil Ketua):** Hubungi untuk informasi umum dan seputar kegiatan. (WhatsApp: 6288233496802)
+      - **Yudi Setiawan (Bendahara):** Hubungi untuk informasi seputar keuangan. (WhatsApp: 6281327323016)
+      - **Harniyati (Tim Keuangan):** Membantu bendahara dalam pengelolaan keuangan. (WhatsApp: 6285647486493)
+      - **Nana Mustakimah (Tim Keuangan & Sosial):** Membantu bendahara dan aktif dalam kegiatan sosial. (WhatsApp: 6285640939168)
+      - **M. Ardan Maulana (Koordinator Olahraga & Seni Budaya):** Hubungi untuk kegiatan olahraga dan acara. (WhatsApp: 6285601629723)
+      - **Satria Nindya (Admin Media Sosial):** Hubungi untuk konten Instagram & TikTok. (WhatsApp: 6285780176098)
+      - **Haidar Daffa (Koordinator Media):** Hubungi untuk dokumentasi, foto, dan video. (WhatsApp: 6281328003672)
+      - **Azizah Melan (Tim Media & Fotografi):** Membantu dalam urusan dokumentasi. (WhatsApp: 6281289146706)
+      - **Isrofi (Koordinator Bidang Sosial):** Hubungi untuk kegiatan sosial. (WhatsApp: Belum tersedia)
+      - **Dani Indri S. (Koordinator Bidang Perekonomian):** Hubungi untuk program UMKM. (WhatsApp: Belum tersedia)
+      - **Budi Santoso (Koordinator Bidang Keamanan):** Hubungi untuk koordinasi keamanan acara. (WhatsApp: Belum tersedia)
+      - **Arlin Fatoni (Koordinator Bidang Pendidikan):** Hubungi untuk program pendidikan. (WhatsApp: Belum tersedia)
+      - **Amazia (Admin Website):** Hubungi untuk urusan website (bug, saran, tambah konten). (WhatsApp: 6285876983793)
 
            ================================
         ARTIKEL: Sejarah Indonesia Tanpa Sensor
