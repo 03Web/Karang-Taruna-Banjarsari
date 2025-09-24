@@ -1,4 +1,4 @@
-// File: js/keranjang.js
+// File: js/keranjang.js (Dengan Logika Pembersihan Otomatis)
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartContentContainer = document.getElementById("cart-content");
@@ -44,17 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      // FIX: Menggunakan path relatif
       const response = await fetch("data/produk.json");
       if (!response.ok) throw new Error("Gagal mengambil data produk.");
       const allProducts = await response.json();
 
       let itemsHTML = "";
       let subtotal = 0;
+      let cleanedCart = []; // <-- VARIABEL BARU UNTUK MENYIMPAN KERANJANG YANG BERSIH
+      let isCartDirty = false; // <-- Penanda jika ada item hantu
 
       cart.forEach((item) => {
         const productData = allProducts.find((p) => p.id === item.id);
         if (productData) {
+          // Jika produk ditemukan, tambahkan ke daftar bersih dan render
+          cleanedCart.push(item);
           subtotal += productData.harga * item.quantity;
           itemsHTML += `
             <div class="keranjang-item" data-id="${item.id}">
@@ -77,8 +80,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
           `;
+        } else {
+          // Jika produk TIDAK ditemukan, tandai bahwa ada item hantu
+          isCartDirty = true;
+          console.warn(`Item hantu terdeteksi dan akan dihapus: id=${item.id}`);
         }
       });
+
+      // === LOGIKA PEMBERSIHAN OTOMATIS ===
+      if (isCartDirty) {
+        // Jika ada item hantu, perbarui localStorage dengan data yang sudah bersih
+        localStorage.setItem("cart", JSON.stringify(cleanedCart));
+        App.updateCartBadge(); // Perbarui juga badge di header
+        // Panggil ulang fungsi renderCart agar menampilkan state yang sudah bersih
+        renderCart();
+        return; // Hentikan render saat ini karena akan dirender ulang
+      }
+      // ===================================
 
       const cartLayoutHTML = `
         <div class="keranjang-layout animate-on-scroll">
