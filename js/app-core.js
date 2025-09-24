@@ -676,6 +676,44 @@ const App = (() => {
     });
   };
 
+  // --- FUNGSI BARU UNTUK PENGHITUNG PENGUNJUNG ---
+  const initVisitorCounter = () => {
+    const visitorDisplay = document.getElementById("visitor-count-display");
+    if (!visitorDisplay) return; // Keluar jika elemen tidak ditemukan di halaman ini
+
+    const db = firebase.database();
+    const counterRef = db.ref("visitor_stats/total_visits");
+
+    // Fungsi untuk memperbarui tampilan angka di layar
+    const displayCount = () => {
+      counterRef.on("value", (snapshot) => {
+        const count = snapshot.val() || 0;
+        // Kita format angkanya agar lebih mudah dibaca jika sudah ribuan
+        const formattedCount = new Intl.NumberFormat("id-ID").format(count);
+        visitorDisplay.textContent = `${formattedCount} Kunjungan`;
+      });
+    };
+
+    // Fungsi untuk menambah hitungan (hanya dijalankan sekali per sesi)
+    const incrementCount = () => {
+      // Cek apakah pengunjung ini sudah dihitung di sesi ini
+      if (sessionStorage.getItem("visitorCounted")) {
+        return; // Jika sudah, jangan lakukan apa-apa
+      }
+
+      // Gunakan transaksi untuk mencegah race condition (jika ada 2 pengunjung bersamaan)
+      counterRef.transaction((currentCount) => {
+        return (currentCount || 0) + 1;
+      });
+
+      // Tandai bahwa pengunjung ini sudah dihitung untuk sesi ini
+      sessionStorage.setItem("visitorCounted", "true");
+    };
+
+    incrementCount(); // Coba tambah hitungan
+    displayCount(); // Selalu tampilkan hitungan
+  };
+
   // === FUNGSI PENCARIAN (FINAL) ===
   function initSearch() {
     const desktopSearchBtn = document.getElementById("search-trigger-desktop");
@@ -960,6 +998,7 @@ const App = (() => {
     updateCartBadge();
     initExitFeedbackModal();
     setupReactionListeners(); // Panggil fungsi listener reaksi
+    initVisitorCounter(); // <-- INI PANGGILAN YANG BENAR
   };
 
   return {

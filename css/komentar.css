@@ -161,3 +161,36 @@
   word-wrap: break-word;
   color: var(--light-text);
 }
+/* File: css/komentar.css */
+
+/* Wadah baru untuk menampung judul komentar dan penghitung pengunjung */
+.comment-section-header {
+  display: flex;
+  justify-content: space-between; /* Membuat elemen di dalamnya terpisah */
+  align-items: center; /* Membuatnya sejajar secara vertikal */
+  margin-bottom: 20px; /* Jarak ke form komentar */
+  flex-wrap: wrap; /* Agar responsif di layar kecil */
+  gap: 15px;
+}
+
+.comment-section h3 {
+  margin-bottom: 0; /* Hapus margin bawah dari H3 karena sudah diatur di parent */
+}
+
+/* Gaya untuk elemen penghitung pengunjung */
+.visitor-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: var(--dark-text); /* Warna teks yang tidak terlalu mencolok */
+  background-color: var(--card-bg); /* Latar belakang yang sama dengan kartu */
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.visitor-counter i {
+  color: var(--secondary-color); /* Warna ikon kuning agar menarik */
+}
