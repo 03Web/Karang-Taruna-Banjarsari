@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
   try {
     // 2. Ambil data dari website
     const { userQuestion, knowledgeBase } = req.body;
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
     const prompt = `${knowledgeBase}\n\nPERTANYAAN PENGGUNA:\n"${userQuestion}"`;
 
