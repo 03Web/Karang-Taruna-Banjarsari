@@ -66,11 +66,15 @@
     },
     {
       "id": "album-2",
-      "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/17%20agustusan2025part1.jpg",
+      "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/camp_embung_bansari.jpg",
       "alt_cover": "part of karang taruna banjarsari 2025",
       "judul": "Part of karang taruna banjarsari 2025 ",
       "deskripsi": "30+ Foto",
       "foto": [
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/camp_embung_bansari.jpg",
+          "title": "karnaval + upacara 17 agustusan 2025 part 1"
+        },
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/17%20agustusan2025part1.jpg",
           "title": "karnaval + upacara 17 agustusan 2025 part 1"
