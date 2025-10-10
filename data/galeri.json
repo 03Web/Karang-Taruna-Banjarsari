@@ -225,11 +225,36 @@
     },
     {
       "id": "album-3",
-      "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/tari_karangtaruna_girl2025.jpeg",
+      "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng3.png",
       "alt_cover": "Pementasan kesenian tari oleh Karang Taruna Banjarsari",
       "judul": "Kesenian",
       "deskripsi": "4+ Foto",
       "foto": [
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng3.png",
+          "title": "agustusan 2025 kesenian desa banjarsari",
+          "alt": "Penampilan tari tradisional dari divisi kesenian Karang Taruna Banjarsari"
+        },
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng5.png",
+          "title": "agustusan 2025 kesenian desa banjarsari",
+          "alt": "Penampilan tari tradisional dari divisi kesenian Karang Taruna Banjarsari"
+        },
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng4.png",
+          "title": "agustusan 2025 kesenian desa banjarsari",
+          "alt": "Penampilan tari tradisional dari divisi kesenian Karang Taruna Banjarsari"
+        },
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_Topeng1.png",
+          "title": "agustusan 2025 kesenian desa banjarsari",
+          "alt": "Penampilan tari tradisional dari divisi kesenian Karang Taruna Banjarsari"
+        },
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_Topeng.png",
+          "title": "agustusan 2025 kesenian desa banjarsari",
+          "alt": "Penampilan tari tradisional dari divisi kesenian Karang Taruna Banjarsari"
+        },
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/tari_karangtaruna_girl2025.jpeg",
           "title": "lengger new formasi-2025",
@@ -268,6 +293,11 @@
       "tanggal": "2025-08-24",
       "src": "https://www.youtube-nocookie.com/embed/4ffl3sw_1fU?si=PK1fKtywwmEsSiBl",
       "title": "WSB Warok Suro Budoyo desa Banjarsari, Kandangan, temanggung.2025"
+    },
+    {
+      "tanggal": "2025-08-05",
+      "src": "https://www.youtube-nocookie.com/embed/dTkrIrK3Kyg?si=70s8qGRC-uCoUU7x",
+      "title": "Video Kegiatan Mei 2025"
     },
     {
       "tanggal": "2025-08-05",

@@ -1,9 +1,26 @@
 [
   {
+    "id": "sound-system-acara",
+    "nama": "Paket Sound Horeg max 150 desibel",
+    "harga": 30850000,
+    "gambar": "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg",
+    "gambar_produk": [
+      "https://kuyou.id/content/images/thomas-alva-edi-sound-20250730015831.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIM5L1BP3Fya8JApxpcqx9komtWiwIC0xSsQ&s",
+      "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg"
+    ],
+    "penjual_wa": "6285876983793",
+    "rating": 4.8,
+    "terjual": "100+",
+    "lokasi": "Desa Banjarsari rt 03 rw 02",
+    "kategori": "sewa",
+    "deskripsi": "Sound system SUPER HOREG 矧 yang bikin THT langganan! 曹唱 Dengan 150db membuat tetangga ikut joget sampai 3 RT. Paket lengkap: 4 speaker aktif penggetar jiwa, 2 subwoofer pengguncang bumi, mixer 16ch, & 4 mic wireless. Sertakan kartu BPJS ya! 七"
+  },
+  {
     "id": "alat-prasmanan-lengkap",
     "nama": "Set Alat Prasmanan Komplit 500 Orang",
     "harga": 2574000,
-    "gambar": "https://jasamarketingonline.produkrakyat.id/wp-content/uploads/2024/03/WhatsApp-Image-2024-01-24-at-13.43.51-1-840x473.jpeg",
+    "gambar": "https://img-cdn.medkomtek.com/GODr8KoME9I3KvnVoblFBqlPAdk=/0x0/smart/filters:quality(100):format(webp)/article/WdOaeBu1YG5c-B7ppGhNt/original/044190900_1564115402-Jangan-Ambil-4-Makanan-Ini-di-Restoran-Prasmanan-By-LElik83-Shutterstock.jpg",
     "gambar_produk": [
       "https://sewaalatcateringterbaik.smartbiz.co.id/wp-content/uploads/2024/08/cropped-Sewa-alat.png",
       "https://jasamarketingonline.produkrakyat.id/wp-content/uploads/2024/03/WhatsApp-Image-2024-01-24-at-13.43.51-1-840x473.jpeg",
@@ -33,23 +50,7 @@
     "kategori": "sewa",
     "deskripsi": "Tenda ukuran besar 8x12 meter dengan dinding full, lantai karpet, dan 10 kipas angin. Cocok untuk acara pernikahan, pengajian, atau kegiatan desa lainnya."
   },
-  {
-    "id": "sound-system-acara",
-    "nama": "Paket Sound Horeg max 150 desibel",
-    "harga": 30850000,
-    "gambar": "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg",
-    "gambar_produk": [
-      "https://kuyou.id/content/images/thomas-alva-edi-sound-20250730015831.jpg",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIM5L1BP3Fya8JApxpcqx9komtWiwIC0xSsQ&s",
-      "https://rewangrencang.com/wp-content/uploads/2025/04/images-17.jpeg"
-    ],
-    "penjual_wa": "6285876983793",
-    "rating": 4.8,
-    "terjual": "100+",
-    "lokasi": "Desa Banjarsari rt 03 rw 02",
-    "kategori": "sewa",
-    "deskripsi": "Sound system SUPER HOREG 矧 yang bikin THT langganan! 曹唱 Dengan 150db membuat tetangga ikut joget sampai 3 RT. Paket lengkap: 4 speaker aktif penggetar jiwa, 2 subwoofer pengguncang bumi, mixer 16ch, & 4 mic wireless. Sertakan kartu BPJS ya! 七"
-  },
+
   {
     "id": "meja-kursi-paket",
     "nama": "Set 50 Meja & 200 Kursi tidak lengkap",
