@@ -122,7 +122,7 @@
 "deskripsi": "Seputar website, tambah konten, laporan bug/error, atau saran? Hubungi saya.",
 "foto": "https://03web.github.io/amaz03/foto/new0/new_profil_black&white_22_09_2025.png",
 "alt": "Foto Admin Website Amazia",
-"whatsapp": "#",
+"whatsapp": "6285876983793",
 "pesan_wa": "Halo, saya ingin melaporkan isu terkait website (bug/tambah konten/dll)."
 }
 ]

@@ -312,46 +312,83 @@ const App = (() => {
   }
 
   // === MODAL KONTRIBUSI ===
+  // === MODAL KONTRIBUSI (VERSI PERBAIKAN) ===
   async function showContributionModal() {
     const modal = document.getElementById("contribution-modal");
     if (!modal) return;
 
-    const kontakData = await fetchData("kontak", "data/kontak.json");
-    const admin = kontakData.find((k) => k.jabatan === "Admin Website");
+    // 1. TAMPILKAN MODALNYA DULU!
+    // Ini adalah kunci perbaikannya, kita pindahkan dari bawah ke atas.
+    modal.classList.remove("hidden");
 
-    if (!admin) {
-      console.error("Data admin website tidak ditemukan!");
-      return;
+    // 2. Sembunyikan formulir login (overlay) yang tadi sudah di-submit
+    const welcomeOverlay = document.getElementById("welcome-overlay");
+    if (welcomeOverlay) {
+      welcomeOverlay.classList.add("hidden");
     }
 
+    // 3. Ambil semua tombol
     const yesBtn = document.getElementById("contribute-yes-btn");
     const noBtn = document.getElementById("contribute-no-btn");
     const closeBtn = modal.querySelector(".modal-close-btn");
 
+    // 4. Buat fungsi untuk menutup modal
     const closeModal = () => {
-      const welcomeOverlay = document.getElementById("welcome-overlay");
       modal.classList.add("hidden");
-      if (welcomeOverlay) welcomeOverlay.classList.add("hidden");
-      startInactivityTracker();
+      startInactivityTracker(); // Mulai timer sesi setelah semua selesai
     };
 
-    yesBtn.onclick = () => {
-      const waLink = `https://wa.me/${admin.whatsapp}?text=${encodeURIComponent(
-        "Halo Admin, saya tertarik untuk berkontribusi dalam pengembangan web Karang Taruna Banjarsari."
-      )}`;
-      window.open(waLink, "_blank");
-      closeModal();
-    };
-
+    // 5. Pasang fungsi 'closeModal' ke tombol "Tidak" dan "X"
     noBtn.onclick = closeModal;
     closeBtn.onclick = closeModal;
 
-    modal.classList.remove("hidden");
+    // 6. Sekarang, kita coba cari data admin dengan aman (di dalam try..catch)
+    try {
+      // PERHATIKAN: Saya mengganti ".json" menjadi ".md" agar sesuai dengan file Anda
+      const kontakData = await fetchData("kontak", "data/kontak.md"); // [PERUBAHAN DISINI]
+
+      // Cek jika data berhasil dimuat
+      if (!kontakData) {
+        throw new Error("File kontak.md tidak ditemukan atau kosong.");
+      }
+
+      // Karena ini file .md, kita perlu parse sebagai JSON (asumsi formatnya JSON di dalam MD)
+      // Jika 'fetchData' Anda tidak otomatis parse .md, kita perlu parse di sini
+      // Tapi kita anggap 'fetchData' mengembalikan array jika sukses
+
+      const admin = kontakData.find((k) => k.jabatan === "Admin Website");
+
+      // 7. Jika admin TIDAK DITEMUKAN
+      if (!admin) {
+        console.error(
+          "Data admin website tidak ditemukan di dalam file kontak!"
+        );
+        yesBtn.textContent = "Data Admin Error"; // Beri tahu pengguna
+        yesBtn.disabled = true; // Nonaktifkan tombol "Ya"
+        return; // Keluar dari try...catch, tapi modal tetap tampil
+      }
+
+      // 8. Jika admin DITEMUKAN, pasang fungsi ke tombol "Ya"
+      yesBtn.onclick = () => {
+        const waLink = `https://wa.me/${
+          admin.whatsapp
+        }?text=${encodeURIComponent(
+          "Halo Admin, saya tertarik untuk berkontribusi dalam pengembangan web Karang Taruna Banjarsari."
+        )}`;
+        window.open(waLink, "_blank");
+        closeModal();
+      };
+    } catch (error) {
+      // 9. Jika terjadi error apapun (file tidak ada, salah format, dll)
+      console.error("Gagal memuat data kontak admin:", error);
+      yesBtn.textContent = "Error Memuat Data"; // Beri tahu pengguna
+      yesBtn.disabled = true; // Nonaktifkan tombol "Ya"
+    }
   }
 
   // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
   function initWelcomeScreen() {
-    const LOGIN_FORM_ENABLED = false;
+    const LOGIN_FORM_ENABLED = true;
 
     const overlay = document.getElementById("welcome-overlay");
     if (!overlay) return;
@@ -449,10 +486,10 @@ const App = (() => {
               Accept: "application/json",
             },
           });
-
+          // ini untuk mengakifkan form login
           if (response.ok) {
             sessionStorage.setItem("isLoggedIn", "true");
-            showContributionModal();
+            showContributionModal(); 
           } else {
             throw new Error("Gagal mengirim data.");
           }
