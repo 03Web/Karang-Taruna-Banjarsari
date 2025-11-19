@@ -388,8 +388,9 @@ const App = (() => {
 
   // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
   function initWelcomeScreen() {
-    const LOGIN_FORM_ENABLED = true;
-
+    /* fom untuk menonaktifkan form login */
+    const LOGIN_FORM_ENABLED = false;
+    /* ------------------------------------------- */
     const overlay = document.getElementById("welcome-overlay");
     if (!overlay) return;
 
@@ -489,7 +490,7 @@ const App = (() => {
           // ini untuk mengakifkan form login
           if (response.ok) {
             sessionStorage.setItem("isLoggedIn", "true");
-            showContributionModal(); 
+            showContributionModal();
           } else {
             throw new Error("Gagal mengirim data.");
           }
