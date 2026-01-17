@@ -1,342 +1,318 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>Kotak Aspirasi Karang Taruna Banjarsari, Temanggung</title>
-    <meta
-      name="description"
-      content="Sampaikan ide, kritik, dan saran Anda secara terbuka atau anonim untuk membangun Karang Taruna Banjarsari, Temanggung, menjadi lebih baik. Kami mendengarkan."
-    />
-    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/chatbot.css" />
-    <link rel="stylesheet" href="css/komentar.css" />
 
-    <style>
-      /* ... CSS Anda yang lain tetap di sini ... */
-      .aspirasi-intro {
-        margin: 0 auto 1.2rem auto; /* Mengurangi margin bawah antar paragraf */
-        font-style: italic;
-        color: var(--dark-text);
-      }
-      .aspirasi-intro:last-child {
-        margin-bottom: 0;
-      }
-      .aspirasi-intro strong.sub-heading {
-        display: block;
-        margin-bottom: 10px;
-        font-style: normal;
-        color: var(--light-text);
-        font-size: 1.1em;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Kotak Aspirasi Karang Taruna Banjarsari, Temanggung</title>
+  <meta name="description"
+    content="Sampaikan ide, kritik, dan saran Anda secara terbuka atau anonim untuk membangun Karang Taruna Banjarsari, Temanggung, menjadi lebih baik. Kami mendengarkan." />
+  <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
+  <link rel="stylesheet" href="css/komentar.css" />
 
-      .form-aspirasi {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: left;
-        background-color: var(--card-bg);
-        padding: 30px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-      }
-      .form-group {
-        margin-bottom: 20px;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-      }
-      .form-group input,
-      .form-group textarea {
-        width: 100%;
-        padding: 12px;
-        background-color: var(--dark-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 5px;
-        color: var(--light-text);
-        font-family: "Poppins", sans-serif;
-        font-size: 1em;
-      }
-      .form-group textarea {
-        min-height: 150px;
-        resize: vertical;
-      }
-      .submit-btn {
-        display: inline-block;
-        padding: 12px 25px;
-        background-color: var(--primary-color);
-        color: var(--light-text);
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-      }
-      .submit-btn:hover:not(:disabled) {
-        background-color: #0088cc;
-      }
-      .submit-btn:disabled {
-        background-color: #555;
-        cursor: not-allowed;
-      }
-      .form-status {
-        margin-top: 20px;
-        font-weight: bold;
-        text-align: center;
-      }
-      .status-sukses {
-        color: #28a745;
-      }
-      .status-gagal {
-        color: #dc3545;
-      }
-    </style>
-  </head>
-  <body data-page-id="aspirasi">
-    <div id="particles-js"></div>
-    <header id="main-header"></header>
+  <style>
+    /* ... CSS Anda yang lain tetap di sini ... */
+    .aspirasi-intro {
+      margin: 0 auto 1.2rem auto;
+      /* Mengurangi margin bawah antar paragraf */
+      font-style: italic;
+      color: var(--dark-text);
+    }
 
-    <main>
-      <div class="container">
-        <h1 class="animate-on-scroll">Kotak Aspirasi</h1>
+    .aspirasi-intro:last-child {
+      margin-bottom: 0;
+    }
 
-        <div
-          id="collapsible-intro"
-          class="collapsible-container animate-on-scroll"
-        >
-          <h3 class="collapsible-title">
-            "Filosofi kenapa halaman ini bisa ada"
-          </h3>
+    .aspirasi-intro strong.sub-heading {
+      display: block;
+      margin-bottom: 10px;
+      font-style: normal;
+      color: var(--light-text);
+      font-size: 1.1em;
+    }
 
-          <div id="intro-text-wrapper">
-            <p class="aspirasi-intro">
-              Di tengah gema dan narasi besar Indonesia Emas 2045, kita, para
-              pemuda, berdiri di garda terdepan. Data statistik memproyeksikan
-              bahwa pada tahun itu, mayoritas populasi kita—diperkirakan hampir
-              70% atau sekitar 225 juta jiwa—akan berada di usia produktif, dan
-              kitalah yang menjadi tulang punggungnya. Pilihan ada di tangan
-              kita bersama (entah itu akan menjadi bonus demografi atau malah
-              jadi beban demografi, we don't know):
-              <strong
-                >kita tidak sedang memimpikan mimpi yang indah, tetapi sedang
-                memperjuangkan masa depan yang mungkin.</strong
-              >
-              Kita tahu, perubahan tidak datang begitu saja tanpa melakukan apa
-              pun dan tidak selalu dinyalakan oleh obor yang menyala-nyala.
-              Seringkali, ia lahir dari satu percikan kecil yang berani menyulut
-              kesadaran. Arah tujuan juga penting. Kita ingin sampai ke tujuan
-              A, tetapi jalan yang kita tempuh tidak mengarahkan kita ke sana,
-              malah mengarah sebaliknya (on the wrong track). Karena itulah,
-              ruang ini kami ciptakan. Ini lebih dari sekadar halaman web; ini
-              adalah panggung bagi percikan-percikan itu.
-            </p>
-            <p class="aspirasi-intro">
-              <strong class="sub-heading"
-                >Suarakan Tanpa Rasa Takut: Opsi Anonim Untukmu</strong
-              >
-              Kami paham. Terkadang ada rasa sungkan, khawatir dihakimi, atau
-              sekadar tidak nyaman untuk berbicara terus terang. Itu manusiawi.
-              Oleh karena itu, kami menyediakan pilihan bagimu untuk bersuara
-              secara <strong>ANONIM</strong>. Bagi kami, yang terpenting
-              bukanlah siapa yang berbicara, melainkan apa isi gagasannya.
-              Identitasmu boleh tersembunyi, tetapi idemu akan bersinar terang.
-              Gunakan fitur ini sebagai perisaimu agar kejujuranmu bisa
-              tersampaikan tanpa beban.
-            </p>
-            <p class="aspirasi-intro">
-              <strong class="sub-heading"
-                >Kesalahan Adalah Arsitek Kemajuan</strong
-              >
-              Lihatlah sekeliling kita. Dunia yang kita kenal hari ini
-              <strong
-                >tidak dibangun di atas kesempurnaan tanpa cacat &
-                kesalahan.</strong
-              >
-              Setiap kemajuan—dalam ilmu pengetahuan, teknologi, seni, bahkan
-              karakter kita sendiri—lahir dari siklus abadi: kesalahan, kritik,
-              koreksi, dan pertumbuhan. Kritik dan teguran bukanlah tanda
-              kegagalan. Ia adalah denyut nadi kehidupan, bukti bahwa kita masih
-              peduli dan ingin menjadi lebih baik. Tanpa ada yang berani
-              menunjukkan di mana letak retaknya, kita tidak akan pernah bisa
-              membangun sesuatu yang lebih kokoh. Organisasi yang berhenti
-              menerima kritik adalah organisasi yang sedang menuju kematiannya.
-            </p>
-            <p class="aspirasi-intro">
-              <strong class="sub-heading"
-                >Transparansi Ide, Bukan Identitas</strong
-              >
-              Setiap masukan—baik dengan nama ataupun anonim—akan tetap
-              ditampilkan secara publik. Mengapa? Btw, ngomongin soal ini saya
-              jadi teringat dan suka banget sama analogi sejarah keemasan Islam,
-              yang puncaknya itu sekitar abad ke-8 hingga ke-13. Periode itu
-              disebut 'masa keemasan' karena para ilmuwan dan pemikirnya sangat
-              terbuka. Di tempat seperti Baitul Hikmah (Rumah Kebijaksanaan) di
-              Baghdad, mereka tidak hanya menerjemahkan ilmu dari peradaban
-              lain, tapi juga aktif berdebat, mengkritik, dan mengembangkan
-              ide-ide itu.Hasilnya apa? Lahirlah aljabar, kemajuan besar di
-              bidang kedokteran, astronomi, dan filsafat. Mereka bisa maju pesat
-              justru karena keterbukaan ide dan debat filosofis jadi hal yang
-              biasa. Nah, karena itulah, transparansi ini bukan untuk menghakimi
-              individu, tetapi untuk memberdayakan ide secara kolektif. Dengan
-              melihat semua gagasan secara terbuka, kita bisa belajar bersama,
-              berdebat secara sehat, dan mengawal setiap percikan agar tidak
-              padam sia-sia.
-            </p>
-            <p class="aspirasi-intro">
-              <strong class="sub-heading">Take to action</strong>
-              Maka, jangan biarkan rasa takut membungkam suaramu. Jangan biarkan
-              keraguan memadamkan percikan apimu. Entah dengan namamu terpampang
-              atau dalam heningnya anonimitas, sampaikanlah. Satu gagasan jujur
-              darimu bisa menjadi koreksi yang paling kita butuhkan. Dan satu
-              koreksi adalah langkah pertama menuju versi terbaik dari
-              <strong>Karang Taruna Banjarsari.</strong> Mari kita bangun masa
-              depan itu bersama. Satu kritik, satu saran, satu ide pada satu
-              waktu.
-            </p>
-          </div>
-          <button id="toggle-intro-btn" class="toggle-button">
-            Baca Selengkapnya...
-          </button>
+    .form-aspirasi {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--dark-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      color: var(--light-text);
+      font-family: "Poppins", sans-serif;
+      font-size: 1em;
+    }
+
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background-color: #0088cc;
+    }
+
+    .submit-btn:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    .form-status {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .status-sukses {
+      color: #28a745;
+    }
+
+    .status-gagal {
+      color: #dc3545;
+    }
+  </style>
+</head>
+
+<body data-page-id="aspirasi">
+  <div id="particles-js"></div>
+  <header id="main-header"></header>
+
+  <main>
+    <div class="container">
+      <div class="page-hero-section">
+        <h1 class="typewriter-title">
+          <span class="typewriter-text" id="aspirasi-title"></span>
+          <span class="typewriter-cursor">|</span>
+        </h1>
+        <div class="typewriter-description-wrapper">
+          <p class="typewriter-description">
+            <span class="typewriter-text" id="aspirasi-description"></span>
+            <span class="typewriter-cursor secondary-cursor">|</span>
+          </p>
         </div>
+      </div>
 
-        <form id="aspirasi-form" class="form-aspirasi animate-on-scroll">
-          <div class="form-group">
-            <label for="nama">Nama Anda (Opsional, boleh anonim)</label>
-            <input
-              type="text"
-              id="nama"
-              name="nama"
-              placeholder="Contoh: Kabol"
-            />
-          </div>
-          <div class="form-group">
-            <label for="subjek">Subjek / Judul Masukan</label>
-            <input
-              type="text"
-              id="subjek"
-              name="subjek"
-              placeholder="Contoh: saya ingin mengusulkan tentang....."
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="pesan">Kritik atau Saran Anda</label>
-            <textarea
-              id="pesan"
-              name="pesan"
-              placeholder="Tuliskan masukan Anda secara detail di sini..."
-              required
-            ></textarea>
-          </div>
-          <button type="submit" class="submit-btn" id="submit-aspirasi-btn">
-            Kirim Aspirasi
-          </button>
-          <div id="form-status" class="form-status"></div>
-        </form>
-        <hr class="separator animate-on-scroll" />
+      <div id="collapsible-intro" class="collapsible-container animate-on-scroll">
+        <h3 class="collapsible-title">
+          "Filosofi kenapa halaman ini bisa ada"
+        </h3>
 
-        <div class="daftar-aspirasi animate-on-scroll">
-          <h2><i class="fas fa-bullhorn"></i> Aspirasi Publik yang Masuk</h2>
-          <p
-            style="
+        <div id="intro-text-wrapper">
+          <p class="aspirasi-intro">
+            Di tengah gema dan narasi besar Indonesia Emas 2045, kita, para
+            pemuda, berdiri di garda terdepan. Data statistik memproyeksikan
+            bahwa pada tahun itu, mayoritas populasi kita—diperkirakan hampir
+            70% atau sekitar 225 juta jiwa—akan berada di usia produktif, dan
+            kitalah yang menjadi tulang punggungnya. Pilihan ada di tangan
+            kita bersama (entah itu akan menjadi bonus demografi atau malah
+            jadi beban demografi, we don't know):
+            <strong>kita tidak sedang memimpikan mimpi yang indah, tetapi sedang
+              memperjuangkan masa depan yang mungkin.</strong>
+            Kita tahu, perubahan tidak datang begitu saja tanpa melakukan apa
+            pun dan tidak selalu dinyalakan oleh obor yang menyala-nyala.
+            Seringkali, ia lahir dari satu percikan kecil yang berani menyulut
+            kesadaran. Arah tujuan juga penting. Kita ingin sampai ke tujuan
+            A, tetapi jalan yang kita tempuh tidak mengarahkan kita ke sana,
+            malah mengarah sebaliknya (on the wrong track). Karena itulah,
+            ruang ini kami ciptakan. Ini lebih dari sekadar halaman web; ini
+            adalah panggung bagi percikan-percikan itu.
+          </p>
+          <p class="aspirasi-intro">
+            <strong class="sub-heading">Suarakan Tanpa Rasa Takut: Opsi Anonim Untukmu</strong>
+            Kami paham. Terkadang ada rasa sungkan, khawatir dihakimi, atau
+            sekadar tidak nyaman untuk berbicara terus terang. Itu manusiawi.
+            Oleh karena itu, kami menyediakan pilihan bagimu untuk bersuara
+            secara <strong>ANONIM</strong>. Bagi kami, yang terpenting
+            bukanlah siapa yang berbicara, melainkan apa isi gagasannya.
+            Identitasmu boleh tersembunyi, tetapi idemu akan bersinar terang.
+            Gunakan fitur ini sebagai perisaimu agar kejujuranmu bisa
+            tersampaikan tanpa beban.
+          </p>
+          <p class="aspirasi-intro">
+            <strong class="sub-heading">Kesalahan Adalah Arsitek Kemajuan</strong>
+            Lihatlah sekeliling kita. Dunia yang kita kenal hari ini
+            <strong>tidak dibangun di atas kesempurnaan tanpa cacat &
+              kesalahan.</strong>
+            Setiap kemajuan—dalam ilmu pengetahuan, teknologi, seni, bahkan
+            karakter kita sendiri—lahir dari siklus abadi: kesalahan, kritik,
+            koreksi, dan pertumbuhan. Kritik dan teguran bukanlah tanda
+            kegagalan. Ia adalah denyut nadi kehidupan, bukti bahwa kita masih
+            peduli dan ingin menjadi lebih baik. Tanpa ada yang berani
+            menunjukkan di mana letak retaknya, kita tidak akan pernah bisa
+            membangun sesuatu yang lebih kokoh. Organisasi yang berhenti
+            menerima kritik adalah organisasi yang sedang menuju kematiannya.
+          </p>
+          <p class="aspirasi-intro">
+            <strong class="sub-heading">Transparansi Ide, Bukan Identitas</strong>
+            Setiap masukan—baik dengan nama ataupun anonim—akan tetap
+            ditampilkan secara publik. Mengapa? Btw, ngomongin soal ini saya
+            jadi teringat dan suka banget sama analogi sejarah keemasan Islam,
+            yang puncaknya itu sekitar abad ke-8 hingga ke-13. Periode itu
+            disebut 'masa keemasan' karena para ilmuwan dan pemikirnya sangat
+            terbuka. Di tempat seperti Baitul Hikmah (Rumah Kebijaksanaan) di
+            Baghdad, mereka tidak hanya menerjemahkan ilmu dari peradaban
+            lain, tapi juga aktif berdebat, mengkritik, dan mengembangkan
+            ide-ide itu.Hasilnya apa? Lahirlah aljabar, kemajuan besar di
+            bidang kedokteran, astronomi, dan filsafat. Mereka bisa maju pesat
+            justru karena keterbukaan ide dan debat filosofis jadi hal yang
+            biasa. Nah, karena itulah, transparansi ini bukan untuk menghakimi
+            individu, tetapi untuk memberdayakan ide secara kolektif. Dengan
+            melihat semua gagasan secara terbuka, kita bisa belajar bersama,
+            berdebat secara sehat, dan mengawal setiap percikan agar tidak
+            padam sia-sia.
+          </p>
+          <p class="aspirasi-intro">
+            <strong class="sub-heading">Take to action</strong>
+            Maka, jangan biarkan rasa takut membungkam suaramu. Jangan biarkan
+            keraguan memadamkan percikan apimu. Entah dengan namamu terpampang
+            atau dalam heningnya anonimitas, sampaikanlah. Satu gagasan jujur
+            darimu bisa menjadi koreksi yang paling kita butuhkan. Dan satu
+            koreksi adalah langkah pertama menuju versi terbaik dari
+            <strong>Karang Taruna Banjarsari.</strong> Mari kita bangun masa
+            depan itu bersama. Satu kritik, satu saran, satu ide pada satu
+            waktu.
+          </p>
+        </div>
+        <button id="toggle-intro-btn" class="toggle-button">
+          Baca Selengkapnya...
+        </button>
+      </div>
+
+      <form id="aspirasi-form" class="form-aspirasi animate-on-scroll">
+        <div class="form-group">
+          <label for="nama">Nama Anda (Opsional, boleh anonim)</label>
+          <input type="text" id="nama" name="nama" placeholder="Contoh: Kabol" />
+        </div>
+        <div class="form-group">
+          <label for="subjek">Subjek / Judul Masukan</label>
+          <input type="text" id="subjek" name="subjek" placeholder="Contoh: saya ingin mengusulkan tentang....."
+            required />
+        </div>
+        <div class="form-group">
+          <label for="pesan">Kritik atau Saran Anda</label>
+          <textarea id="pesan" name="pesan" placeholder="Tuliskan masukan Anda secara detail di sini..."
+            required></textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="submit-aspirasi-btn">
+          Kirim Aspirasi
+        </button>
+        <div id="form-status" class="form-status"></div>
+      </form>
+      <hr class="separator animate-on-scroll" />
+
+      <div class="daftar-aspirasi animate-on-scroll">
+        <h2><i class="fas fa-bullhorn"></i> Aspirasi Publik yang Masuk</h2>
+        <p style="
               text-align: center;
               font-style: italic;
               color: var(--dark-text);
               margin-bottom: 30px;
-            "
-          >
-            Berikut adalah aspirasi yang telah kami terima.
-          </p>
-          <div id="aspirasi-list">
-            <p>Memuat daftar aspirasi...</p>
-          </div>
-        </div>
-      </div>
-      <div class="container" id="comment-section-container">
-        <hr class="separator animate-on-scroll" />
-        <section class="comment-section animate-on-scroll">
-          <div class="comment-section-header">
-            <h3><span id="comment-count">0</span> Komentar</h3>
-            <div class="visitor-counter">
-              <i class="fas fa-chart-bar"></i>
-              <span id="visitor-count-display">Memuat...</span>
-            </div>
-          </div>
-          <form id="comment-form-element" class="comment-form">
-            <div class="comment-avatar-input">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="comment-input-wrapper">
-              <textarea
-                id="comment-pesan"
-                placeholder="Tambahkan komentar..."
-                required
-              ></textarea>
-              <div class="comment-actions">
-                <input
-                  type="text"
-                  id="comment-nama"
-                  placeholder="Nama (opsional)"
-                />
-                <button type="submit" class="comment-submit-btn">Kirim</button>
-              </div>
-            </div>
-          </form>
-
-          <div id="comment-list-container" class="comment-list">
-            <p>Memuat komentar...</p>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer id="main-footer"></footer>
-    <div id="chatbot-container">
-      <div id="chatbot-header">
-        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
-      </div>
-      <div id="chatbot-body">
-        <div id="chat-window">
-          <div class="bot-message">
-            Halo! Ada yang bisa saya bantu seputar Karang Taruna
-            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
-            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
-            jalan" so,jangan sungkan untuk bertanya.
-          </div>
-        </div>
-        <div id="chat-input-container">
-          <input
-            type="text"
-            id="chat-input"
-            placeholder="Ketik pertanyaanmu..."
-          /><button id="send-chat-btn">Kirim</button>
+            ">
+          Berikut adalah aspirasi yang telah kami terima.
+        </p>
+        <div id="aspirasi-list">
+          <p>Memuat daftar aspirasi...</p>
         </div>
       </div>
     </div>
-    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
-    <script
-      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
-      defer
-    ></script>
-    <script src="js/app-core.js" defer></script>
-    <script src="js/page-initializers.js" defer></script>
-    <script src="js/chatbot_knowledge.js" defer></script>
-    <script src="js/chatbot_sederhana.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="js/komentar.js" defer></script>
-  </body>
+    <div class="container" id="comment-section-container">
+      <hr class="separator animate-on-scroll" />
+      <section class="comment-section animate-on-scroll">
+        <div class="comment-section-header">
+          <h3><span id="comment-count">0</span> Komentar</h3>
+          <div class="visitor-counter">
+            <i class="fas fa-chart-bar"></i>
+            <span id="visitor-count-display">Memuat...</span>
+          </div>
+        </div>
+        <form id="comment-form-element" class="comment-form">
+          <div class="comment-avatar-input">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="comment-input-wrapper">
+            <textarea id="comment-pesan" placeholder="Tambahkan komentar..." required></textarea>
+            <div class="comment-actions">
+              <input type="text" id="comment-nama" placeholder="Nama (opsional)" />
+              <button type="submit" class="comment-submit-btn">Kirim</button>
+            </div>
+          </div>
+        </form>
+
+        <div id="comment-list-container" class="comment-list">
+          <p>Memuat komentar...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="main-footer"></footer>
+  <div id="chatbot-container">
+    <div id="chatbot-header">
+      <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+    </div>
+    <div id="chatbot-body">
+      <div id="chat-window">
+        <div class="bot-message">
+          Halo! Ada yang bisa saya bantu seputar Karang Taruna
+          Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+          jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+          jalan" so,jangan sungkan untuk bertanya.
+        </div>
+      </div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ketik pertanyaanmu..." /><button
+          id="send-chat-btn">Kirim</button>
+      </div>
+    </div>
+  </div>
+  <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer></script>
+  <script src="js/app-core.js" defer></script>
+  <script src="js/page-initializers.js" defer></script>
+  <script src="js/chatbot_knowledge.js" defer></script>
+  <script src="js/chatbot_sederhana.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="js/komentar.js" defer></script>
+</body>
+
 </html>

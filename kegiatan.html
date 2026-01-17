@@ -1,137 +1,124 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>
-      Artikel & Jadwal Kegiatan Karang Taruna Banjarsari, Temanggung
-    </title>
-    <meta
-      name="description"
-      content="Kumpulan artikel dan jadwal kegiatan terbaru dari Karang Taruna Banjarsari. Ikuti terus update acara 17 Agustus, bakti sosial, dan program lainnya."
-    />
-    <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/chatbot.css" />
-    <link rel="stylesheet" href="css/komentar.css" />
-  </head>
-  <body data-page-id="kegiatan">
-    <div id="particles-js"></div>
-    <header id="main-header"></header>
-    <main>
-      <div class="container">
-        <h1 class="animate-on-scroll">Daftar Bacaan</h1>
-        <p style="margin-bottom: 20px" class="animate-on-scroll">
-          Jelajahi berbagai artikel karang taruna banjarsari baik yang :
-          "berhubungan dengan karang taruna,topik sedang ramai di bicarakan,
-          random artikel dan informasi lainnya."
-        </p>
-        <div class="filter-container animate-on-scroll">
-          <div class="sort-container">
-            <label for="kategori-filter">Kategori:</label>
-            <select id="kategori-filter" class="sorter">
-              <option value="semua">Semua Kategori</option>
-              <option value="Acara">Acara</option>
-              <option value="Tentang Banjarsari">Tentang Banjarsari</option>
-              <option value="Opini">Opini</option>
-              <option value="Edukasi">Edukasi</option>
-              <option value="Berita">Berita</option>
-            </select>
-          </div>
-          <div class="sort-container">
-            <label for="kegiatan-sorter">Urutkan :</label>
-            <select id="kegiatan-sorter" class="sorter">
-              <option value="terbaru">Terbaru ke Lama</option>
-              <option value="terlama">Lama ke Terbaru</option>
-            </select>
-          </div>
-        </div>
-        <div class="kegiatan-list" id="kegiatan-list"></div>
-      </div>
-      <div class="container" id="comment-section-container">
-        <hr class="separator animate-on-scroll" />
-        <section class="comment-section animate-on-scroll">
-          <div class="comment-section-header">
-            <h3><span id="comment-count">0</span> Komentar</h3>
-            <div class="visitor-counter">
-              <i class="fas fa-chart-bar"></i>
-              <span id="visitor-count-display">Memuat...</span>
-            </div>
-          </div>
-          <form id="comment-form-element" class="comment-form">
-            <div class="comment-avatar-input">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="comment-input-wrapper">
-              <textarea
-                id="comment-pesan"
-                placeholder="Tambahkan komentar..."
-                required
-              ></textarea>
-              <div class="comment-actions">
-                <input
-                  type="text"
-                  id="comment-nama"
-                  placeholder="Nama (opsional)"
-                />
-                <button type="submit" class="comment-submit-btn">Kirim</button>
-              </div>
-            </div>
-          </form>
 
-          <div id="comment-list-container" class="comment-list">
-            <p>Memuat komentar...</p>
-          </div>
-        </section>
-      </div>
-    </main>
-    <footer id="main-footer"></footer>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>
+    Artikel & Jadwal Kegiatan Karang Taruna Banjarsari, Temanggung
+  </title>
+  <meta name="description"
+    content="Kumpulan artikel dan jadwal kegiatan terbaru dari Karang Taruna Banjarsari. Ikuti terus update acara 17 Agustus, bakti sosial, dan program lainnya." />
+  <link rel="icon" type="image/jpeg" href="foto/logokarangtarunabjr.jpeg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
+  <link rel="stylesheet" href="css/komentar.css" />
+</head>
 
-    <div id="chatbot-container">
-      <div id="chatbot-header">
-        <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+<body data-page-id="kegiatan">
+  <div id="particles-js"></div>
+  <header id="main-header"></header>
+  <main>
+    <div class="container">
+      <div class="page-hero-section">
+        <h1 class="typewriter-title">
+          <span class="typewriter-text" id="artikel-title"></span>
+          <span class="typewriter-cursor">|</span>
+        </h1>
+        <div class="typewriter-description-wrapper">
+          <p class="typewriter-description">
+            <span class="typewriter-text" id="artikel-description"></span>
+            <span class="typewriter-cursor secondary-cursor">|</span>
+          </p>
+        </div>
       </div>
-      <div id="chatbot-body">
-        <div id="chat-window">
-          <div class="bot-message">
-            Halo! Ada yang bisa saya bantu seputar Karang Taruna
-            Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
-            jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
-            jalan" so,jangan sungkan untuk bertanya.
+      <div class="filter-container animate-on-scroll">
+        <div class="sort-container">
+          <label for="kategori-filter">Kategori:</label>
+          <select id="kategori-filter" class="sorter">
+            <option value="semua">Semua Kategori</option>
+            <option value="Acara">Acara</option>
+            <option value="Tentang Banjarsari">Tentang Banjarsari</option>
+            <option value="Opini">Opini</option>
+            <option value="Edukasi">Edukasi</option>
+            <option value="Berita">Berita</option>
+          </select>
+        </div>
+        <div class="sort-container">
+          <label for="kegiatan-sorter">Urutkan :</label>
+          <select id="kegiatan-sorter" class="sorter">
+            <option value="terbaru">Terbaru ke Lama</option>
+            <option value="terlama">Lama ke Terbaru</option>
+          </select>
+        </div>
+      </div>
+      <div class="kegiatan-list" id="kegiatan-list"></div>
+    </div>
+    <div class="container" id="comment-section-container">
+      <hr class="separator animate-on-scroll" />
+      <section class="comment-section animate-on-scroll">
+        <div class="comment-section-header">
+          <h3><span id="comment-count">0</span> Komentar</h3>
+          <div class="visitor-counter">
+            <i class="fas fa-chart-bar"></i>
+            <span id="visitor-count-display">Memuat...</span>
           </div>
         </div>
-        <div id="chat-input-container">
-          <input
-            type="text"
-            id="chat-input"
-            placeholder="Ketik pertanyaanmu..."
-          /><button id="send-chat-btn">Kirim</button>
+        <form id="comment-form-element" class="comment-form">
+          <div class="comment-avatar-input">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="comment-input-wrapper">
+            <textarea id="comment-pesan" placeholder="Tambahkan komentar..." required></textarea>
+            <div class="comment-actions">
+              <input type="text" id="comment-nama" placeholder="Nama (opsional)" />
+              <button type="submit" class="comment-submit-btn">Kirim</button>
+            </div>
+          </div>
+        </form>
+
+        <div id="comment-list-container" class="comment-list">
+          <p>Memuat komentar...</p>
         </div>
+      </section>
+    </div>
+  </main>
+  <footer id="main-footer"></footer>
+
+  <div id="chatbot-container">
+    <div id="chatbot-header">
+      <span>Chat dengan AI</span><button id="close-chatbot">-</button>
+    </div>
+    <div id="chatbot-body">
+      <div id="chat-window">
+        <div class="bot-message">
+          Halo! Ada yang bisa saya bantu seputar Karang Taruna
+          Banjarsari?apapun pertanyaan-mu tentang karang taruna akan saya coba
+          jawab se-bisa mungkin.ada pepatah bilang "Malu bertanya sesat di
+          jalan" so,jangan sungkan untuk bertanya.
+        </div>
+      </div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ketik pertanyaanmu..." /><button
+          id="send-chat-btn">Kirim</button>
       </div>
     </div>
-    <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
+  </div>
+  <button id="open-chatbot-btn"><i class="fas fa-comments"></i></button>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"
-      defer
-    ></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    <script src="js/komentar.js" defer></script>
-    <script src="js/app-core.js" defer></script>
-    <script src="js/page-initializers.js" defer></script>
-    <script src="js/chatbot_knowledge.js" defer></script>
-    <script src="js/chatbot_sederhana.js" defer></script>
-  </body>
+  <script src="js/komentar.js" defer></script>
+  <script src="js/app-core.js" defer></script>
+  <script src="js/page-initializers.js" defer></script>
+  <script src="js/chatbot_knowledge.js" defer></script>
+  <script src="js/chatbot_sederhana.js" defer></script>
+</body>
+
 </html>

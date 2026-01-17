@@ -144,22 +144,20 @@ App.initializers.home = async () => {
 
       const createKegiatanTemplate = (item) => `
         <article class="kegiatan-item" style="display: flex; flex-direction: column;">
-          <a href="${
-            item.link
-          }" class="kegiatan-foto" style="width:100%; height: 180px;">
-            <img src="${item.gambar}" alt="${
-        item.alt_gambar || "Gambar Kegiatan " + item.judul
-      }" loading="lazy">
+          <a href="${item.link
+        }" class="kegiatan-foto" style="width:100%; height: 180px;">
+            <img src="${item.gambar}" alt="${item.alt_gambar || "Gambar Kegiatan " + item.judul
+        }" loading="lazy">
           </a>
           <div class="kegiatan-konten">
             <h2>${item.judul}</h2>
             <p class="kegiatan-meta"><i class="fas fa-calendar-alt"></i> ${new Date(
-              item.tanggal
-            ).toLocaleDateString("id-ID", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}</p>
+          item.tanggal
+        ).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}</p>
             <a href="${item.link}" class="kegiatan-tombol">Baca Selengkapnya</a>
           </div>
         </article>`;
@@ -189,31 +187,28 @@ App.initializers.kegiatan = async () => {
       item.link.split("slug=")[1] ||
       `artikel_${new Date(item.tanggal).getTime()}`;
     return `
-    <div class="kegiatan-item-wrapper" data-content-id="${contentId}">
-      <a href="${
-        item.link
-      }" class="kegiatan-item animate-on-scroll" data-kategori="${
-      item.kategori
-    }" data-tanggal="${item.tanggal}">
+    <div class="kegiatan-card animate-on-scroll" data-content-id="${contentId}">
+      <a href="${item.link
+      }" class="kegiatan-link-wrapper" data-kategori="${item.kategori
+      }" data-tanggal="${item.tanggal}">
         <div class="kegiatan-foto">
-          <img src="${item.gambar}" alt="${
-      item.alt_gambar || "Gambar " + item.judul
-    }" loading="lazy">
+          <img src="${item.gambar}" alt="${item.alt_gambar || "Gambar " + item.judul
+      }" loading="lazy">
         </div>
         <div class="kegiatan-konten">
           <h3>${item.judul}</h3>
           <span class="kegiatan-meta">${new Date(
-            item.tanggal
-          ).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}</span>
+        item.tanggal
+      ).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}</span>
           <p>${item.deskripsi}</p>
           <span class="kegiatan-tombol">Baca Selengkapnya</span>
         </div>
       </a>
-      <div class="reaction-buttons" style="padding: 0 20px 15px 20px; background-color: var(--card-bg); border-radius: 0 0 8px 8px; border-top: 1px solid var(--border-color);">
+      <div class="reaction-buttons kegiatan-actions">
           <button class="reaction-btn like-btn"><i class="fas fa-thumbs-up"></i> <span class="like-count">0</span></button>
           <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
       </div>
@@ -270,12 +265,10 @@ App.initializers.galeri = async () => {
     const createAlbumTemplate = (album) => `
     <div class="album-item">
         <div class="album-cover" id="album-cover-${album.id}">
-            <img src="${album.cover}" alt="${
-      album.alt_cover || "Cover album " + album.judul
-    }" loading="lazy">
-            <div class="album-info"><h4>${album.judul}</h4><p>${
-      album.deskripsi
-    }</p></div>
+            <img src="${album.cover}" alt="${album.alt_cover || "Cover album " + album.judul
+      }" loading="lazy">
+            <div class="album-info"><h4>${album.judul}</h4><p>${album.deskripsi
+      }</p></div>
             <div class="click-hint-animated">
                 <i class="fas fa-hand-pointer"></i>
                 <span>Buka Galeri</span>
@@ -283,15 +276,14 @@ App.initializers.galeri = async () => {
         </div>
         <div id="lightgallery-${album.id}" style="display:none;">
             ${album.foto
-              .map(
-                (foto) =>
-                  `<a href="${foto.src}" data-sub-html="<h4>${
-                    foto.title || album.judul
-                  }</h4>" data-alt="${foto.alt || foto.title}">
+        .map(
+          (foto) =>
+            `<a href="${foto.src}" data-sub-html="<h4>${foto.title || album.judul
+            }</h4>" data-alt="${foto.alt || foto.title}">
                       <img src="${foto.src}" alt="${foto.alt || foto.title}" />
                   </a>`
-              )
-              .join("")}
+        )
+        .join("")}
         </div>
     </div>`;
 
@@ -366,12 +358,10 @@ App.initializers.galeri = async () => {
   const videoContainer = document.getElementById("video-grid");
   if (videoContainer && data.dokumentasiVideo) {
     const createVideoTemplate = (video) => `
-        <div class="gallery-item video-item animate-on-scroll" data-tanggal="${
-          video.tanggal
-        }">
-            <iframe src="${video.src.replace("watch?v=", "embed/")}" title="${
-      video.title
-    }" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <div class="gallery-item video-item animate-on-scroll" data-tanggal="${video.tanggal
+      }">
+            <iframe src="${video.src.replace("watch?v=", "embed/")}" title="${video.title
+      }" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>`;
     const renderVideos = (items) =>
       App.renderItems(
@@ -405,9 +395,8 @@ App.initializers.about = async () => {
   }
   const createNode = (jabatan, nama, fotoUrl, altText) => {
     const imageTag = fotoUrl
-      ? `<img src="${fotoUrl}" alt="${
-          altText || "Foto " + nama
-        }" class="foto-node" loading="lazy">`
+      ? `<img src="${fotoUrl}" alt="${altText || "Foto " + nama
+      }" class="foto-node" loading="lazy">`
       : `<span class="foto-node foto-node-placeholder fas fa-user"></span>`;
     return `<div>${imageTag}<span class="jabatan">${jabatan}</span><span class="nama">${nama}</span></div>`;
   };
@@ -514,15 +503,14 @@ App.initializers.kontak = async () => {
 
   const createKontakTemplate = (kontak) => `
     <div class="kontak-card animate-on-scroll">
-      <img src="${kontak.foto}" alt="${
-    kontak.alt
-  }" class="foto-pengurus" loading="lazy" />
+      <img src="${kontak.foto}" alt="${kontak.alt
+    }" class="foto-pengurus" loading="lazy" />
       <h4>${kontak.nama}</h4>
       <p class="jabatan">${kontak.jabatan}</p>
       <p class="info-kontak">${kontak.deskripsi}</p>
       <a href="https://wa.me/${kontak.whatsapp}?text=${encodeURIComponent(
-    kontak.pesan_wa
-  )}" target="_blank" class="wa-button">
+      kontak.pesan_wa
+    )}" target="_blank" class="wa-button">
         <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
       </a>
     </div>`;
@@ -715,15 +703,15 @@ App.initializers.aspirasi = () => {
         <div class="aspirasi-meta">
           <span>Oleh: <strong>${escapeHtml(namaPengirim)}</strong></span>
           <span>Masuk pada: ${new Date(item.tanggal_masuk).toLocaleDateString(
-            "id-ID",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )}</span>
+      "id-ID",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}</span>
         </div>
         <div class="aspirasi-body">
           <p>${escapeHtml(item.pesan)}</p>

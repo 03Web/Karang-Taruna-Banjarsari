@@ -370,11 +370,10 @@ const App = (() => {
 
       // 8. Jika admin DITEMUKAN, pasang fungsi ke tombol "Ya"
       yesBtn.onclick = () => {
-        const waLink = `https://wa.me/${
-          admin.whatsapp
-        }?text=${encodeURIComponent(
-          "Halo Admin, saya tertarik untuk berkontribusi dalam pengembangan web Karang Taruna Banjarsari."
-        )}`;
+        const waLink = `https://wa.me/${admin.whatsapp
+          }?text=${encodeURIComponent(
+            "Halo Admin, saya tertarik untuk berkontribusi dalam pengembangan web Karang Taruna Banjarsari."
+          )}`;
         window.open(waLink, "_blank");
         closeModal();
       };
@@ -439,7 +438,7 @@ const App = (() => {
           );
           const nextPosition =
             positions[
-              (positions.indexOf(currentPosition) + 1) % positions.length
+            (positions.indexOf(currentPosition) + 1) % positions.length
             ];
           btn.classList.remove(currentPosition || "no-shift");
           btn.classList.add(nextPosition);
@@ -943,6 +942,258 @@ const App = (() => {
     });
   };
 
+  // === FUNGSI TYPEWRITER ANIMATION (ADVANCED) ===
+
+  // Reusable function to type text character by character
+  const typeText = (element, text, speed, callback) => {
+    let index = 0;
+    const type = () => {
+      if (index < text.length) {
+        element.textContent += text.charAt(index);
+        index++;
+        setTimeout(type, speed);
+      } else if (callback) {
+        callback();
+      }
+    };
+    type();
+  };
+
+  // Function to show cursor, type text, then hide cursor
+  const typeWithCursor = (textElement, cursorElement, text, speed, callback) => {
+    if (cursorElement) {
+      cursorElement.style.display = 'inline-block';
+    }
+    typeText(textElement, text, speed, () => {
+      if (cursorElement) {
+        cursorElement.style.display = 'none';
+      }
+      if (callback) callback();
+    });
+  };
+
+  // Main typewriter initialization for home page
+  const initHomeTypewriter = () => {
+    const titleElement = document.getElementById("hero-title");
+    const descElement = document.getElementById("hero-description");
+    const heroButton = document.querySelector(".hero-button-animated");
+    const titleCursor = document.querySelector(".typewriter-cursor:not(.secondary-cursor)");
+    const descCursor = document.querySelector(".typewriter-cursor.secondary-cursor");
+
+    if (!titleElement || !descElement) return;
+
+    const titleText = "Membangun Pemuda, Mengabdi pada Desa";
+    const descText = "Selamat datang di pusat aktivitas digital Karang Taruna Banjarsari. Temukan info terbaru, suarakan aspirasi, dan jadilah bagian dari gerakan kami.";
+
+    // Hide description cursor initially
+    if (descCursor) descCursor.style.display = 'none';
+
+    setTimeout(() => {
+      typeWithCursor(titleElement, titleCursor, titleText, 40, () => {
+        setTimeout(() => {
+          typeWithCursor(descElement, descCursor, descText, 15, () => {
+            // Show button after typing completes
+            if (heroButton) {
+              heroButton.classList.add("visible");
+              setTimeout(() => heroButton.classList.add("pulse"), 500);
+            }
+          });
+        }, 300);
+      });
+    }, 500);
+  };
+
+  // Main typewriter initialization for about page
+  const initAboutTypewriter = () => {
+    const titleElement = document.getElementById("about-title");
+    const descElement = document.getElementById("about-description");
+    const titleCursor = document.querySelector(".typewriter-cursor:not(.secondary-cursor)");
+    const descCursor = document.querySelector(".typewriter-cursor.secondary-cursor");
+
+    // Visi elements
+    const visiTitle = document.getElementById("visi-title");
+    const visiContent = document.getElementById("visi-content");
+    const visiCursor = document.querySelector(".visi-cursor");
+    const visiContentCursor = document.querySelector(".visi-content-cursor");
+
+    // Misi elements
+    const misiTitle = document.getElementById("misi-title");
+    const misiCursor = document.querySelector(".misi-cursor");
+    const misiList = document.getElementById("misi-list");
+
+    if (!titleElement || !descElement) return;
+
+    const titleText = "Tentang Kami";
+    const descText = "Karang Taruna Banjarsari adalah organisasi kepemudaan yang menjadi wadah bagi para generasi muda untuk berkembang, berkreasi, dan berkontribusi secara positif bagi lingkungan dan masyarakat Desa Banjarsari.";
+    const visiTitleText = "Visi";
+    const visiContentText = "Menjadi organisasi pemuda yang mandiri, kreatif, inovatif, dan menjadi pilar utama dalam Pembudayaan Desa dan pembangunan kesejahteraan sosial di Desa Banjarsari.";
+    const misiTitleText = "Misi";
+    const misiItems = [
+      "Mengembangkan potensi dan kreativitas pemuda di berbagai bidang.",
+      "Menyelenggarakan kegiatan sosial, keagamaan, Kesenian dan olahraga.",
+      "Membangun kemitraan strategis dengan berbagai pihak.",
+      "Menjaga kelestarian lingkungan dan kearifan lokal."
+    ];
+
+    // Hide all cursors initially except the first
+    if (descCursor) descCursor.style.display = 'none';
+    if (visiCursor) visiCursor.style.display = 'none';
+    if (visiContentCursor) visiContentCursor.style.display = 'none';
+    if (misiCursor) misiCursor.style.display = 'none';
+
+    // Function to type misi items one by one
+    const typeMisiItems = (items, index, callback) => {
+      if (index >= items.length) {
+        if (callback) callback();
+        return;
+      }
+
+      const li = document.createElement("li");
+      li.className = "misi-item-typewriter";
+      const textSpan = document.createElement("span");
+      const cursorSpan = document.createElement("span");
+      cursorSpan.className = "typewriter-cursor misi-item-cursor";
+      cursorSpan.textContent = "|";
+
+      li.appendChild(textSpan);
+      li.appendChild(cursorSpan);
+      misiList.appendChild(li);
+
+      typeWithCursor(textSpan, cursorSpan, items[index], 12, () => {
+        setTimeout(() => {
+          typeMisiItems(items, index + 1, callback);
+        }, 150);
+      });
+    };
+
+    // Start the sequential animation
+    setTimeout(() => {
+      // 1. Type title
+      typeWithCursor(titleElement, titleCursor, titleText, 50, () => {
+        setTimeout(() => {
+          // 2. Type description
+          typeWithCursor(descElement, descCursor, descText, 12, () => {
+            setTimeout(() => {
+              // 3. Type Visi title
+              typeWithCursor(visiTitle, visiCursor, visiTitleText, 60, () => {
+                setTimeout(() => {
+                  // 4. Type Visi content
+                  typeWithCursor(visiContent, visiContentCursor, visiContentText, 10, () => {
+                    setTimeout(() => {
+                      // 5. Type Misi title
+                      typeWithCursor(misiTitle, misiCursor, misiTitleText, 60, () => {
+                        setTimeout(() => {
+                          // 6. Type Misi items
+                          typeMisiItems(misiItems, 0, () => {
+                            console.log("About page typewriter animation complete!");
+                          });
+                        }, 200);
+                      });
+                    }, 300);
+                  });
+                }, 200);
+              });
+            }, 400);
+          });
+        }, 300);
+      });
+    }, 500);
+  };
+
+  // Generic typewriter initialization for standard pages (Galeri, Toko, etc.)
+  const initGenericTypewriter = (config) => {
+    const titleElement = document.getElementById(config.titleId);
+    const descElement = document.getElementById(config.descId);
+    const titleCursor = document.querySelector(config.titleCursor);
+    const descCursor = document.querySelector(config.descCursor);
+    const extraContent = document.querySelector(config.extraContentSelector);
+
+    if (!titleElement || !descElement) return;
+
+    if (descCursor) descCursor.style.display = 'none';
+    if (extraContent) {
+      extraContent.style.opacity = '0';
+      extraContent.style.transform = 'translateY(20px)';
+      extraContent.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    }
+
+    setTimeout(() => {
+      typeWithCursor(titleElement, titleCursor, config.titleText, 50, () => {
+        setTimeout(() => {
+          typeWithCursor(descElement, descCursor, config.descText, 15, () => {
+            if (extraContent) {
+              extraContent.style.opacity = '1';
+              extraContent.style.transform = 'translateY(0)';
+            }
+          });
+        }, 300);
+      });
+    }, 500);
+  };
+
+  // Wrapper function to initialize typewriter based on page
+  const initTypewriterAnimation = (pageId) => {
+    if (pageId === "home") {
+      initHomeTypewriter();
+    } else if (pageId === "about") {
+      initAboutTypewriter();
+    } else {
+      // Configs for other pages
+      const genericConfigs = {
+        galeri: {
+          titleId: "galeri-title",
+          descId: "galeri-description",
+          titleCursor: ".typewriter-cursor:not(.secondary-cursor)",
+          descCursor: ".typewriter-cursor.secondary-cursor",
+          titleText: "Galeri Kami",
+          descText: "Dokumentasi visual dari berbagai kegiatan Karang Taruna Banjarsari.",
+          extraContentSelector: null
+        },
+        toko: {
+          titleId: "toko-title",
+          descId: "toko-description",
+          titleCursor: ".typewriter-cursor:not(.secondary-cursor)",
+          descCursor: ".typewriter-cursor.secondary-cursor",
+          titleText: "Toko Produk Lokal",
+          descText: "Jelajahi dan dukung karya terbaik dari para pelaku UMKM di Banjarsari.",
+          extraContentSelector: ".toko-alert-warning"
+        },
+        kegiatan: { // Artikel
+          titleId: "artikel-title",
+          descId: "artikel-description",
+          titleCursor: ".typewriter-cursor:not(.secondary-cursor)",
+          descCursor: ".typewriter-cursor.secondary-cursor",
+          titleText: "Daftar Bacaan",
+          descText: 'Jelajahi berbagai artikel karang taruna banjarsari baik yang : "berhubungan dengan karang taruna,topik sedang ramai di bicarakan, random artikel dan informasi lainnya."',
+          extraContentSelector: null
+        },
+        aspirasi: {
+          titleId: "aspirasi-title",
+          descId: "aspirasi-description",
+          titleCursor: ".typewriter-cursor:not(.secondary-cursor)",
+          descCursor: ".typewriter-cursor.secondary-cursor",
+          titleText: "Kotak Aspirasi",
+          descText: "Sampaikan ide, kritik, dan saran Anda secara terbuka atau anonim untuk membangun Karang Taruna Banjarsari menjadi lebih baik.",
+          extraContentSelector: null
+        },
+        kontak: {
+          titleId: "kontak-title",
+          descId: "kontak-description",
+          titleCursor: ".typewriter-cursor:not(.secondary-cursor)",
+          descCursor: ".typewriter-cursor.secondary-cursor",
+          titleText: "Hubungi Kami",
+          descText: "Kami siap terhubung dengan Anda. Silakan hubungi kami melalui informasi di bawah ini.",
+          extraContentSelector: ".kontak-extra-info"
+        }
+      };
+
+      if (genericConfigs[pageId]) {
+        initGenericTypewriter(genericConfigs[pageId]);
+      }
+    }
+  };
+
+
   // === INITIALIZER UTAMA ===
   const initPage = () => {
     const isIndexPage =
@@ -1014,6 +1265,7 @@ const App = (() => {
     }
 
     initScrollAnimations();
+
     if (document.getElementById("particles-js")) {
       setTimeout(initParticles, 500);
     }
@@ -1021,6 +1273,12 @@ const App = (() => {
     InteractionManager.init(); // PANGGIL INISIALISASI MANAGER DI SINI
 
     const pageId = document.body.dataset.pageId;
+
+    // Initialize typewriter animation based on page
+    if (pageId) {
+      initTypewriterAnimation(pageId);
+    }
+
     if (pageId && typeof App.initializers[pageId] === "function") {
       App.initializers[pageId]();
     }

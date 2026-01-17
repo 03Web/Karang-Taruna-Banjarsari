@@ -34,18 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
         filteredProducts.forEach((product) => {
           const contentId = `produk_${product.id}`;
           const productCard = `
-            <div class="product-card-wrapper animate-on-scroll" data-content-id="${contentId}">
-                <a href="detail-produk.html?id=${
-                  product.id
-                }" class="product-card" data-id="${product.id}">
-                    <img src="${product.gambar}" alt="${
-            product.nama
-          }" class="product-image">
+            <div class="product-card animate-on-scroll" data-content-id="${contentId}">
+                <a href="detail-produk.html?id=${product.id
+            }" class="product-card-link" data-id="${product.id}">
+                    <img src="${product.gambar}" alt="${product.nama
+            }" class="product-image">
                     <div class="product-info">
                         <p class="product-name">${product.nama}</p>
                         <p class="product-price">${formatRupiah(
-                          product.harga
-                        )}</p>
+              product.harga
+            )}</p>
                         <div class="product-details">
                             <div class="product-location">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -53,14 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <div class="product-stats">
                                 <i class="fas fa-star"></i>
-                                <span>${product.rating} | Terjual ${
-            product.terjual
-          }</span>
+                                <span>${product.rating} | Terjual ${product.terjual
+            }</span>
                             </div>
                         </div>
                     </div>
                 </a>
-                <div class="reaction-buttons" style="padding: 10px; background-color: var(--card-bg); border-radius: 0 0 8px 8px; border-top: 1px solid var(--border-color);">
+                <div class="reaction-buttons product-actions">
                     <button class="reaction-btn like-btn"><i class="fas fa-thumbs-up"></i> <span class="like-count">0</span></button>
                     <button class="reaction-btn dislike-btn"><i class="fas fa-thumbs-down"></i> <span class="dislike-count">0</span></button>
                 </div>
