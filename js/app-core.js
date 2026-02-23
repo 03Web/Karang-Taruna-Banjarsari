@@ -1193,6 +1193,60 @@ const App = (() => {
     }
   };
 
+  // === INTRO PRELOADER ===
+  const initIntroPreloader = (callback) => {
+    const preloader = document.getElementById("intro-preloader");
+    if (!preloader) {
+      if (callback) callback();
+      return;
+    }
+
+    const isIndexPage =
+      window.location.pathname.endsWith("/") ||
+      window.location.pathname.includes("index.html") ||
+      window.location.pathname === "";
+
+    // Hanya tampilkan di beranda dan sekali per sesi
+    if (!isIndexPage || sessionStorage.getItem("introShown")) {
+      preloader.style.display = "none";
+      if (callback) callback();
+      return;
+    }
+
+    // Kunci scroll saat intro
+    document.body.style.overflow = "hidden";
+
+    const quoteElement = document.getElementById("intro-quote-text");
+    const cursorElement = document.querySelector(".intro-cursor");
+    const authorElement = document.getElementById("intro-author-text");
+
+    const quoteText = "“Bila kaum muda yang telah belajar di sekolah dan menganggap dirinya terlalu tinggi dan pintar untuk melebur dengan masyarakat yang bekerja dengan cangkul dan hanya memiliki cita-cita yang sederhana, maka lebih baik pendidikan itu tidak diberikan sama sekali”";
+    const authorText = "— Tan Malaka";
+
+    // Mulai sequence intro setelah loading awal
+    setTimeout(() => {
+      typeWithCursor(quoteElement, cursorElement, quoteText, 40, () => {
+        // Tampilkan teks penulis setelah quote selesai diketik
+        setTimeout(() => {
+          authorElement.textContent = authorText;
+          authorElement.classList.add("visible");
+
+          // Tunggu 6 detik untuk dibaca, lalu fade-out perlahan
+          setTimeout(() => {
+            preloader.classList.add("hidden");
+
+            // Tunggu transisi selesai
+            setTimeout(() => {
+              preloader.style.display = "none";
+              document.body.style.overflow = "";
+              sessionStorage.setItem("introShown", "true");
+              if (callback) callback();
+            }, 1200);
+          }, 6000);
+        }, 500);
+      });
+    }, 800);
+  };
 
   // === INITIALIZER UTAMA ===
   const initPage = () => {
@@ -1252,11 +1306,18 @@ const App = (() => {
     });
     loadComponent("layout/footer.html", "main-footer");
 
-    if (document.getElementById("welcome-overlay")) {
-      initWelcomeScreen();
-    } else if (isLoggedIn) {
-      startInactivityTracker();
+    // Inisialisasi particles terlebih dahulu jika berada di index
+    if (document.getElementById("particles-js")) {
+      initParticles();
     }
+
+    initIntroPreloader(() => {
+      if (document.getElementById("welcome-overlay")) {
+        initWelcomeScreen();
+      } else if (isLoggedIn) {
+        startInactivityTracker();
+      }
+    });
 
     if (window.innerWidth <= 768) {
       window.addEventListener("scroll", handleMobileHeaderScroll, {
@@ -1266,7 +1327,8 @@ const App = (() => {
 
     initScrollAnimations();
 
-    if (document.getElementById("particles-js")) {
+    // initParticles sudah dipanggil lebih awal jika ada intro
+    if (document.getElementById("particles-js") && sessionStorage.getItem("introShown")) {
       setTimeout(initParticles, 500);
     }
 

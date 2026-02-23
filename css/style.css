@@ -4122,3 +4122,82 @@ body[data-page-id="aspirasi"] .container {
 #identity-confirm-btn {
   width: 100%;
 }
+
+/* ========================================= */
+/* === INTRO PRELOADER (Typewriter Quote)=== */
+/* ========================================= */
+#intro-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--dark-bg);
+  /* Ensures nothing behind shows through while typing */
+  z-index: 100000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 1.2s ease-in-out;
+}
+
+#intro-preloader.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-content {
+  max-width: 80%;
+  text-align: center;
+  color: #c5c6c7;
+  font-family: 'Poppins', sans-serif;
+}
+
+.intro-quote {
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.intro-author {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #66fcf1;
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+
+.intro-author.visible {
+  opacity: 1;
+}
+
+.intro-cursor {
+  display: inline-block;
+  font-weight: bold;
+  opacity: 1;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .intro-quote {
+    font-size: 1.1rem;
+  }
+
+  .intro-author {
+    font-size: 1rem;
+  }
+}

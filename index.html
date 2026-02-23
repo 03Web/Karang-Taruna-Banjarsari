@@ -43,6 +43,19 @@
 </head>
 
 <body data-page-id="home">
+  <!-- Elemen partikel harus di bawah intro-preloader secara z-index, jadi bisa diletakkan di awal -->
+  <div id="particles-js"></div>
+
+  <!-- Intro Preloader Container -->
+  <div id="intro-preloader" class="intro-active">
+    <div class="intro-content">
+      <p class="intro-quote">
+        <span id="intro-quote-text"></span><span class="intro-cursor" style="display:none;">|</span>
+      </p>
+      <p class="intro-author" id="intro-author-text"></p>
+    </div>
+  </div>
+
   <div id="contribution-modal" class="hidden">
     <div class="modal-content">
       <span class="modal-close-btn">&times;</span>
@@ -105,7 +118,6 @@
     </div>
   </div>
 
-  <div id="particles-js"></div>
   <header id="main-header"></header>
 
   <main>
