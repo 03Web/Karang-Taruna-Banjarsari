@@ -416,11 +416,13 @@ footer {
 /* Main Card Container */
 .kegiatan-card,
 .kegiatan-item {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   overflow: hidden;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
   display: flex;
   flex-direction: column;
 }
@@ -428,6 +430,7 @@ footer {
 .kegiatan-card:hover,
 .kegiatan-item:hover {
   transform: translateY(-5px);
+  background-color: rgba(28, 28, 30, 0.8);
   box-shadow: 0 10px 20px rgba(0, 170, 255, 0.12);
 }
 
@@ -1475,8 +1478,10 @@ select.sorter:focus {
 }
 
 .contact-link-item {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 25px 30px;
   text-decoration: none;
@@ -1490,7 +1495,7 @@ select.sorter:focus {
 
 .contact-link-item:hover {
   transform: translateY(-5px);
-  background-color: var(--primary-color);
+  background-color: rgba(28, 28, 30, 0.8);
   color: #fff;
   border-color: var(--primary-color);
   box-shadow: 0 8px 20px rgba(0, 170, 255, 0.2);
@@ -2671,34 +2676,38 @@ a:hover {
 }
 
 .quick-link-item {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 25px;
-  text-decoration: none;
-  color: var(--light-text);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  padding: 25px 20px;
+  background-color: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--light-text);
   transition: all 0.3s ease;
-}
-
-.quick-link-item:hover {
-  transform: translateY(-5px);
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  gap: 15px;
 }
 
 .quick-link-item i {
   font-size: 2.5em;
-  margin-bottom: 15px;
+  color: var(--primary-color);
+  transition: transform 0.3s ease;
 }
 
 .quick-link-item span {
-  font-weight: bold;
-  font-style: normal;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.quick-link-item:hover {
+  transform: translateY(-5px);
+  background-color: rgba(28, 28, 30, 0.8);
+  box-shadow: 0 10px 20px rgba(0, 170, 255, 0.15);
+  border-color: var(--primary-color);
 }
 
 /* --- HIGHLIGHT SECTION --- */
@@ -2868,14 +2877,23 @@ a:hover {
   flex: 0 0 auto;
   width: 300px;
   scroll-snap-align: start;
-  background-color: #1c1c1e;
-  border: 1px solid var(--border-color);
+  background-color: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 25px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(28, 28, 30, 0.8);
+  box-shadow: 0 10px 20px rgba(0, 170, 255, 0.12);
 }
 
 .testimonial-header {
@@ -2890,6 +2908,9 @@ a:hover {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
 }
 
 .testimonial-user {
