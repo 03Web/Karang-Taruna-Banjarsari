@@ -50,14 +50,28 @@ App.initializers.home = async () => {
       // Panggil fungsi update UI untuk setiap testimoni
       testimonialData.forEach((item) => App.updateReactionUI(item.id));
 
-      // === LOGIKA CAROUSEL DAN BACA SELENGKAPNYA ===
+      // === LOGIKA CAROUSEL SEAMLESS INFINITE & DINAMIS ===
       setTimeout(() => {
         const carousel = testimonialContainer;
-        const items = carousel.querySelectorAll(".testimonial-card");
+        let items = carousel.querySelectorAll(".testimonial-card");
         if (items.length <= 1) return;
 
-        let autoPlayInterval;
+        // 1. Gandakan elemen untuk efek infinite (Berputar tanpa ujung)
+        // Kita gandakan sehingga cukup panjang untuk menutupi scroll
+        const originalItems = Array.from(items);
+        originalItems.forEach((item) => {
+          const clone = item.cloneNode(true);
+          carousel.appendChild(clone);
+        });
+
+        // Update items array dengan elemen yang baru digandakan
+        items = carousel.querySelectorAll(".testimonial-card");
         const firstItem = items[0];
+
+        // Memastikan scroll behavior adalah auto agar manipulasi JS halus
+        carousel.style.scrollBehavior = "auto";
+        // Hilangkan snap agar scroll kontinyu mulus
+        carousel.style.scrollSnapType = "none";
 
         const initializeReadMore = () => {
           const charLimit = 150;
@@ -65,9 +79,10 @@ App.initializers.home = async () => {
           items.forEach((card) => {
             const body = card.querySelector(".testimonial-body");
             const p = body.querySelector("p");
+            if (!p) return;
             const fullText = p.getAttribute("data-fulltext");
 
-            if (fullText.length > charLimit) {
+            if (fullText && fullText.length > charLimit) {
               const shortText = fullText.substring(0, charLimit);
               p.innerHTML = `
                 <span class="short-text">"${shortText}..."</span>
@@ -76,56 +91,98 @@ App.initializers.home = async () => {
               `;
 
               const readMoreBtn = p.querySelector(".read-more-btn");
-              readMoreBtn.addEventListener("click", () => {
-                items.forEach((otherCard) => {
-                  if (otherCard !== card) {
-                    otherCard
-                      .querySelector(".testimonial-body")
-                      .classList.remove("expanded");
-                  }
+              if (readMoreBtn) {
+                readMoreBtn.addEventListener("click", () => {
+                  items.forEach((otherCard) => {
+                    if (otherCard !== card) {
+                      otherCard
+                        .querySelector(".testimonial-body")
+                        .classList.remove("expanded");
+                    }
+                  });
+                  body.classList.toggle("expanded");
+                  // Optional: pause if they click read more
+                  isPaused = true;
                 });
-                body.classList.toggle("expanded");
-                stopAutoPlay();
-              });
-            } else {
+              }
+            } else if (fullText) {
               p.innerHTML = `"${fullText}"`;
             }
           });
         };
 
-        const startAutoPlay = () => {
-          stopAutoPlay();
-          autoPlayInterval = setInterval(() => {
-            const scrollAmount = firstItem.offsetWidth + 25;
-            const isAtEnd =
-              carousel.scrollLeft + carousel.clientWidth >=
-              carousel.scrollWidth - 1;
-            if (isAtEnd) {
-              carousel.scrollTo({ left: 0, behavior: "smooth" });
-            } else {
-              carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        initializeReadMore();
+
+        // 2. Animasi Scroll Konstan yang Sangat Mulus (RequestAnimationFrame)
+        let isPaused = false;
+        let scrollPos = 0;
+        let animationFrameId;
+        const speed = 0.8; // Kecepatan ideal: halus dan dinamis, tidak terlalu cepat
+
+        const startSmoothScroll = () => {
+          if (!isPaused) {
+            scrollPos += speed;
+
+            // Jarak satu set original (lebar total keseluruhan dibagi 2 karena kita gandakan 1x)
+            const maxScroll = carousel.scrollWidth / 2;
+
+            if (scrollPos >= maxScroll) {
+              scrollPos -= maxScroll; // Reset tanpa disadari user (seamless)
             }
-          }, 5000);
+
+            carousel.scrollLeft = scrollPos;
+
+            // Jika user secara manual men-scroll, sinkronisasi scrollPos agar tidak bentrok
+            if (Math.abs(carousel.scrollLeft - Math.round(scrollPos)) > 2) {
+              scrollPos = carousel.scrollLeft;
+            }
+          }
+          animationFrameId = requestAnimationFrame(startSmoothScroll);
         };
 
-        const stopAutoPlay = () => clearInterval(autoPlayInterval);
+        const stopSmoothScroll = () => {
+          cancelAnimationFrame(animationFrameId);
+        };
 
-        nextBtn.addEventListener("click", () => {
-          const scrollAmount = firstItem.offsetWidth + 25;
-          carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        // Mulai animasi
+        startSmoothScroll();
+
+        // 3. Interaksi Responsif: Berhenti saat disentuh / di-hover
+        wrapper.addEventListener("mouseenter", () => isPaused = true);
+        wrapper.addEventListener("mouseleave", () => {
+          isPaused = false;
+          // Tutup read more jika mouse leave agar konsisten rapi
+          items.forEach((card) => {
+            card.querySelector(".testimonial-body").classList.remove("expanded");
+          });
         });
 
-        prevBtn.addEventListener("click", () => {
-          const scrollAmount = firstItem.offsetWidth + 25;
-          carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        // Touch support di HP (pause saat di tap/scroll)
+        wrapper.addEventListener("touchstart", () => isPaused = true, { passive: true });
+        wrapper.addEventListener("touchend", () => {
+          setTimeout(() => { isPaused = false; }, 2000); // Lanjut setelah 2 detik
         });
 
-        wrapper.addEventListener("mouseenter", stopAutoPlay);
-        wrapper.addEventListener("mouseleave", startAutoPlay);
+        // 4. Integrasi Tombol Navigasi Manual
+        const manualScroll = (direction) => {
+          const scrollAmount = firstItem.offsetWidth + 25;
+          scrollPos += direction * scrollAmount;
 
-        initializeReadMore();
-        startAutoPlay();
-      }, 100);
+          // Animasi manual menggunakan behavior smooth dari browser API
+          carousel.scrollTo({
+            left: scrollPos,
+            behavior: "smooth"
+          });
+
+          isPaused = true;
+          clearTimeout(wrapper.resumeTimeout);
+          wrapper.resumeTimeout = setTimeout(() => { isPaused = false; }, 3000);
+        };
+
+        nextBtn.addEventListener("click", () => manualScroll(1));
+        prevBtn.addEventListener("click", () => manualScroll(-1));
+
+      }, 150);
     } else {
       testimonialContainer.innerHTML =
         "<p>Gagal memuat testimoni atau data kosong.</p>";
