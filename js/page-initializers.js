@@ -88,21 +88,29 @@ App.initializers.home = async () => {
                 <span class="short-text">"${shortText}..."</span>
                 <span class="full-text">"${fullText}"</span>
                 <button class="read-more-btn">selengkapnya</button>
+                <button class="read-less-btn" style="display:none; background:none; border:none; color:var(--primary-color); font-weight:bold; cursor:pointer; padding:0; margin-left:5px; font-family:'Poppins', sans-serif; font-size:0.95em;">tutup</button>
               `;
 
               const readMoreBtn = p.querySelector(".read-more-btn");
-              if (readMoreBtn) {
+              const readLessBtn = p.querySelector(".read-less-btn");
+
+              if (readMoreBtn && readLessBtn) {
                 readMoreBtn.addEventListener("click", () => {
+                  // Tutup card lain yang mungkin sedang terbuka
                   items.forEach((otherCard) => {
                     if (otherCard !== card) {
-                      otherCard
-                        .querySelector(".testimonial-body")
-                        .classList.remove("expanded");
+                      otherCard.querySelector(".testimonial-body").classList.remove("expanded");
+                      const otherLess = otherCard.querySelector(".read-less-btn");
+                      if (otherLess) otherLess.style.display = "none";
                     }
                   });
-                  body.classList.toggle("expanded");
-                  // Optional: pause if they click read more
-                  isPaused = true;
+                  body.classList.add("expanded");
+                  readLessBtn.style.display = "inline";
+                });
+
+                readLessBtn.addEventListener("click", () => {
+                  body.classList.remove("expanded");
+                  readLessBtn.style.display = "none";
                 });
               }
             } else if (fullText) {
@@ -120,7 +128,11 @@ App.initializers.home = async () => {
         const speed = 0.8; // Kecepatan ideal: halus dan dinamis, tidak terlalu cepat
 
         const startSmoothScroll = () => {
-          if (!isPaused) {
+          // Cari apakah ada card yang sedang dibuka (expanded)
+          const hasExpandedCard = carousel.querySelector(".testimonial-body.expanded") !== null;
+
+          // Animasi jalan jika tidak di-pause dan TIDAK ADA card yang sedang dibaca selengkapnya
+          if (!isPaused && !hasExpandedCard) {
             scrollPos += speed;
 
             // Jarak satu set original (lebar total keseluruhan dibagi 2 karena kita gandakan 1x)
@@ -151,16 +163,15 @@ App.initializers.home = async () => {
         wrapper.addEventListener("mouseenter", () => isPaused = true);
         wrapper.addEventListener("mouseleave", () => {
           isPaused = false;
-          // Tutup read more jika mouse leave agar konsisten rapi
-          items.forEach((card) => {
-            card.querySelector(".testimonial-body").classList.remove("expanded");
-          });
+          // KITA HAPUS penutupan paksa expanded disini.
+          // Biarkan user menutup manual pakai tombol "tutup" agar nyaman saat dibaca
         });
 
         // Touch support di HP (pause saat di tap/scroll)
         wrapper.addEventListener("touchstart", () => isPaused = true, { passive: true });
         wrapper.addEventListener("touchend", () => {
-          setTimeout(() => { isPaused = false; }, 2000); // Lanjut setelah 2 detik
+          // Beri jeda agak lama setelah jari dilepas sebelum jalan lagi otomatis
+          setTimeout(() => { isPaused = false; }, 2500);
         });
 
         // 4. Integrasi Tombol Navigasi Manual
