@@ -721,7 +721,7 @@ const App = (() => {
     const db = firebase.database();
     const counterRef = db.ref("visitor_stats/total_visits");
 
-    // Fungsi untuk menampilkan angka terbaru dari Firebase
+    // Fungsi untuk menampilkan angka terbaru dari Firebase secara realtime
     const displayCount = () => {
       counterRef.on("value", (snapshot) => {
         const count = snapshot.val() || 0;
@@ -730,15 +730,28 @@ const App = (() => {
       });
     };
 
-    // Fungsi untuk menambah +1 ke hitungan setiap kali halaman dimuat
+    // Fungsi untuk menambah +1 ke hitungan pengunjung
     const incrementCount = () => {
-      // Transaksi ini akan selalu berjalan dan menambah 1 pada angka di database
-      counterRef.transaction((currentCount) => {
-        return (currentCount || 0) + 1;
-      });
+      // Menggunakan sessionStorage agar pengunjung hanya dihitung 1x per sesi kunjungan.
+      // sessionStorage akan hilang ketika tab di tutup, jadi setiap awal visit (tab baru) dihitung sebagai 1.
+      const hasVisited = sessionStorage.getItem("visitor_counted");
+      
+      if (!hasVisited) {
+        // Langsung set session untuk menghindari penambahan double jika halaman me-load sangat cepat
+        sessionStorage.setItem("visitor_counted", "true");
+        
+        // Transaksi ini akan berjalan dan menambah 1 pada angka total_visits di database
+        counterRef.transaction((currentCount) => {
+          return (currentCount || 0) + 1;
+        }).catch((error) => {
+          // Jika terjadi error dari firebase, hapus penanda agar bisa dihitung ulang nanti
+          console.error("Gagal mengupdate jumlah pengunjung:", error);
+          sessionStorage.removeItem("visitor_counted");
+        });
+      }
     };
 
-    // Jalankan kedua fungsi ini setiap kali halaman dimuat
+    // Jalankan kedua fungsi ini
     incrementCount();
     displayCount();
   };

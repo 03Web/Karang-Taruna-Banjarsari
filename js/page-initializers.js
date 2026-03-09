@@ -335,8 +335,7 @@ App.initializers.galeri = async () => {
         <div class="album-cover" id="album-cover-${album.id}">
             <img src="${album.cover}" alt="${album.alt_cover || "Cover album " + album.judul
       }" loading="lazy">
-            <div class="album-info"><h4>${album.judul}</h4><p>${album.deskripsi
-      }</p></div>
+            <div class="album-info"><h4>${album.judul}</h4><p>${album.foto ? album.foto.length : 0} Foto</p></div>
             <div class="click-hint-animated">
                 <i class="fas fa-hand-pointer"></i>
                 <span>Buka Galeri</span>
