@@ -223,6 +223,19 @@
         }
       ]
     },
+     {
+      "id": "album-3",
+      "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/part%20of%202026/bukber-part-of-2025.webp",
+      "alt_cover": "part of karang taruna banjarsari 2026",
+      "judul": "Part of karang taruna banjarsari 2026 ",
+      "deskripsi": "30+ Foto",
+      "foto": [
+        {
+          "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/part%20of%202026/bukber-part-of-2025.webp",
+          "title": "bukber"
+        }
+      ]
+    },
     {
       "id": "album-3",
       "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng3.webp",
