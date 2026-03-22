@@ -328,12 +328,22 @@ App.initializers.galeri = async () => {
   const data = await App.fetchData("galeri", "data/galeri.json");
   if (!data) return;
 
+  const getDirectImageUrl = (url) => {
+    if (!url) return '';
+    const driveRegex = /drive\.google\.com\/file\/d\/([^\/]+)/;
+    const match = url.match(driveRegex);
+    if (match && match[1]) {
+      return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+    }
+    return url;
+  };
+
   const albumContainer = document.getElementById("album-grid");
   if (albumContainer && data.albumFoto) {
     const createAlbumTemplate = (album) => `
     <div class="album-item">
         <div class="album-cover" id="album-cover-${album.id}">
-            <img src="${album.cover}" alt="${album.alt_cover || "Cover album " + album.judul
+            <img src="${getDirectImageUrl(album.cover)}" alt="${album.alt_cover || "Cover album " + album.judul
       }" loading="lazy">
             <div class="album-info"><h4>${album.judul}</h4><p>${album.foto ? album.foto.length : 0} Foto</p></div>
             <div class="click-hint-animated">
@@ -345,9 +355,9 @@ App.initializers.galeri = async () => {
             ${album.foto
         .map(
           (foto) =>
-            `<a href="${foto.src}" data-sub-html="<h4>${foto.title || album.judul
+            `<a href="${getDirectImageUrl(foto.src)}" data-sub-html="<h4>${foto.title || album.judul
             }</h4>" data-alt="${foto.alt || foto.title}">
-                      <img src="${foto.src}" alt="${foto.alt || foto.title}" />
+                      <img src="${getDirectImageUrl(foto.src)}" alt="${foto.alt || foto.title}" />
                   </a>`
         )
         .join("")}

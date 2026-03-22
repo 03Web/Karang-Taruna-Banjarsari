@@ -75,12 +75,22 @@
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/camp_embung_bansari.webp",
           "title": "Camping di Embung Bansari 2025"
         },
+
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/17%20agustusan2025part1.webp",
           "title": "karnaval + upacara 17 agustusan 2025 part 1"
         },
+
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/foto_bareng_17agst2025_non_lapangan.webp",
+          "title": "karnaval + upacara 17 agustusan 2025 part 1"
+        },
+        {
+          "src": "https://drive.google.com/file/d/1TT-oBXdl0PdKSwYBcEMSPK7Hx4MgUBhv/view?usp=sharing",
+          "title": "karnaval + upacara 17 agustusan 2025 part 1"
+        },
+        {
+          "src": "https://drive.google.com/file/d/11wI9jOh3G5J3cU7IF2u_al5fFEM78Rji/view?usp=sharing",
           "title": "karnaval + upacara 17 agustusan 2025 part 1"
         },
         {
@@ -90,6 +100,10 @@
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/17%20agustusan%20girl2025.webp",
           "title": "karnaval + upacara 17 agustusan 2025 part 3"
+        },
+        {
+          "src": "https://drive.google.com/file/d/1pgePK_Z8WJbDT9Gxphl1EMgbAqqmgS0W/view?usp=sharing",
+          "title": "🤳📷"
         },
         {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/Desktop%20Screenshot%202025.08.13%20-%2023.45.02.88.webp",
@@ -202,6 +216,11 @@
           "alt": "Diskusi panitia acara 17 Agustus 2025 Karang Taruna Banjarsari"
         },
         {
+          "src": "https://drive.google.com/file/d/1rrTGB3_FpiZhZ4IfCpNU4D09czX4Qfsm/view?usp=sharing",
+          "title": "lomba",
+          "alt": "Lomba 17 Agustus 2025 yang diadakan oleh Karang Taruna Banjarsari"
+        },
+        {
           "src": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/foto-karang-taruna/behind%20the%20scene1.webp",
           "title": "behind the scene - film pendek memperingati 17 agustusan 2025",
           "alt": "Di balik layar pembuatan film pendek 17 Agustus 2025 oleh Karang Taruna Banjarsari"
@@ -223,7 +242,7 @@
         }
       ]
     },
-     {
+    {
       "id": "album-3",
       "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/part%20of%202026/bukber-part-of-2025.webp",
       "alt_cover": "part of karang taruna banjarsari 2026",
@@ -237,7 +256,7 @@
       ]
     },
     {
-      "id": "album-3",
+      "id": "album-4",
       "cover": "https://03web.github.io/amaz03/foto/Karang-taruna-galeri/agustusan17-08-25/agustusan_topeng3.webp",
       "alt_cover": "Pementasan kesenian tari oleh Karang Taruna Banjarsari",
       "judul": "Kesenian",
@@ -324,9 +343,15 @@
     },
     {
       "tanggal": "2024-08-03",
+      "src": "https://www.youtube.com/embed/QdXpvq8eJJc?si=Sva_mZGkIvayhLrT",
+      "title": "profil desa banjarsari"
+    },
+    {
+      "tanggal": "2024-08-03",
       "src": "https://www.youtube-nocookie.com/embed/e4Hf66XR63Y?si=MuUPPTAiWtQNDCiy&amp;start=5",
       "title": "tari topeng ireng"
     },
+
     {
       "tanggal": "2024-08-2",
       "src": "https://www.youtube.com/embed/RTY0e3aInDw?si=Be2ysZ615m0m6CKd",
