@@ -2961,39 +2961,38 @@ a:hover {
   background-color: rgba(88, 166, 255, 0.1);
 }
 
-/* Tombol Navigasi (Sama seperti galeri) */
+/* Wrapper Carousel untuk ruang tombol panah di desktop */
+.testimonial-carousel-wrapper {
+  position: relative;
+  padding: 0 55px; /* Memberi ruang di sisi kiri & kanan khusus untuk panah */
+}
+
+/* Tombol Navigasi (Disembunyikan Sesuai Permintaan) */
 .carousel-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(28, 28, 30, 0.7);
-  border: 1px solid var(--border-color);
-  color: var(--light-text);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.5em;
-  cursor: pointer;
-  z-index: 10;
-  transition: background-color 0.2s ease;
-  user-select: none;
+  display: none !important;
 }
 
 .carousel-nav-btn:hover {
   background-color: var(--primary-color);
   color: #000;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 15px rgba(0, 170, 255, 0.4);
 }
 
 .carousel-nav-btn.prev {
-  left: -20px;
+  left: 0;
 }
 
 .carousel-nav-btn.next {
-  right: -20px;
+  right: 0;
 }
 
 /* Sembunyikan tombol di mobile, biarkan scroll manual */
 @media (max-width: 768px) {
+  .testimonial-carousel-wrapper {
+    padding: 0;
+  }
+  
   .carousel-nav-btn {
     display: none;
   }
