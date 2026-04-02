@@ -24,17 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
     openBtn.style.display = "block";
   });
 
-  // --- Fungsi untuk mendapatkan riwayat chat dari sessionStorage ---
+  // --- Fungsi untuk mendapatkan riwayat chat dari localStorage ---
   function getChatHistory() {
-    const history = sessionStorage.getItem("chatbotHistory");
+    const history = localStorage.getItem("chatbotHistory");
     return history ? JSON.parse(history) : [];
   }
 
-  // --- Fungsi untuk menyimpan riwayat chat ke sessionStorage ---
+  // --- Fungsi untuk menyimpan riwayat chat ke localStorage ---
   function saveChatHistory(history) {
     // Batasi maksimal 30 item terakhir (15 tanya + 15 jawab)
     const limitedHistory = history.slice(-30);
-    sessionStorage.setItem("chatbotHistory", JSON.stringify(limitedHistory));
+    localStorage.setItem("chatbotHistory", JSON.stringify(limitedHistory));
   }
 
   // --- Fungsi yang sudah diubah dengan support history ---
