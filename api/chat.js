@@ -1,5 +1,51 @@
 // File: api/chat.js
 
+const fs = require("fs");
+const path = require("path");
+
+const KNOWLEDGE_PAYLOAD_PATH = path.join(
+  process.cwd(),
+  "js",
+  "encrypted_output.txt",
+);
+const KNOWLEDGE_SECRET_KEY =
+  process.env.CHATBOT_KNOWLEDGE_KEY || "KTA_Banjarsari2025_SecureKey";
+
+let cachedKnowledgeBase = null;
+
+function xorCipher(text, key) {
+  let result = "";
+
+  for (let i = 0; i < text.length; i += 1) {
+    result += String.fromCharCode(
+      text.charCodeAt(i) ^ key.charCodeAt(i % key.length),
+    );
+  }
+
+  return result;
+}
+
+function loadKnowledgeBase() {
+  if (cachedKnowledgeBase) {
+    return cachedKnowledgeBase;
+  }
+
+  const encryptedPayload = fs.readFileSync(KNOWLEDGE_PAYLOAD_PATH, "utf8").trim();
+
+  if (!encryptedPayload) {
+    throw new Error("Payload knowledge chatbot kosong.");
+  }
+
+  const encryptedText = Buffer.from(encryptedPayload, "base64").toString();
+  cachedKnowledgeBase = xorCipher(encryptedText, KNOWLEDGE_SECRET_KEY);
+
+  if (!cachedKnowledgeBase.includes("INFORMASI UMUM ORGANISASI")) {
+    throw new Error("Knowledge chatbot gagal didekripsi.");
+  }
+
+  return cachedKnowledgeBase;
+}
+
 module.exports = async (req, res) => {
   // Mengatasi masalah CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,8 +67,16 @@ module.exports = async (req, res) => {
 
   try {
     // 2. Ambil data dari website
-    const { userQuestion, knowledgeBase, history = [] } = req.body;
+    const { userQuestion, history = [] } = req.body;
     const API_URL = "https://api.deepseek.com/v1/chat/completions";
+    const knowledgeBase = loadKnowledgeBase();
+    const safeHistory = Array.isArray(history) ? history : [];
+
+    if (typeof userQuestion !== "string" || !userQuestion.trim()) {
+      return res.status(400).json({ error: "Pertanyaan pengguna tidak valid." });
+    }
+
+    const normalizedQuestion = userQuestion.trim();
 
     // System Prompt dengan instruksi ketat
     const systemPrompt = `
@@ -46,20 +100,17 @@ ${knowledgeBase}
 
     // 3. Susun payload untuk DeepSeek API dengan format percakapan
     const messages = [
-      // Pesan pertama: System instructions
       {
         role: "system",
         content: systemPrompt,
       },
-      // History percakapan sebelumnya (jika ada)
-      ...history.map((msg) => ({
+      ...safeHistory.map((msg) => ({
         role: msg.role === "model" ? "assistant" : msg.role,
         content: msg.content,
       })),
-      // Pertanyaan pengguna saat ini
       {
         role: "user",
-        content: userQuestion,
+        content: normalizedQuestion,
       },
     ];
 

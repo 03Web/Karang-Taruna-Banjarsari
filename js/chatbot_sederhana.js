@@ -70,18 +70,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Fungsi yang sudah diubah dengan support history ---
   async function getAiResponse(userQuestion, history) {
-    if (typeof KNOWLEDGE_BASE === "undefined") {
-      return "Error: Basis pengetahuan tidak dapat dimuat.";
-    }
-
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userQuestion: userQuestion,
-          knowledgeBase: KNOWLEDGE_BASE,
-          history: history,
+          userQuestion,
+          history,
         }),
       });
 
