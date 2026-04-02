@@ -24,8 +24,21 @@ document.addEventListener("DOMContentLoaded", () => {
     openBtn.style.display = "block";
   });
 
-  // --- Fungsi yang sudah diubah ---
-  async function getAiResponse(userQuestion) {
+  // --- Fungsi untuk mendapatkan riwayat chat dari sessionStorage ---
+  function getChatHistory() {
+    const history = sessionStorage.getItem("chatbotHistory");
+    return history ? JSON.parse(history) : [];
+  }
+
+  // --- Fungsi untuk menyimpan riwayat chat ke sessionStorage ---
+  function saveChatHistory(history) {
+    // Batasi maksimal 30 item terakhir (15 tanya + 15 jawab)
+    const limitedHistory = history.slice(-30);
+    sessionStorage.setItem("chatbotHistory", JSON.stringify(limitedHistory));
+  }
+
+  // --- Fungsi yang sudah diubah dengan support history ---
+  async function getAiResponse(userQuestion, history) {
     if (typeof KNOWLEDGE_BASE === "undefined") {
       return "Error: Basis pengetahuan tidak dapat dimuat.";
     }
@@ -37,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({
           userQuestion: userQuestion,
           knowledgeBase: KNOWLEDGE_BASE,
+          history: history,
         }),
       });
 
@@ -52,19 +66,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Sisa fungsi di bawah ini tidak perlu diubah ---
+  // --- Fungsi untuk menangani pengiriman pesan dengan history ---
   const handleSendMessage = async () => {
     const question = chatInput.value.trim();
     if (!question) return;
+
+    // Ambil history dari sessionStorage
+    let history = getChatHistory();
+
+    // Tambahkan pesan user ke history
+    history.push({ role: "user", content: question });
+
+    // Tampilkan pesan user di chat window
     addMessageToWindow(question, "user-message");
     chatInput.value = "";
+
+    // Tampilkan indikator loading
     addMessageToWindow("", "bot-message", true);
-    const answer = await getAiResponse(question);
+
+    // Kirim request ke API dengan history
+    const answer = await getAiResponse(question, history);
+
+    // Hapus indikator loading
     const loadingIndicator = document.getElementById("loading-indicator");
     if (loadingIndicator) {
       loadingIndicator.remove();
     }
+
+    // Tampilkan jawaban bot
     addMessageToWindow(answer, "bot-message");
+
+    // Tambahkan jawaban bot ke history dan simpan ke sessionStorage
+    history.push({ role: "model", content: answer });
+    saveChatHistory(history);
   };
 
   const addMessageToWindow = (message, className, isLoading = false) => {

@@ -525,15 +525,17 @@ const KNOWLEDGE_BASE = `
       ================================
       PETA SITUS (URL MAPPING) UNTUK REFERENSI AI
       ================================
-      Instruksi untuk AI: Ketika menjawab pertanyaan pengguna, SELALU sertakan link (URL) yang relevan ke halaman website jika topik jawaban terkait dengan halaman tersebut. Gunakan format HTML <a href="...">...</a> untuk membuat link yang bisa diklik.
+      Instruksi untuk AI: Ketika menjawab pertanyaan pengguna, SELALU sertakan link (URL) yang relevan ke halaman website jika topik jawaban terkait dengan halaman tersebut. Gunakan format HTML <a href="..." style="color: #007bff; font-weight: bold; text-decoration: underline;">...</a> untuk membuat link yang bisa diklik.
 
       Daftar Halaman Website:
-      - Beranda: <a href="/index.html">Beranda</a>
-      - Profil, Pengurus, Visi Misi: <a href="/about.html">Tentang Kami</a>
-      - Galeri Foto & Video: <a href="/galeri.html">Galeri</a>
-      - Toko Produk: <a href="/toko.html">Toko</a>
-      - Daftar Kegiatan: <a href="/kegiatan.html">Kegiatan</a>
-      - Artikel Edukasi & Opini: <a href="/artikel.html">Artikel</a>
-      - Form Aspirasi: <a href="/aspirasi.html">Formulir Aspirasi</a>
+      - Beranda: <a href="index.html">Beranda</a>
+      - Tentang Kami (Profil, Pengurus, Visi Misi): <a href="about.html">Tentang Kami</a>
+      - Galeri Foto & Video: <a href="galeri.html">Galeri</a>
+      - Toko Produk: <a href="toko.html">Toko</a>
+      - Daftar Kegiatan: <a href="kegiatan.html">Kegiatan</a>
+      - Artikel / Berita Umum: <a href="artikel.html">Artikel</a>
+      - Form Aspirasi / Kontak: <a href="aspirasi.html">Formulir Aspirasi</a>
+      - Artikel Indonesia Apa Adanya: <a href="konten-kegiatan/edukasi/Indonesia-Apa-Adanya-Dari-Kolonialisme-Hingga-Panggung-Demokrasi.html">Baca Artikel Indonesia</a>
+      - Artikel Pengangguran Sarjana: <a href="konten-kegiatan/berita/lampu_merah_pengangguran_sarjana.html">Baca Artikel Pengangguran</a>
 
   `;

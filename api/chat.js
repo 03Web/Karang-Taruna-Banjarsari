@@ -21,35 +21,58 @@ module.exports = async (req, res) => {
 
   try {
     // 2. Ambil data dari website
-    const { userQuestion, knowledgeBase } = req.body;
+    const { userQuestion, knowledgeBase, history = [] } = req.body;
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    const prompt = `
+    // System Prompt dengan instruksi ketat
+    const systemPrompt = `
 Kamu adalah Asisten AI resmi Karang Taruna Banjarsari. Tugas kamu adalah menjawab pertanyaan pengguna dengan ramah, informatif, dan membantu.
 
 ATURAN WAJIB:
 1. Jika pertanyaan pengguna berkaitan dengan topik yang ada di "PETA SITUS (URL MAPPING)", kamu WAJIB menyertakan link (URL) yang bisa diklik menggunakan tag HTML <a href="...">...</a> di jawabanmu.
-2. Selalu gunakan format HTML <a href="...">...</a> untuk semua link yang kamu berikan.
+2. SETIAP link HARUS menyertakan atribut style inline ini: style="color: #007bff; font-weight: bold; text-decoration: underline;" agar link ter-highlight dengan baik.
 3. Jawaban harus relevan dengan knowledge base yang diberikan.
+4. Untuk jawaban yang panjang atau memiliki banyak poin, gunakan bullet points (-) atau paragraf terstruktur agar rapi dan mudah dibaca.
+5. Gunakan formatting HTML yang rapi (<p>, <ul>, <li>) jika diperlukan.
 
 CONTOH OUTPUT YANG BENAR:
-- "Untuk informasi lebih lanjut tentang pengurus, silakan kunjungi <a href='/about.html'>Halaman Tentang Kami</a>."
-- "Kamu bisa melihat dokumentasi kegiatan di <a href='/galeri.html'>Galeri</a>."
-- "Jika ingin mengirimkan aspirasi, silakan isi form di <a href='/aspirasi.html'>Formulir Aspirasi</a>."
+- "Untuk informasi lebih lanjut tentang pengurus, silakan kunjungi <a href='/about.html' style="color: #007bff; font-weight: bold; text-decoration: underline;">Halaman Tentang Kami</a>."
+- "Kamu bisa melihat dokumentasi kegiatan di <a href='/galeri.html' style="color: #007bff; font-weight: bold; text-decoration: underline;">Galeri</a>."
+- "Jika ingin mengirimkan aspirasi, silakan isi form di <a href='/aspirasi.html' style="color: #007bff; font-weight: bold; text-decoration: underline;">Formulir Aspirasi</a>."
 
 ===============================
 ${knowledgeBase}
-
-===============================
-PERTANYAAN PENGGUNA:
-"${userQuestion}"
 `;
 
-    // 3. Hubungi Gemini dari server (AMAN)
+    // 3. Susun payload untuk Gemini API dengan format percakapan
+    const contents = [
+      // Pesan pertama: System instructions + knowledge base
+      {
+        role: "user",
+        parts: [{ text: systemPrompt }]
+      },
+      // Balasan dummy dari model untuk mengonfirmasi pemahaman
+      {
+        role: "model",
+        parts: [{ text: "Mengerti. Saya akan menjawab dengan menyertakan link bergaya inline dan format yang rapi." }]
+      },
+      // History percakapan sebelumnya (jika ada)
+      ...history.map((msg) => ({
+        role: msg.role,
+        parts: [{ text: msg.content }]
+      })),
+      // Pertanyaan pengguna saat ini
+      {
+        role: "user",
+        parts: [{ text: userQuestion }]
+      }
+    ];
+
+    // 4. Hubungi Gemini dari server (AMAN)
     const geminiResponse = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+      body: JSON.stringify({ contents }),
     });
 
     if (!geminiResponse.ok) {
