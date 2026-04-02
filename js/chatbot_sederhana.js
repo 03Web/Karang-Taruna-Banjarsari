@@ -1,4 +1,3 @@
-// File: js/chatbot_sederhana.js (Versi AMAN dan SIMPEL)
 
 document.addEventListener("DOMContentLoaded", () => {
   // Tidak ada lagi API Key di sini!
