@@ -14,6 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!sendBtn) return;
 
+  // --- Fungsi untuk memuat dan menampilkan riwayat chat ---
+  function loadAndDisplayChatHistory() {
+    const history = getChatHistory();
+    history.forEach((msg) => {
+      const className = msg.role === "user" ? "user-message" : "bot-message";
+      addMessageToWindow(msg.content, className);
+    });
+  }
+
+  // Muat dan tampilkan riwayat chat yang tersimpan di localStorage
+  loadAndDisplayChatHistory();
+
   // --- Fungsi buka/tutup ---
   openBtn.addEventListener("click", () => {
     chatbotContainer.style.display = "flex";
