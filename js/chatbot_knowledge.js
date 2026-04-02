@@ -521,5 +521,19 @@ const KNOWLEDGE_BASE = `
       1.  **Perkuat Pasar Domestik:** Agar mampu menyerap produk industri dalam negeri yang terdampak perang tarif.
       2.  **Diversifikasi Pasar Ekspor:** Mencari pasar baru di luar Amerika.
       3.  **Ciptakan Iklim Investasi Kondusif:** Melalui deregulasi dan penegakan hukum yang adil untuk mendorong investor domestik menciptakan lapangan kerja di dalam negeri.
-      
+
+      ================================
+      PETA SITUS (URL MAPPING) UNTUK REFERENSI AI
+      ================================
+      Instruksi untuk AI: Ketika menjawab pertanyaan pengguna, SELALU sertakan link (URL) yang relevan ke halaman website jika topik jawaban terkait dengan halaman tersebut. Gunakan format HTML <a href="...">...</a> untuk membuat link yang bisa diklik.
+
+      Daftar Halaman Website:
+      - Beranda: <a href="/index.html">Beranda</a>
+      - Profil, Pengurus, Visi Misi: <a href="/about.html">Tentang Kami</a>
+      - Galeri Foto & Video: <a href="/galeri.html">Galeri</a>
+      - Toko Produk: <a href="/toko.html">Toko</a>
+      - Daftar Kegiatan: <a href="/kegiatan.html">Kegiatan</a>
+      - Artikel Edukasi & Opini: <a href="/artikel.html">Artikel</a>
+      - Form Aspirasi: <a href="/aspirasi.html">Formulir Aspirasi</a>
+
   `;

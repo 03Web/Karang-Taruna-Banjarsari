@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       messageDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
     } else {
       messageDiv.className = className;
-      messageDiv.textContent = message;
+      messageDiv.innerHTML = message;
     }
     chatWindow.appendChild(messageDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
