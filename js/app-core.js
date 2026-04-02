@@ -985,7 +985,7 @@ const App = (() => {
     });
   };
 
-  // Main typewriter initialization for home page
+  // Main content text initialization for home page (without typing animation)
   const initHomeTypewriter = () => {
     const titleElement = document.getElementById("hero-title");
     const descElement = document.getElementById("hero-description");
@@ -998,25 +998,18 @@ const App = (() => {
     const titleText = "Membangun Pemuda, Mengabdi pada Desa";
     const descText = "Selamat datang di pusat aktivitas digital Karang Taruna Banjarsari. Temukan info terbaru, suarakan aspirasi, dan jadilah bagian dari gerakan kami.";
 
-    // Hide description cursor initially
-    if (descCursor) descCursor.style.display = 'none';
+    titleElement.textContent = titleText;
+    descElement.textContent = descText;
+    if (titleCursor) titleCursor.style.display = "none";
+    if (descCursor) descCursor.style.display = "none";
 
-    setTimeout(() => {
-      typeWithCursor(titleElement, titleCursor, titleText, 40, () => {
-        setTimeout(() => {
-          typeWithCursor(descElement, descCursor, descText, 15, () => {
-            // Show button after typing completes
-            if (heroButton) {
-              heroButton.classList.add("visible");
-              setTimeout(() => heroButton.classList.add("pulse"), 500);
-            }
-          });
-        }, 300);
-      });
-    }, 500);
+    if (heroButton) {
+      heroButton.classList.add("visible");
+      setTimeout(() => heroButton.classList.add("pulse"), 500);
+    }
   };
 
-  // Main typewriter initialization for about page
+  // Main content text initialization for about page (without typing animation)
   const initAboutTypewriter = () => {
     const titleElement = document.getElementById("about-title");
     const descElement = document.getElementById("about-description");
@@ -1048,72 +1041,30 @@ const App = (() => {
       "Menjaga kelestarian lingkungan dan kearifan lokal."
     ];
 
-    // Hide all cursors initially except the first
-    if (descCursor) descCursor.style.display = 'none';
-    if (visiCursor) visiCursor.style.display = 'none';
-    if (visiContentCursor) visiContentCursor.style.display = 'none';
-    if (misiCursor) misiCursor.style.display = 'none';
+    titleElement.textContent = titleText;
+    descElement.textContent = descText;
+    if (visiTitle) visiTitle.textContent = visiTitleText;
+    if (visiContent) visiContent.textContent = visiContentText;
+    if (misiTitle) misiTitle.textContent = misiTitleText;
 
-    // Function to type misi items one by one
-    const typeMisiItems = (items, index, callback) => {
-      if (index >= items.length) {
-        if (callback) callback();
-        return;
-      }
+    if (titleCursor) titleCursor.style.display = "none";
+    if (descCursor) descCursor.style.display = "none";
+    if (visiCursor) visiCursor.style.display = "none";
+    if (visiContentCursor) visiContentCursor.style.display = "none";
+    if (misiCursor) misiCursor.style.display = "none";
 
-      const li = document.createElement("li");
-      li.className = "misi-item-typewriter";
-      const textSpan = document.createElement("span");
-      const cursorSpan = document.createElement("span");
-      cursorSpan.className = "typewriter-cursor misi-item-cursor";
-      cursorSpan.textContent = "|";
-
-      li.appendChild(textSpan);
-      li.appendChild(cursorSpan);
-      misiList.appendChild(li);
-
-      typeWithCursor(textSpan, cursorSpan, items[index], 12, () => {
-        setTimeout(() => {
-          typeMisiItems(items, index + 1, callback);
-        }, 150);
+    if (misiList) {
+      misiList.innerHTML = "";
+      misiItems.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "misi-item-typewriter";
+        li.textContent = item;
+        misiList.appendChild(li);
       });
-    };
-
-    // Start the sequential animation
-    setTimeout(() => {
-      // 1. Type title
-      typeWithCursor(titleElement, titleCursor, titleText, 50, () => {
-        setTimeout(() => {
-          // 2. Type description
-          typeWithCursor(descElement, descCursor, descText, 12, () => {
-            setTimeout(() => {
-              // 3. Type Visi title
-              typeWithCursor(visiTitle, visiCursor, visiTitleText, 60, () => {
-                setTimeout(() => {
-                  // 4. Type Visi content
-                  typeWithCursor(visiContent, visiContentCursor, visiContentText, 10, () => {
-                    setTimeout(() => {
-                      // 5. Type Misi title
-                      typeWithCursor(misiTitle, misiCursor, misiTitleText, 60, () => {
-                        setTimeout(() => {
-                          // 6. Type Misi items
-                          typeMisiItems(misiItems, 0, () => {
-                            console.log("About page typewriter animation complete!");
-                          });
-                        }, 200);
-                      });
-                    }, 300);
-                  });
-                }, 200);
-              });
-            }, 400);
-          });
-        }, 300);
-      });
-    }, 500);
+    }
   };
 
-  // Generic typewriter initialization for standard pages (Galeri, Toko, etc.)
+  // Generic content text initialization for standard pages (without typing animation)
   const initGenericTypewriter = (config) => {
     const titleElement = document.getElementById(config.titleId);
     const descElement = document.getElementById(config.descId);
@@ -1123,25 +1074,14 @@ const App = (() => {
 
     if (!titleElement || !descElement) return;
 
-    if (descCursor) descCursor.style.display = 'none';
+    titleElement.textContent = config.titleText;
+    descElement.textContent = config.descText;
+    if (titleCursor) titleCursor.style.display = "none";
+    if (descCursor) descCursor.style.display = "none";
     if (extraContent) {
-      extraContent.style.opacity = '0';
-      extraContent.style.transform = 'translateY(20px)';
-      extraContent.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      extraContent.style.opacity = "1";
+      extraContent.style.transform = "translateY(0)";
     }
-
-    setTimeout(() => {
-      typeWithCursor(titleElement, titleCursor, config.titleText, 50, () => {
-        setTimeout(() => {
-          typeWithCursor(descElement, descCursor, config.descText, 15, () => {
-            if (extraContent) {
-              extraContent.style.opacity = '1';
-              extraContent.style.transform = 'translateY(0)';
-            }
-          });
-        }, 300);
-      });
-    }, 500);
   };
 
   // Wrapper function to initialize typewriter based on page
