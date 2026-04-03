@@ -1136,7 +1136,7 @@ const App = (() => {
           descCursor: ".typewriter-cursor.secondary-cursor",
           titleText: "Hubungi Kami",
           descText: "Kami siap terhubung dengan Anda. Silakan hubungi kami melalui informasi di bawah ini.",
-          extraContentSelector: ".kontak-extra-info"
+          extraContentSelector: null
         }
       };
 

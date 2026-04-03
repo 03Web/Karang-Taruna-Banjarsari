@@ -572,8 +572,310 @@ App.initializers.about = async () => {
   }, 100);
 };
 
+const escapeKontakHtml = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const setKontakMapStatus = (statusElement, message, state = "loading") => {
+  if (!statusElement) return;
+  statusElement.textContent = message;
+  statusElement.className = `location-map-status is-${state}`;
+};
+
+const copyKontakAddress = async (text) => {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const helper = document.createElement("textarea");
+  helper.value = text;
+  helper.setAttribute("readonly", "");
+  helper.style.position = "fixed";
+  helper.style.opacity = "0";
+  helper.style.pointerEvents = "none";
+  document.body.appendChild(helper);
+  helper.focus();
+  helper.select();
+
+  const copied = document.execCommand("copy");
+  document.body.removeChild(helper);
+
+  if (!copied) {
+    throw new Error("Clipboard API tidak tersedia.");
+  }
+};
+
+const initKontakAddressActions = () => {
+  const copyButton = document.getElementById("copy-address-btn");
+  const feedback = document.getElementById("copy-address-feedback");
+
+  if (!copyButton || !feedback) return;
+
+  const defaultFeedback = feedback.textContent;
+
+  copyButton.addEventListener("click", async () => {
+    const address = copyButton.dataset.address?.trim();
+    if (!address) return;
+
+    try {
+      await copyKontakAddress(address);
+      feedback.textContent = "Alamat berhasil disalin. Anda bisa langsung menempelkannya ke aplikasi navigasi.";
+      feedback.classList.remove("is-error");
+      feedback.classList.add("is-success");
+    } catch (error) {
+      console.error("Gagal menyalin alamat:", error);
+      feedback.textContent = "Alamat belum bisa disalin otomatis. Silakan salin manual dari kartu informasi.";
+      feedback.classList.remove("is-success");
+      feedback.classList.add("is-error");
+    }
+
+    window.clearTimeout(copyButton.feedbackTimeout);
+    copyButton.feedbackTimeout = window.setTimeout(() => {
+      feedback.textContent = defaultFeedback;
+      feedback.classList.remove("is-success", "is-error");
+    }, 2600);
+  });
+};
+
+const syncKontakLocationContent = (section) => {
+  if (!section) return;
+
+  const {
+    mapName = "Sekretariat Karang Taruna Banjarsari",
+    mapAddress = "",
+    mapQuery = "",
+    mapEmail = "",
+    mapLat = "",
+    mapLng = "",
+  } = section.dataset;
+
+  const addressText = document.getElementById("kontak-address-text");
+  const emailLink = document.getElementById("kontak-email-link");
+  const directionLink = document.getElementById("kontak-direction-link");
+  const fullMapLink = document.getElementById("kontak-full-map-link");
+  const copyButton = document.getElementById("copy-address-btn");
+
+  const parsedLat = Number.parseFloat(mapLat);
+  const parsedLng = Number.parseFloat(mapLng);
+  const hasManualCoordinates =
+    Number.isFinite(parsedLat) && Number.isFinite(parsedLng);
+  const destinationQuery = mapQuery || mapAddress || mapName;
+  const destinationTarget = hasManualCoordinates
+    ? `${parsedLat},${parsedLng}`
+    : destinationQuery;
+  const directionUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    destinationTarget
+  )}`;
+  const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    destinationTarget
+  )}`;
+
+  if (addressText) {
+    addressText.textContent = mapAddress;
+  }
+
+  if (emailLink) {
+    emailLink.textContent = mapEmail;
+    emailLink.href = mapEmail ? `mailto:${mapEmail}` : "#";
+  }
+
+  if (directionLink) {
+    directionLink.href = directionUrl;
+  }
+
+  if (fullMapLink) {
+    fullMapLink.href = searchUrl;
+  }
+
+  if (copyButton) {
+    copyButton.dataset.address = mapAddress;
+  }
+};
+
+const initKontakLeafletMap = async (section) => {
+  const mapElement = document.getElementById("kontak-map");
+  const statusElement = document.getElementById("kontak-map-status");
+
+  if (!section || !mapElement) return;
+  if (mapElement.dataset.initialized === "true") return;
+
+  const {
+    mapName = "Sekretariat Karang Taruna Banjarsari",
+    mapAddress = "",
+    mapQuery = "",
+    mapLat = "-7.20961",
+    mapLng = "110.18898",
+    mapZoom = "17",
+  } = section.dataset;
+
+  const fallbackLat = Number.parseFloat(mapLat);
+  const fallbackLng = Number.parseFloat(mapLng);
+  const defaultZoom = Number.parseInt(mapZoom, 10);
+  const initialLat = Number.isFinite(fallbackLat) ? fallbackLat : -7.20961;
+  const initialLng = Number.isFinite(fallbackLng) ? fallbackLng : 110.18898;
+  const hasManualCoordinates =
+    Number.isFinite(fallbackLat) && Number.isFinite(fallbackLng);
+  const destinationQuery = mapQuery || mapAddress || mapName;
+  const destinationTarget = hasManualCoordinates
+    ? `${initialLat},${initialLng}`
+    : destinationQuery;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    destinationTarget
+  )}`;
+
+  if (typeof L === "undefined") {
+    setKontakMapStatus(
+      statusElement,
+      "Leaflet tidak berhasil dimuat. Gunakan tombol Petunjuk Arah untuk membuka navigasi.",
+      "error"
+    );
+    return;
+  }
+
+  mapElement.dataset.initialized = "true";
+
+  const buildPopupContent = (isPrecisePoint) => `
+    <div class="contact-map-popup">
+      <strong>${escapeKontakHtml(mapName)}</strong>
+      <p>${escapeKontakHtml(mapAddress)}</p>
+      <p>${isPrecisePoint
+        ? "Titik lokasi berhasil dicocokkan pada peta."
+        : "Titik lokasi memakai koordinat cadangan. Gunakan petunjuk arah untuk hasil paling akurat."
+      }</p>
+      <a href="${directionsUrl}" target="_blank" rel="noopener noreferrer">Buka petunjuk arah</a>
+    </div>
+  `;
+
+  const markerIcon = L.divIcon({
+    className: "contact-map-marker-shell",
+    html: '<span class="contact-map-marker"></span>',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -12],
+  });
+
+  const map = L.map(mapElement, {
+    center: [initialLat, initialLng],
+    zoom: Number.isFinite(defaultZoom) ? defaultZoom : 17,
+    scrollWheelZoom: false,
+  });
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  const marker = L.marker([initialLat, initialLng], {
+    icon: markerIcon,
+  })
+    .addTo(map)
+    .bindPopup(buildPopupContent(false));
+
+  const accuracyCircle = L.circle([initialLat, initialLng], {
+    radius: 45,
+    color: "#00aaff",
+    weight: 1.5,
+    fillColor: "#00aaff",
+    fillOpacity: 0.14,
+  }).addTo(map);
+
+  setKontakMapStatus(
+    statusElement,
+    "Mencocokkan alamat dengan peta OpenStreetMap...",
+    "loading"
+  );
+
+  if (hasManualCoordinates) {
+    marker.setPopupContent(buildPopupContent(true));
+    setKontakMapStatus(
+      statusElement,
+      "Titik lokasi memakai koordinat pasti dari Google Maps. Klik marker untuk melihat detail dan membuka arah perjalanan.",
+      "success"
+    );
+
+    window.setTimeout(() => {
+      map.invalidateSize();
+      marker.openPopup();
+    }, 250);
+
+    window.addEventListener("resize", () => {
+      map.invalidateSize();
+    });
+    return;
+  }
+
+  const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=id&q=${encodeURIComponent(
+    destinationQuery
+  )}`;
+
+  try {
+    const response = await fetch(geocodeUrl, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Permintaan geocoding gagal dengan status ${response.status}.`);
+    }
+
+    const results = await response.json();
+    const [firstResult] = Array.isArray(results) ? results : [];
+
+    if (!firstResult) {
+      throw new Error("Alamat tidak ditemukan pada layanan geocoding.");
+    }
+
+    const resolvedLat = Number.parseFloat(firstResult.lat);
+    const resolvedLng = Number.parseFloat(firstResult.lon);
+
+    if (!Number.isFinite(resolvedLat) || !Number.isFinite(resolvedLng)) {
+      throw new Error("Koordinat hasil geocoding tidak valid.");
+    }
+
+    marker.setLatLng([resolvedLat, resolvedLng]);
+    marker.setPopupContent(buildPopupContent(true));
+    accuracyCircle.setLatLng([resolvedLat, resolvedLng]);
+    map.setView([resolvedLat, resolvedLng], Number.isFinite(defaultZoom) ? defaultZoom : 17);
+
+    setKontakMapStatus(
+      statusElement,
+      "Titik lokasi berhasil dimuat. Klik marker untuk melihat detail dan membuka arah perjalanan.",
+      "success"
+    );
+  } catch (error) {
+    console.warn("Geocoding lokasi kontak gagal. Menggunakan koordinat cadangan.", error);
+    setKontakMapStatus(
+      statusElement,
+      "Titik peta memakai koordinat cadangan. Gunakan tombol Petunjuk Arah untuk navigasi paling akurat.",
+      "error"
+    );
+  } finally {
+    window.setTimeout(() => {
+      map.invalidateSize();
+      marker.openPopup();
+    }, 250);
+
+    window.addEventListener("resize", () => {
+      map.invalidateSize();
+    });
+  }
+};
+
 // === KONTAK PAGE ===
 App.initializers.kontak = async () => {
+  const locationSection = document.querySelector(".kontak-location-section");
+  if (locationSection) {
+    syncKontakLocationContent(locationSection);
+    initKontakAddressActions();
+    await initKontakLeafletMap(locationSection);
+  }
+
   const container = document.getElementById("kontak-grid");
   if (!container) return;
   const data = await App.fetchData("kontak", "data/kontak.json");
