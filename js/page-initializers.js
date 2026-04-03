@@ -650,6 +650,7 @@ const syncKontakLocationContent = (section) => {
     mapAddress = "",
     mapQuery = "",
     mapEmail = "",
+    mapExternalUrl = "",
     mapLat = "",
     mapLng = "",
   } = section.dataset;
@@ -662,17 +663,14 @@ const syncKontakLocationContent = (section) => {
 
   const parsedLat = Number.parseFloat(mapLat);
   const parsedLng = Number.parseFloat(mapLng);
-  const hasManualCoordinates =
-    Number.isFinite(parsedLat) && Number.isFinite(parsedLng);
   const destinationQuery = mapQuery || mapAddress || mapName;
-  const destinationTarget = hasManualCoordinates
-    ? `${parsedLat},${parsedLng}`
-    : destinationQuery;
   const directionUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    destinationTarget
+    destinationQuery
   )}`;
-  const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    destinationTarget
+  const searchUrl = mapExternalUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    Number.isFinite(parsedLat) && Number.isFinite(parsedLng)
+      ? `${parsedLat},${parsedLng}`
+      : destinationQuery
   )}`;
 
   if (addressText) {
@@ -708,6 +706,7 @@ const initKontakLeafletMap = async (section) => {
     mapName = "Sekretariat Karang Taruna Banjarsari",
     mapAddress = "",
     mapQuery = "",
+    mapExternalUrl = "",
     mapLat = "-7.20961",
     mapLng = "110.18898",
     mapZoom = "17",
@@ -721,12 +720,11 @@ const initKontakLeafletMap = async (section) => {
   const hasManualCoordinates =
     Number.isFinite(fallbackLat) && Number.isFinite(fallbackLng);
   const destinationQuery = mapQuery || mapAddress || mapName;
-  const destinationTarget = hasManualCoordinates
-    ? `${initialLat},${initialLng}`
-    : destinationQuery;
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    destinationTarget
-  )}`;
+  const externalMapUrl =
+    mapExternalUrl ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      destinationQuery
+    )}`;
 
   if (typeof L === "undefined") {
     setKontakMapStatus(
@@ -747,7 +745,7 @@ const initKontakLeafletMap = async (section) => {
         ? "Titik lokasi berhasil dicocokkan pada peta."
         : "Titik lokasi memakai koordinat cadangan. Gunakan petunjuk arah untuk hasil paling akurat."
       }</p>
-      <a href="${directionsUrl}" target="_blank" rel="noopener noreferrer">Buka petunjuk arah</a>
+      <a href="${externalMapUrl}" target="_blank" rel="noopener noreferrer">Buka lokasi di Google Maps</a>
     </div>
   `;
 
@@ -790,26 +788,7 @@ const initKontakLeafletMap = async (section) => {
     "loading"
   );
 
-  if (hasManualCoordinates) {
-    marker.setPopupContent(buildPopupContent(true));
-    setKontakMapStatus(
-      statusElement,
-      "Titik lokasi memakai koordinat pasti dari Google Maps. Klik marker untuk melihat detail dan membuka arah perjalanan.",
-      "success"
-    );
-
-    window.setTimeout(() => {
-      map.invalidateSize();
-      marker.openPopup();
-    }, 250);
-
-    window.addEventListener("resize", () => {
-      map.invalidateSize();
-    });
-    return;
-  }
-
-  const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=id&q=${encodeURIComponent(
+  const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=id&accept-language=id&q=${encodeURIComponent(
     destinationQuery
   )}`;
 
@@ -850,9 +829,12 @@ const initKontakLeafletMap = async (section) => {
     );
   } catch (error) {
     console.warn("Geocoding lokasi kontak gagal. Menggunakan koordinat cadangan.", error);
+    marker.setPopupContent(buildPopupContent(false));
     setKontakMapStatus(
       statusElement,
-      "Titik peta memakai koordinat cadangan. Gunakan tombol Petunjuk Arah untuk navigasi paling akurat.",
+      hasManualCoordinates
+        ? "Alamat belum bisa dicocokkan otomatis, jadi peta memakai koordinat cadangan. Tombol Google Maps tetap mengarah ke Balai Desa Banjarsari."
+        : "Alamat belum bisa dicocokkan otomatis. Gunakan tombol Google Maps untuk menuju Balai Desa Banjarsari.",
       "error"
     );
   } finally {
