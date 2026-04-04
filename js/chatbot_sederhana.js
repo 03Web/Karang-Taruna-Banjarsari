@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_HISTORY_LIMIT = 16;
   const SUGGESTION_LIMIT = 5;
   const DEFAULT_STATUS =
-    "Siap membantu seputar kegiatan, pengurus, kontak, aspirasi, dan halaman website.";
+    "";
   const DEFAULT_GREETING =
     "Halo! Saya siap membantu Anda memahami informasi Karang Taruna Banjarsari secara cepat, rapi, dan relevan.";
   const prefersReducedMotion =
@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     !sendBtnLabel ||
     !chatInput ||
     !chatWindow ||
-    !chatbotHero ||
     !chatbotStatus ||
     !chatbotStatusBadge ||
     !chatbotSuggestions ||
@@ -261,6 +260,11 @@ document.addEventListener("DOMContentLoaded", () => {
     handleSendMessage(promptText);
   });
 
+  if (state.history.length === 0) {
+    const defaultGreeting = extractInitialGreeting(chatbotContainer) || DEFAULT_GREETING;
+    state.history = [{ role: "assistant", content: defaultGreeting, timestamp: new Date().toISOString() }];
+  }
+
   renderConversation();
   renderSuggestions(
     state.suggestions.length ? state.suggestions : buildSuggestions(state.history),
@@ -280,9 +284,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="chatbot-panel">
         <div id="chatbot-header">
           <div class="chatbot-header-copy">
-            <span class="chatbot-kicker">AI Assistant</span>
-            <div class="chatbot-title-row">
-              <h2 class="chatbot-title">Karang Taruna Assistant</h2>
+            <div class="chatbot-title-row" style="margin-top: 0;">
+              <h2 class="chatbot-title">AI Assistant</h2>
               <span id="chatbot-status-badge" class="chatbot-status-badge">Online</span>
             </div>
             <p id="chatbot-status" class="chatbot-status">${escapeHtml(DEFAULT_STATUS)}</p>
@@ -292,14 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         </div>
         <div id="chatbot-body">
-          <section id="chatbot-hero" class="chatbot-hero">
-            <div class="chatbot-hero-icon" aria-hidden="true"><i class="fas fa-robot"></i></div>
-            <div class="chatbot-hero-copy">
-              <span class="chatbot-hero-kicker">Streaming response aktif</span>
-              <h3>Jawaban tampil bertahap dan real-time</h3>
-              <p>${escapeHtml(greeting)}</p>
-            </div>
-          </section>
           <div id="chat-window" role="log" aria-live="polite" aria-relevant="additions text"></div>
           <section id="chatbot-suggestion-wrap" class="chatbot-suggestion-wrap" aria-label="Saran pertanyaan">
             <div class="chatbot-section-header">
@@ -662,11 +657,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateHeroVisibility() {
-    chatbotHero.classList.toggle("is-hidden", state.history.length > 0);
+    if (chatbotHero) chatbotHero.classList.toggle("is-hidden", state.history.length > 0);
   }
 
   function updateStatus(text, mode) {
-    chatbotStatus.textContent = text;
+    chatbotStatus.textContent = DEFAULT_STATUS;
     chatbotStatusBadge.dataset.state = mode;
     chatbotStatusBadge.textContent =
       mode === "connecting"
@@ -702,9 +697,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return Number.isNaN(date.getTime())
       ? "Baru saja"
       : date.toLocaleTimeString("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        hour: "2-digit",
+        minute: "2-digit",
+      });
   }
 
   function isNearBottom(container) {
@@ -1138,7 +1133,7 @@ document.addEventListener("DOMContentLoaded", () => {
       streamState.content.removeAttribute("data-streaming");
       streamState.content.innerHTML = formatPlainTextAsHtml(
         error.message ||
-          "Maaf, koneksi ke server sedang bermasalah. Silakan coba lagi.",
+        "Maaf, koneksi ke server sedang bermasalah. Silakan coba lagi.",
       );
       streamState.meta.textContent = "Perlu dicoba lagi";
 
