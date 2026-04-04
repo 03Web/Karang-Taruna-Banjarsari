@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatbotSuggestionsLabel = document.getElementById(
     "chatbot-suggestions-label",
   );
+  const chatbotSuggestionWrap = document.getElementById("chatbot-suggestion-wrap");
   const chatForm = document.getElementById("chat-input-container");
 
   if (
@@ -299,14 +300,14 @@ document.addEventListener("DOMContentLoaded", () => {
               <p>${escapeHtml(greeting)}</p>
             </div>
           </section>
-          <section class="chatbot-suggestion-wrap" aria-label="Saran pertanyaan">
+          <div id="chat-window" role="log" aria-live="polite" aria-relevant="additions text"></div>
+          <section id="chatbot-suggestion-wrap" class="chatbot-suggestion-wrap" aria-label="Saran pertanyaan">
             <div class="chatbot-section-header">
               <span id="chatbot-suggestions-label" class="chatbot-section-label">Mulai dari topik ini</span>
               <span class="chatbot-section-note">Klik untuk langsung bertanya</span>
             </div>
             <div id="chatbot-suggestions" class="chatbot-suggestions" role="list"></div>
           </section>
-          <div id="chat-window" role="log" aria-live="polite" aria-relevant="additions text"></div>
           <form id="chat-input-container" novalidate>
             <div class="chat-input-shell">
               <label class="visually-hidden" for="chat-input">Ketik pertanyaan Anda</label>
@@ -507,6 +508,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     saveSuggestions(normalized);
+    if (chatbotSuggestionWrap) {
+      chatWindow.appendChild(chatbotSuggestionWrap);
+    }
   }
 
   function createHistoryEntry(role, content) {
@@ -522,6 +526,9 @@ document.addEventListener("DOMContentLoaded", () => {
     state.history.forEach((message) => {
       chatWindow.appendChild(createMessageElement(message).root);
     });
+    if (chatbotSuggestionWrap) {
+      chatWindow.appendChild(chatbotSuggestionWrap);
+    }
     scrollChatToBottom(true, "auto");
   }
 
@@ -677,6 +684,9 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.disabled = state.isSending;
     sendBtn.disabled = state.isSending;
     sendBtnLabel.textContent = state.isSending ? "Memproses" : "Kirim";
+    if (chatbotSuggestionWrap) {
+      chatbotSuggestionWrap.style.display = state.isSending ? "none" : "flex";
+    }
     chatbotSuggestions.querySelectorAll(".chat-suggestion-btn").forEach((button) => {
       button.disabled = state.isSending;
     });
