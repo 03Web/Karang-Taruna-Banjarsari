@@ -404,12 +404,19 @@ const App = (() => {
     }
 
     if (!isIndexPage) {
-      logoutUser();
+      sessionStorage.setItem("redirectTargetUrl", window.location.href);
+      window.location.href = "index.html";
       return;
     }
 
     if (!LOGIN_FORM_ENABLED) {
       sessionStorage.setItem("isLoggedIn", "true");
+      const targetUrl = sessionStorage.getItem("redirectTargetUrl");
+      if (targetUrl) {
+        sessionStorage.removeItem("redirectTargetUrl");
+        window.location.href = targetUrl;
+        return;
+      }
       showContributionModal();
     } else {
       overlay.classList.remove("hidden");
@@ -489,6 +496,12 @@ const App = (() => {
           // ini untuk mengakifkan form login
           if (response.ok) {
             sessionStorage.setItem("isLoggedIn", "true");
+            const targetUrl = sessionStorage.getItem("redirectTargetUrl");
+            if (targetUrl) {
+              sessionStorage.removeItem("redirectTargetUrl");
+              window.location.href = targetUrl;
+              return;
+            }
             showContributionModal();
           } else {
             throw new Error("Gagal mengirim data.");
@@ -1209,7 +1222,8 @@ const App = (() => {
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
 
     if (!isLoggedIn && !isIndexPage) {
-      logoutUser();
+      sessionStorage.setItem("redirectTargetUrl", window.location.href);
+      window.location.href = "index.html";
       return;
     }
 

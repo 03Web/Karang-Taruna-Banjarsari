@@ -18,28 +18,76 @@
   <link rel="stylesheet" href="css/komentar.css" />
 
   <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Karang Taruna Banjarsari",
-        "url": "https://karangtarunabanjarsari.fun/",
-        "logo": "https://karangtarunabanjarsari.fun/foto/logokarangtarunabjr.jpeg",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Banjarsari, Kec. Kandangan",
-          "addressLocality": "Temanggung",
-          "addressRegion": "Jawa Tengah",
-          "postalCode": "56281",
-          "addressCountry": "ID"
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Karang Taruna Banjarsari",
+          "url": "https://karangtarunabanjarsari.fun/",
+          "logo": "https://karangtarunabanjarsari.fun/foto/logokarangtarunabjr.jpeg",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Banjarsari, Kec. Kandangan",
+            "addressLocality": "Temanggung",
+            "addressRegion": "Jawa Tengah",
+            "postalCode": "56281",
+            "addressCountry": "ID"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "karangtaruna.banjarsari@email.com",
+            "contactType": "Informasi Umum"
+          },
+          "sameAs": ["https://www.instagram.com/kartarbanjarr"]
         },
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "email": "karangtaruna.banjarsari@email.com",
-          "contactType": "Informasi Umum"
+        {
+          "@type": "WebSite",
+          "name": "Karang Taruna Banjarsari",
+          "url": "https://karangtarunabanjarsari.fun/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://karangtarunabanjarsari.fun/search.html?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
         },
-        "sameAs": ["https://www.instagram.com/kartarbanjarr"]
-      }
-    </script>
+        {
+          "@type": "ItemList",
+          "name": "Sitelinks Karang Taruna Banjarsari",
+          "itemListElement": [
+            {
+              "@type": "SiteNavigationElement",
+              "position": 1,
+              "name": "Karang Taruna Banjarsari",
+              "description": "Beranda Utama Website Terkece Karang Taruna Banjarsari.",
+              "url": "https://karangtarunabanjarsari.fun/index.html"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 2,
+              "name": "Pojok Baca",
+              "description": "Tempat baca artikel asik dan insight baru seputar pemuda dan desa kita.",
+              "url": "https://karangtarunabanjarsari.fun/artikel.html"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 3,
+              "name": "Gallery",
+              "description": "Dokumentasi kegiatan, foto-foto, dan video keseruan kita bareng-bareng.",
+              "url": "https://karangtarunabanjarsari.fun/galeri.html"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 4,
+              "name": "Aspirasi",
+              "description": "Punya ide, saran, kreasi, curhatan? Drop di sini buat kemajuan bareng!",
+              "url": "https://karangtarunabanjarsari.fun/aspirasi.html"
+            }
+          ]
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body data-page-id="home">
