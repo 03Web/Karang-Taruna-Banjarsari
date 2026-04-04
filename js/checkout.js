@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       summaryItemsContainer.innerHTML = "";
       let subtotal = 0;
-
+        
       cart.forEach((item) => {
         const productData = allProducts.find((p) => p.id === item.id);
         if (!productData) return;

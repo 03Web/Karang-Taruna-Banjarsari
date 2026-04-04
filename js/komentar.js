@@ -1,5 +1,3 @@
-// File: js/komentar.js (Dengan Integrasi Modal Identitas)
-
 const KomentarApp = (() => {
   const firebaseConfig = {
     apiKey: "AIzaSyA_SYgK13vSvwvOr6qVfbHMmYAHEIzTU7A",

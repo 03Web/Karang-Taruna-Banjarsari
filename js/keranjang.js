@@ -1,5 +1,3 @@
-// File: js/keranjang.js (Dengan Logika Pembersihan Otomatis)
-
 document.addEventListener("DOMContentLoaded", () => {
   const cartContentContainer = document.getElementById("cart-content");
 
