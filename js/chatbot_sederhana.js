@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <h2 class="chatbot-title">AI Assistant</h2>
               <span id="chatbot-status-badge" class="chatbot-status-badge">Online</span>
             </div>
-            <p id="chatbot-status" class="chatbot-status">${escapeHtml(DEFAULT_STATUS)}</p>
+            <p id="chatbot-status" class="chatbot-status" style="display: none;">${escapeHtml(DEFAULT_STATUS)}</p>
           </div>
           <button id="close-chatbot" type="button" aria-label="Tutup chatbot">
             <i class="fas fa-minus" aria-hidden="true"></i>
