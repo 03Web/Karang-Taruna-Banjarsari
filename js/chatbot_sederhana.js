@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const CHAT_HISTORY_KEY = "chatbotHistory";
   const CHAT_SUGGESTIONS_KEY = "chatbotSuggestions";
   const HISTORY_LIMIT = 30;
-  const API_HISTORY_LIMIT = 16;
+  const API_HISTORY_LIMIT = 15;
   const SUGGESTION_LIMIT = 5;
   const DEFAULT_STATUS =
     "";
