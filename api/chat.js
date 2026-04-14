@@ -11,7 +11,10 @@ function loadJsonFile(relativePath) {
     const raw = fs.readFileSync(fullPath, "utf-8");
     return JSON.parse(raw);
   } catch (err) {
-    console.warn(`[chat.js] Warning: could not load ${relativePath}:`, err.message);
+    console.warn(
+      `[chat.js] Warning: could not load ${relativePath}:`,
+      err.message,
+    );
     return null;
   }
 }
@@ -21,7 +24,10 @@ function loadTextFile(relativePath) {
     const fullPath = path.join(__dirname, "..", relativePath);
     return fs.readFileSync(fullPath, "utf-8");
   } catch (err) {
-    console.warn(`[chat.js] Warning: could not load ${relativePath}:`, err.message);
+    console.warn(
+      `[chat.js] Warning: could not load ${relativePath}:`,
+      err.message,
+    );
     return null;
   }
 }
@@ -45,19 +51,17 @@ function buildPengurusSummary() {
   let lines = [];
 
   if (data.pengurusInti && Array.isArray(data.pengurusInti)) {
-    lines.push("PENGURUS INTI:");
     data.pengurusInti.forEach((p) => {
-      lines.push(`- ${p.jabatan}: ${p.nama}`);
+      lines.push(`${p.jabatan}: ${p.nama}`);
     });
   }
 
   if (data.bidang && Array.isArray(data.bidang)) {
-    lines.push("");
-    lines.push("BIDANG-BIDANG:");
     data.bidang.forEach((b) => {
       const koordinator = b.anggota?.find((a) => a.jabatan === "Koordinator");
-      const memberCount = b.anggota?.length || 0;
-      lines.push(`- ${b.namaBidang} (Koordinator: ${koordinator?.nama || "Belum ada"}), ${memberCount} anggota`);
+      lines.push(
+        `Bidang ${b.namaBidang} — Koordinator: ${koordinator?.nama || "Belum ada"}`,
+      );
     });
   }
 
@@ -68,19 +72,28 @@ function buildProdukSummary() {
   const data = CACHED_DATA.produk;
   if (!data || !Array.isArray(data)) return "Data produk tidak tersedia.";
 
-  return data.map((p) => {
-    const hargaFormatted = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(p.harga);
-    return `- ${p.nama} | ${hargaFormatted} | Kategori: ${p.kategori || "-"} | Lokasi: ${p.lokasi || "-"} | Rating: ${p.rating || "-"} | Terjual: ${p.terjual || "-"}`;
-  }).join("\n");
+  return data
+    .map((p) => {
+      const hargaFormatted = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(p.harga);
+      return `- ${p.nama} | ${hargaFormatted} | Kategori: ${p.kategori || "-"} | Lokasi: ${p.lokasi || "-"} | Rating: ${p.rating || "-"} | Terjual: ${p.terjual || "-"}`;
+    })
+    .join("\n");
 }
 
 function buildKegiatanSummary() {
   const data = CACHED_DATA.kegiatan;
   if (!data || !Array.isArray(data)) return "Data kegiatan tidak tersedia.";
 
-  return data.slice(0, 15).map((k) => {
-    return `- [${k.tanggal}] ${k.judul} (${k.kategori || "Umum"})`;
-  }).join("\n");
+  return data
+    .slice(0, 15)
+    .map((k) => {
+      return `- [${k.tanggal}] ${k.judul} (${k.kategori || "Umum"})`;
+    })
+    .join("\n");
 }
 
 function buildGaleriSummary() {
@@ -121,16 +134,28 @@ module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
 
   if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
   const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
   if (!DEEPSEEK_API_KEY) {
-    return sendError(res, "Kunci API chatbot belum dikonfigurasi. Hubungi admin.");
+    return sendError(
+      res,
+      "Kunci API chatbot belum dikonfigurasi. Hubungi admin.",
+    );
   }
 
-  const { userQuestion, history: convHistory = [], stream = false } = req.body || {};
+  const {
+    userQuestion,
+    history: convHistory = [],
+    stream = false,
+  } = req.body || {};
 
-  if (!userQuestion || typeof userQuestion !== "string" || !userQuestion.trim()) {
+  if (
+    !userQuestion ||
+    typeof userQuestion !== "string" ||
+    !userQuestion.trim()
+  ) {
     return res.status(400).json({ error: "Pertanyaan tidak boleh kosong." });
   }
 
@@ -138,9 +163,7 @@ module.exports = async (req, res) => {
   const systemPrompt = buildSystemPrompt();
 
   // Build messages for DeepSeek
-  const messages = [
-    { role: "system", content: systemPrompt },
-  ];
+  const messages = [{ role: "system", content: systemPrompt }];
 
   // Add conversation history (limit to last 15 messages)
   const recentHistory = convHistory.slice(-15);
@@ -202,7 +225,10 @@ function handleStreaming(res, messages, apiKey) {
 
     let fullContent = "";
 
-    sendSSE(res, "status", { message: "AI sedang menjawab...", state: "streaming" });
+    sendSSE(res, "status", {
+      message: "AI sedang menjawab...",
+      state: "streaming",
+    });
 
     apiRes.on("data", (chunk) => {
       const text = chunk.toString();
@@ -243,7 +269,9 @@ function handleStreaming(res, messages, apiKey) {
   });
 
   reqDeep.on("error", (err) => {
-    sendSSE(res, "error", { error: "Gagal menghubungi server AI: " + err.message });
+    sendSSE(res, "error", {
+      error: "Gagal menghubungi server AI: " + err.message,
+    });
     res.end();
   });
 
@@ -276,7 +304,9 @@ function handleNonStreaming(res, messages, apiKey) {
     apiRes.on("data", (d) => (body += d));
     apiRes.on("end", () => {
       if (apiRes.statusCode !== 200) {
-        return res.status(apiRes.statusCode || 500).json({ error: parseAPIError(body) });
+        return res
+          .status(apiRes.statusCode || 500)
+          .json({ error: parseAPIError(body) });
       }
       try {
         const parsed = JSON.parse(body);
@@ -289,7 +319,9 @@ function handleNonStreaming(res, messages, apiKey) {
   });
 
   reqDeep.on("error", (err) => {
-    res.status(500).json({ error: "Gagal menghubungi server AI: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Gagal menghubungi server AI: " + err.message });
   });
 
   reqDeep.write(payload);
@@ -308,7 +340,11 @@ function sendError(res, message) {
 function parseAPIError(raw) {
   try {
     const parsed = JSON.parse(raw);
-    return parsed.error?.message || parsed.message || "DeepSeek API mengembalikan error.";
+    return (
+      parsed.error?.message ||
+      parsed.message ||
+      "DeepSeek API mengembalikan error."
+    );
   } catch (e) {
     return raw.substring(0, 200) || "DeepSeek API error.";
   }
@@ -324,30 +360,30 @@ function buildSystemPrompt() {
   return `Anda adalah AI Assistant resmi untuk website Karang Taruna Banjarsari, Temanggung, Jawa Tengah.
 
 TUGAS ANDA:
-- Jawab pertanyaan pengguna tentang Karang Taruna Banjarsari dengan akurat, singkat, dan ramah.
-- Arahkan pengguna ke halaman website yang relevan (tentang, kegiatan, galeri, aspirasi, kontak, toko, artikel).
+- Jawab pertanyaan tentang Karang Taruna Banjarsari dengan akurat, singkat, ramah.
+- Arahkan ke halaman website yang relevan (tentang, kegiatan, galeri, aspirasi, kontak, toko, artikel).
 - Gunakan bahasa Indonesia yang sopan dan mudah dipahami.
-- Jika tidak tahu jawaban, katakan dengan jujur dan sarankan pengguna menghubungi pengurus melalui halaman kontak.
+- Jika tidak tahu, katakan jujur dan sarankan hubungi pengurus via halaman kontak.
 
-=== DATA PENGURUS KARANG TARUNA BANJARSARI ===
+=== PENGURUS KARANG TARUNA BANJARSARI ===
 ${pengurusSummary}
 
 === PRODUK & TOKO ===
 ${produkSummary}
 
-=== KEGIATAN & AGENDA ===
+=== KEGIATAN & ARTIKEL ===
 ${kegiatanSummary}
 
-=== GALERI & DOKUMENTASI ===
+=== GALERI FOTO & VIDEO ===
 ${galeriSummary}
 
 === KONTAK & LOKASI ===
 ${kontakSummary}
 
-ATURAN:
-- Gunakan DATA DI ATAS untuk menjawab pertanyaan spesifik (nama pengurus, harga produk, tanggal kegiatan, dll).
-- Jangan membuat informasi fiktif. Jika data tidak ada di atas, arahkan ke halaman website terkait.
-- Tetap fokus pada topik Karang Taruna Banjarsari.
-- Jawab dalam bahasa Indonesia.
-- Gunakan format HTML sederhana (p, ul, li, br, strong) jika diperlukan.`;
+ATURAN KERAS:
+1. GUNAKAN data di atas untuk jawab pertanyaan spesifik (nama ketua, wakil, admin, harga produk, tanggal kegiatan, dll).
+2. JANGAN buat informasi fiktif. Jika data tidak ada di atas, arahkan ke halaman website terkait.
+3. Tetap fokus pada Karang Taruna Banjarsari.
+4. Jawab dalam bahasa Indonesia.
+5. Gunakan HTML sederhana (p, ul, li, br, strong) jika perlu.`;
 }
