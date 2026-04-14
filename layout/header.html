@@ -1,0 +1,108 @@
+<div class="header-container">
+  <div class="logo">
+    <a href="index.html">
+      <img
+        src="foto/ChatGPTlogokarangtaruna.png"
+        alt="Logo Karang Taruna Banjarsari"
+      />
+      <div class="logo-text">
+        <div class="logo-main-text">Karang Taruna Banjarsari</div>
+      </div>
+    </a>
+  </div>
+
+  <nav>
+    <ul>
+      <li>
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+      </li>
+      <li>
+        <a href="about.html"
+          ><i class="fas fa-info-circle"></i><span>Info</span></a
+        >
+      </li>
+      <li>
+        <a href="galeri.html"
+          ><i class="fas fa-camera-retro"></i><span>Gallery</span></a
+        >
+      </li>
+      <li id="toko-menu-item">
+        <a href="toko.html"><i class="fas fa-store"></i><span>Toko</span></a>
+      </li>
+      <li>
+        <a href="kegiatan.html"
+          ><i class="fas fa-calendar-alt"></i><span>Artikel</span></a
+        >
+      </li>
+      <li>
+        <a href="aspirasi.html"
+          ><i class="fas fa-lightbulb"></i><span>Aspirasi</span></a
+        >
+      </li>
+      <li>
+        <a href="kontak.html"
+          ><i class="fas fa-comments"></i><span>Kontak</span></a
+        >
+      </li>
+    </ul>
+  </nav>
+
+  <div class="social-media">
+    <!-- <a
+      href="https://www.instagram.com/kartarbanjarr?utm_source=ig_web_button_share_sheet&igsh=dzA2aGwwMjdtYzZj"
+      target="_blank"
+      aria-label="Instagram"
+      ><i class="fab fa-instagram"></i
+    ></a>
+    <a
+      href="https://www.tiktok.com/@kartar.dusunbanjarsari?is_from_webapp=1&sender_device=pc"
+      target="_blank"
+      aria-label="TikTok"
+      ><i class="fab fa-tiktok"></i
+    ></a>
+    <a
+      href="https://www.youtube.com/@KarangTarunaBanjarsari-p6z"
+      target="_blank"
+      aria-label="YouTube"
+      ><i class="fab fa-youtube"></i
+    ></a> -->
+    <a href="#" id="search-trigger-desktop" aria-label="Cari">
+      <i class="fas fa-search"></i>
+    </a>
+    <a
+      href="keranjang.html"
+      id="keranjang-belanja"
+      class="cart-icon-wrapper"
+      aria-label="Keranjang Belanja"
+    >
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-badge hidden">0</span>
+    </a>
+  </div>
+</div>
+
+<div id="search-modal" class="hidden">
+  <div class="search-modal-content">
+    <span class="modal-close-btn" id="search-modal-close-btn">&times;</span>
+    <i class="fas fa-search modal-icon"></i>
+    <h2>Cari di Website</h2>
+    <p>
+      Masukkan kata kunci yang ingin Anda cari di seluruh halaman dan artikel.
+    </p>
+    <form id="search-form-modal" autocomplete="off">
+      <div class="search-bar" style="position: relative">
+        <input
+          type="text"
+          id="search-input-modal"
+          placeholder="Ketik di sini..."
+          required
+        />
+        <i class="fas fa-search"></i>
+        <div id="search-suggestions"></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top: 20px">
+        Cari
+      </button>
+    </form>
+  </div>
+</div>
