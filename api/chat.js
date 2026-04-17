@@ -6,223 +6,182 @@ const path = require("path");
 // LOAD & CACHE ALL JSON DATA ON SERVER STARTUP
 // Knowledge base lives ONLY on server — never sent to client
 // ============================================================
+
+// Try multiple path strategies for Vercel compatibility
 function loadJsonFile(relativePath) {
-  try {
-    const fullPath = path.join(__dirname, "..", relativePath);
-    const raw = fs.readFileSync(fullPath, "utf-8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.warn(
-      `[chat.js] Warning: could not load ${relativePath}:`,
-      err.message,
-    );
-    return null;
+  const strategies = [
+    path.join(__dirname, "..", relativePath),
+    path.join(process.cwd(), relativePath),
+    path.resolve(relativePath),
+  ];
+
+  for (const fullPath of strategies) {
+    try {
+      if (fs.existsSync(fullPath)) {
+        const raw = fs.readFileSync(fullPath, "utf-8");
+        const parsed = JSON.parse(raw);
+        console.log(`[chat.js] ✓ Loaded ${relativePath} from ${fullPath}`);
+        return parsed;
+      }
+    } catch (err) {
+      // Try next strategy
+    }
   }
+
+  console.error(
+    `[chat.js] ✗ FAILED to load ${relativePath}. Tried: ${strategies.join(", ")}`,
+  );
+  return null;
 }
 
-const CACHED_DATA = {
-  pengurus: loadJsonFile("data/pengurus.json"),
-  produk: loadJsonFile("data/produk.json"),
-  kegiatan: loadJsonFile("data/kegiatan.json"),
-  galeri: loadJsonFile("data/galeri.json"),
-  testimonials: loadJsonFile("data/testimonials.json"),
-  kontak: loadJsonFile("data/kontak.json"),
-};
+let CACHED_DATA = null;
+
+function ensureDataLoaded() {
+  if (CACHED_DATA) return CACHED_DATA;
+
+  CACHED_DATA = {
+    pengurus: loadJsonFile("data/pengurus.json"),
+    produk: loadJsonFile("data/produk.json"),
+    kegiatan: loadJsonFile("data/kegiatan.json"),
+    galeri: loadJsonFile("data/galeri.json"),
+    testimonials: loadJsonFile("data/testimonials.json"),
+    kontak: loadJsonFile("data/kontak.json"),
+  };
+
+  // Log which data loaded successfully
+  const status = Object.entries(CACHED_DATA)
+    .map(([k, v]) => `${k}: ${v ? "✓" : "✗"}`)
+    .join(", ");
+  console.log(`[chat.js] Data status: ${status}`);
+
+  return CACHED_DATA;
+}
 
 // ============================================================
-// BUILD RICH SUMMARY TEXTS FROM CACHED DATA
+// BUILD COMPACT BUT COMPLETE SUMMARIES
+// Keep summaries token-efficient so DeepSeek can process them
 // ============================================================
 
 function buildPengurusSummary() {
-  const data = CACHED_DATA.pengurus;
-  if (!data) return "Data pengurus tidak tersedia.";
+  const data = ensureDataLoaded().pengurus;
+  if (!data) return "[DATA PENGURUS GAGAL DIMUAT]";
 
   let lines = [];
 
-  lines.push("PENGURUS INTI:");
   if (data.pengurusInti && Array.isArray(data.pengurusInti)) {
+    lines.push("Pengurus Inti:");
     data.pengurusInti.forEach((p) => {
-      lines.push(`  • ${p.jabatan}: ${p.nama}`);
+      lines.push(`- ${p.jabatan}: ${p.nama}`);
     });
   }
 
   if (data.bidang && Array.isArray(data.bidang)) {
-    lines.push("");
-    lines.push("BIDANG-BIDANG ORGANISASI:");
     data.bidang.forEach((b) => {
-      lines.push(`  [${b.namaBidang}]`);
-      if (b.anggota && Array.isArray(b.anggota)) {
-        b.anggota.forEach((a) => {
-          lines.push(`    • ${a.nama} — ${a.jabatan}`);
-        });
-      }
+      const members = (b.anggota || [])
+        .map((a) => `${a.nama}(${a.jabatan})`)
+        .join(", ");
+      lines.push(`- ${b.namaBidang}: ${members}`);
     });
   }
-
-  lines.push("");
-  lines.push("Halaman terkait: about.html");
 
   return lines.join("\n");
 }
 
 function buildProdukSummary() {
-  const data = CACHED_DATA.produk;
-  if (!data || !Array.isArray(data)) return "Data produk tidak tersedia.";
+  const data = ensureDataLoaded().produk;
+  if (!data || !Array.isArray(data)) return "[DATA PRODUK GAGAL DIMUAT]";
 
-  const lines = data.map((p) => {
-    const hargaFormatted = new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(p.harga);
-    return [
-      `  • ${p.nama}`,
-      `    ID: ${p.id}`,
-      `    Harga: ${hargaFormatted}`,
-      `    Kategori: ${p.kategori || "-"}`,
-      `    Lokasi: ${p.lokasi || "-"}`,
-      `    Rating: ${p.rating || "-"} | Terjual: ${p.terjual || "-"}`,
-      `    Deskripsi: ${(p.deskripsi || "").substring(0, 150)}`,
-      `    Link detail: detail-produk.html?id=${p.id}`,
-    ].join("\n");
-  });
-
-  lines.push("");
-  lines.push("Halaman toko: toko.html");
-  lines.push("Halaman detail: detail-produk.html?id=[ID_PRODUK]");
-
-  return lines.join("\n\n");
+  return data
+    .map((p) => {
+      const harga = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(p.harga);
+      return `- ${p.nama} | ${harga} | Kategori:${p.kategori || "-"} | Rating:${p.rating || "-"} | Terjual:${p.terjual || "-"} | Lokasi:${p.lokasi || "-"} | ID:${p.id} | Link:detail-produk.html?id=${p.id} | ${(p.deskripsi || "").substring(0, 80)}`;
+    })
+    .join("\n");
 }
 
 function buildKegiatanSummary() {
-  const data = CACHED_DATA.kegiatan;
-  if (!data || !Array.isArray(data)) return "Data kegiatan tidak tersedia.";
+  const data = ensureDataLoaded().kegiatan;
+  if (!data || !Array.isArray(data)) return "[DATA KEGIATAN GAGAL DIMUAT]";
 
-  const lines = data.map((k) => {
-    const parts = [
-      `  • [${k.tanggal}] ${k.judul}`,
-      `    Kategori: ${k.kategori || "Umum"}`,
-    ];
-    if (k.deskripsi) {
-      parts.push(`    Deskripsi: ${k.deskripsi.substring(0, 120)}...`);
-    }
-    if (k.link) {
-      parts.push(`    Link: ${k.link}`);
-    }
-    return parts.join("\n");
-  });
-
-  lines.push("");
-  lines.push("Halaman kegiatan: kegiatan.html");
-
-  return lines.join("\n\n");
+  return data
+    .map((k) => {
+      const desc = k.deskripsi ? ` — ${k.deskripsi.substring(0, 80)}` : "";
+      const link = k.link ? ` | Link:${k.link}` : "";
+      return `- [${k.tanggal}] ${k.judul} (${k.kategori || "Umum"})${desc}${link}`;
+    })
+    .join("\n");
 }
 
 function buildGaleriSummary() {
-  const data = CACHED_DATA.galeri;
-  if (!data) return "Data galeri tidak tersedia.";
+  const data = ensureDataLoaded().galeri;
+  if (!data) return "[DATA GALERI GAGAL DIMUAT]";
 
   let lines = [];
 
   if (data.albumFoto && Array.isArray(data.albumFoto)) {
-    lines.push("ALBUM FOTO:");
     data.albumFoto.forEach((album) => {
-      const photoCount = album.foto?.length || 0;
-      lines.push(`  • ${album.judul} (${photoCount} foto)`);
-      if (album.deskripsi) {
-        lines.push(`    Keterangan: ${album.deskripsi}`);
-      }
-      // Tampilkan beberapa judul foto unik
-      if (album.foto && album.foto.length > 0) {
-        const uniqueTitles = [
-          ...new Set(album.foto.map((f) => f.title).filter(Boolean)),
-        ].slice(0, 5);
-        if (uniqueTitles.length > 0) {
-          lines.push(`    Isi: ${uniqueTitles.join(", ")}`);
-        }
-      }
+      const count = album.foto?.length || 0;
+      const titles = album.foto
+        ? [...new Set(album.foto.map((f) => f.title).filter(Boolean))]
+            .slice(0, 3)
+            .join(", ")
+        : "";
+      lines.push(
+        `- Album: ${album.judul} (${count} foto)${titles ? " — " + titles : ""}`,
+      );
     });
   }
 
   if (data.dokumentasiVideo && Array.isArray(data.dokumentasiVideo)) {
-    lines.push("");
-    lines.push("VIDEO DOKUMENTASI:");
     data.dokumentasiVideo.forEach((v) => {
-      lines.push(`  • [${v.tanggal}] ${v.title}`);
+      lines.push(`- Video: [${v.tanggal}] ${v.title}`);
     });
   }
-
-  lines.push("");
-  lines.push("Halaman galeri: galeri.html");
 
   return lines.join("\n");
 }
 
 function buildKontakSummary() {
-  const data = CACHED_DATA.kontak;
-  if (!data || !Array.isArray(data)) return "Data kontak tidak tersedia.";
+  const data = ensureDataLoaded().kontak;
+  if (!data || !Array.isArray(data)) return "[DATA KONTAK GAGAL DIMUAT]";
 
   const lines = data.map((k) => {
-    const parts = [`  • ${k.nama} — ${k.jabatan}`];
-    if (k.deskripsi) parts.push(`    ${k.deskripsi}`);
-    if (k.whatsapp && k.whatsapp !== "#") {
-      parts.push(`    WhatsApp: https://wa.me/${k.whatsapp}`);
-    }
-    return parts.join("\n");
+    const wa =
+      k.whatsapp && k.whatsapp !== "#"
+        ? ` | WA:https://wa.me/${k.whatsapp}`
+        : "";
+    return `- ${k.nama} (${k.jabatan})${wa}${k.deskripsi ? " — " + k.deskripsi : ""}`;
   });
 
-  lines.push("");
-  lines.push("KONTAK UTAMA UNTUK SEMUA PERTANYAAN:");
-  lines.push("  Admin Website: Amazia Kristanto");
-  lines.push("  WhatsApp: https://wa.me/6285876983793");
-  lines.push("  (Arahkan user ke WA admin ini untuk pertanyaan lebih lanjut)");
-  lines.push("");
-  lines.push("Halaman kontak: kontak.html");
-
-  return lines.join("\n");
-}
-
-function buildTestimonialSummary() {
-  const data = CACHED_DATA.testimonials;
-  if (!data || !Array.isArray(data)) return "Data testimonial tidak tersedia.";
-
-  const lines = data.slice(0, 10).map((t) => {
-    const textPreview = (t.text || "")
-      .replace(/<br\s*\/?>/gi, " ")
-      .replace(/<[^>]+>/g, "")
-      .substring(0, 120);
-    return `  • ${t.name} (${t.handle}): "${textPreview}..."`;
-  });
-
-  lines.push("");
   lines.push(
-    "Testimonial ditampilkan di halaman utama (index.html section testimonial)",
+    "KONTAK UTAMA: Admin Amazia Kristanto, WA: https://wa.me/6285876983793",
   );
 
   return lines.join("\n");
 }
 
-// ============================================================
-// WEBSITE PAGE MAP — AI uses this to embed correct links
-// ============================================================
-const WEBSITE_PAGE_MAP = `
-PETA HALAMAN WEBSITE KARANG TARUNA BANJARSARI:
-  • index.html — Halaman utama (beranda, testimonial, highlight kegiatan)
-  • about.html — Profil organisasi, visi misi, struktur pengurus
-  • kegiatan.html — Daftar semua kegiatan, berita, dan artikel
-  • artikel.html?slug=[SLUG] — Detail artikel tertentu
-  • galeri.html — Galeri foto (album) dan video dokumentasi
-  • aspirasi.html — Form pengiriman aspirasi, saran, kritik, dan ide
-  • kontak.html — Daftar kontak pengurus dan informasi lokasi
-  • toko.html — Katalog produk & jasa UMKM desa
-  • detail-produk.html?id=[ID] — Detail produk tertentu
-  • search.html — Pencarian konten website
-  • keranjang.html — Keranjang belanja
-  • checkout.html — Proses pembayaran
-`;
+function buildTestimonialSummary() {
+  const data = ensureDataLoaded().testimonials;
+  if (!data || !Array.isArray(data)) return "[DATA TESTIMONIAL GAGAL DIMUAT]";
+
+  return data
+    .slice(0, 8)
+    .map((t) => {
+      const text = (t.text || "")
+        .replace(/<br\s*\/?>/gi, " ")
+        .replace(/<[^>]+>/g, "")
+        .substring(0, 100);
+      return `- ${t.name}(${t.handle}): "${text}"`;
+    })
+    .join("\n");
+}
 
 // ============================================================
-// BUILD SYSTEM PROMPT WITH FULL KNOWLEDGE + PERSONA
+// BUILD SYSTEM PROMPT — COMPACT + POWERFUL
 // ============================================================
 function buildSystemPrompt() {
   const pengurusSummary = buildPengurusSummary();
@@ -232,61 +191,46 @@ function buildSystemPrompt() {
   const kontakSummary = buildKontakSummary();
   const testimonialSummary = buildTestimonialSummary();
 
-  return `Kamu adalah "Asisten Cerdas Karang Taruna Banjarsari" — AI assistant resmi website Karang Taruna Banjarsari, Desa Banjarsari, Kecamatan Kandangan, Kabupaten Temanggung, Jawa Tengah.
+  return `Kamu adalah "Asisten Cerdas Karang Taruna Banjarsari" — AI resmi website Karang Taruna Banjarsari, Desa Banjarsari, Kec. Kandangan, Kab. Temanggung, Jawa Tengah.
 
-=== KEPRIBADIAN & GAYA BICARA ===
-- Kamu RAMAH, FUN, dan SUKA BERCANDA ringan layaknya anak muda desa yang gaul tapi sopan.
-- Sisipkan emoji sesekali biar chat terasa hidup 😄
-- Boleh kasih joke ringan atau candaan lucu yang relevan, tapi jangan berlebihan.
-- Kalau ada kesempatan, tambahkan sedikit humor khas Jawa/desa (tapi tetap inklusif).
-- Contoh gaya bicara: "Wah, mantap pertanyaannya! 🔥", "Siap, aku bantu ya kak!", "Keren banget nih Karang Taruna kita 💪"
-- Jawab dengan AKURAT dan berdasarkan DATA di bawah. Jangan mengarang informasi.
-- Gunakan bahasa Indonesia yang santai, mudah dipahami, tapi tetap sopan dan informatif.
-- Kalau tidak tahu jawabannya, bilang jujur dan arahkan ke admin via WhatsApp.
+KEPRIBADIAN:
+- Ramah, fun, suka bercanda ringan, gaul tapi sopan. Pakai emoji sesekali.
+- Jawab AKURAT berdasarkan DATA di bawah. Jangan ngarang!
+- Bahasa Indonesia santai tapi informatif.
+- Kalau tidak tahu, bilang jujur & arahkan ke admin WA.
 
-=== DATA PENGURUS KARANG TARUNA BANJARSARI ===
+ATURAN #1 TERPENTING — JAWAB DULU BARU ARAHKAN:
+Jika user tanya sesuatu yang datanya ADA di bawah, JAWAB LANGSUNG dengan datanya. JANGAN hanya redirect ke halaman.
+Contoh BENAR: "Ketua KT Banjarsari adalah <strong>Andri Apriyanto</strong>. Wakilnya <strong>Yunita Sari</strong>. Selengkapnya cek di <a href='about.html'>halaman profil</a> ya!"
+Contoh SALAH: "Silakan kunjungi halaman profil untuk info pengurus." — INI DILARANG!
+
+=== PENGURUS ===
 ${pengurusSummary}
 
-=== DATA PRODUK & TOKO UMKM DESA ===
+=== PRODUK & TOKO (halaman: toko.html) ===
 ${produkSummary}
 
-=== DATA KEGIATAN, BERITA & ARTIKEL ===
+=== KEGIATAN & ARTIKEL (halaman: kegiatan.html) ===
 ${kegiatanSummary}
 
-=== DATA GALERI FOTO & VIDEO ===
+=== GALERI (halaman: galeri.html) ===
 ${galeriSummary}
 
-=== DATA KONTAK PENGURUS ===
+=== KONTAK (halaman: kontak.html) ===
 ${kontakSummary}
 
-=== DATA QUOTES & TESTIMONIAL ===
+=== TESTIMONIAL (di index.html) ===
 ${testimonialSummary}
 
-${WEBSITE_PAGE_MAP}
+HALAMAN WEBSITE:
+index.html(beranda), about.html(profil/pengurus), kegiatan.html(kegiatan), galeri.html(foto/video), aspirasi.html(kirim saran), kontak.html(kontak), toko.html(produk), detail-produk.html?id=ID(detail produk), artikel.html?slug=SLUG(artikel), search.html(cari)
 
-=== ATURAN WAJIB (STRICT RULES) ===
-
-1. JAWAB DULU, BARU ARAHKAN: Ini aturan PALING PENTING. Jika user bertanya sesuatu yang datanya ada di atas, JAWAB LANGSUNG dengan data yang lengkap dan akurat TERLEBIH DAHULU. Setelah menjawab, baru tambahkan link halaman terkait sebagai pelengkap "untuk info lebih lengkap, kunjungi [link]".
-   - CONTOH BENAR: "Ketua Karang Taruna Banjarsari adalah **Andri Apriyanto** 💪 Wakil Ketuanya **Yunita Sari**, dan Sekretarisnya **Dimas Suryo L.** Untuk info lengkap seluruh pengurus, cek di <a href='about.html'>halaman profil organisasi</a> ya!"
-   - CONTOH SALAH: "Untuk informasi pengurus, silakan kunjungi halaman profil." ← INI DILARANG!
-   - Kalau ditanya nama, SEBUTKAN namanya. Ditanya harga, SEBUTKAN harganya. Ditanya kegiatan, SEBUTKAN kegiatannya. JANGAN hanya redirect.
-
-2. AKURASI: HANYA gunakan data di atas. JANGAN pernah mengarang nama, jabatan, harga, tanggal, atau informasi apapun. Jika data tidak tersedia, katakan jujur.
-
-3. EMBEDDED LINK: Setelah menjawab dengan data, sertakan link HTML yang relevan agar user bisa klik untuk detail lebih lanjut. Format:
-   - Link internal: <a href="about.html">lihat halaman profil</a>
-   - Link produk: <a href="detail-produk.html?id=ID_PRODUK">lihat detail produk</a>
-   - Link artikel: <a href="artikel.html?slug=SLUG">baca artikel</a>
-   - Link WhatsApp admin: <a href="https://wa.me/6285876983793" target="_blank">hubungi admin via WhatsApp</a>
-   - Link eksternal: tambahkan target="_blank" rel="noopener noreferrer"
-
-4. KONTAK DEFAULT: Jika user butuh bantuan lebih lanjut atau info yang tidak tersedia, SELALU arahkan ke admin Amazia Kristanto via WhatsApp: <a href="https://wa.me/6285876983793" target="_blank">085876983793</a>
-
-5. FORMAT: Gunakan HTML sederhana (p, ul, ol, li, br, strong, em, a) untuk format jawaban yang rapi dan mudah dibaca. Jangan gunakan Markdown.
-
-6. FOKUS: Tetap fokus pada topik Karang Taruna Banjarsari, desa Banjarsari, dan konten website. Jika ditanya di luar topik, kembalikan ke topik utama dengan cara yang ramah.
-
-7. BAHASA: Jawab dalam bahasa Indonesia. Jika user bertanya dalam bahasa lain, tetap jawab dalam bahasa Indonesia.`;
+ATURAN LAIN:
+- Gunakan HTML (p,ul,li,strong,em,a,br). Jangan pakai Markdown.
+- Sertakan <a href="...">link</a> ke halaman terkait di akhir jawaban.
+- Link WA admin: <a href="https://wa.me/6285876983793" target="_blank">hubungi admin</a>
+- Kalau info tidak ada, arahkan ke admin Amazia Kristanto WA 085876983793.
+- Tetap fokus topik Karang Taruna Banjarsari.`;
 }
 
 // ============================================================
@@ -329,6 +273,9 @@ module.exports = async (req, res) => {
   ) {
     return res.status(400).json({ error: "Pertanyaan tidak boleh kosong." });
   }
+
+  // Ensure data is loaded (lazy init)
+  ensureDataLoaded();
 
   // Build system prompt with knowledge base (server-side only)
   const systemPrompt = buildSystemPrompt();
