@@ -313,7 +313,7 @@ const App = (() => {
 
   // === MODAL KONTRIBUSI ===
   // === MODAL KONTRIBUSI (VERSI PERBAIKAN) ===
-  async function showContributionModal() {
+  function showContributionModal() {
     const modal = document.getElementById("contribution-modal");
     if (!modal) return;
 
@@ -332,6 +332,10 @@ const App = (() => {
     const noBtn = document.getElementById("contribute-no-btn");
     const closeBtn = modal.querySelector(".modal-close-btn");
 
+    // Pastikan status tombol kembali normal (jika sebelumnya digunakan)
+    yesBtn.innerHTML = "Ya, Saya Mau Berkontribusi!";
+    yesBtn.disabled = false;
+
     // 4. Buat fungsi untuk menutup modal
     const closeModal = () => {
       modal.classList.add("hidden");
@@ -342,47 +346,34 @@ const App = (() => {
     noBtn.onclick = closeModal;
     closeBtn.onclick = closeModal;
 
-    // 6. Sekarang, kita coba cari data admin dengan aman (di dalam try..catch)
-    try {
-      // PERHATIKAN: Saya mengganti ".json" menjadi ".md" agar sesuai dengan file Anda
-      const kontakData = await fetchData("kontak", "data/kontak.md"); // [PERUBAHAN DISINI]
+    // 6. Hubungkan langsung ke Web Admin WhatsApp dengan interaksi UX yang modern
+    yesBtn.onclick = () => {
+      // UX Enhancement: Tampilkan state "Loading" untuk interaksi pro
+      const originalText = yesBtn.innerHTML;
+      yesBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Sedang Mengalihkan...';
+      yesBtn.disabled = true;
+      yesBtn.style.opacity = '0.8.5';
+      yesBtn.style.transform = 'scale(0.96)';
 
-      // Cek jika data berhasil dimuat
-      if (!kontakData) {
-        throw new Error("File kontak.md tidak ditemukan atau kosong.");
-      }
-
-      // Karena ini file .md, kita perlu parse sebagai JSON (asumsi formatnya JSON di dalam MD)
-      // Jika 'fetchData' Anda tidak otomatis parse .md, kita perlu parse di sini
-      // Tapi kita anggap 'fetchData' mengembalikan array jika sukses
-
-      const admin = kontakData.find((k) => k.jabatan === "Admin Website");
-
-      // 7. Jika admin TIDAK DITEMUKAN
-      if (!admin) {
-        console.error(
-          "Data admin website tidak ditemukan di dalam file kontak!"
-        );
-        yesBtn.textContent = "Data Admin Error"; // Beri tahu pengguna
-        yesBtn.disabled = true; // Nonaktifkan tombol "Ya"
-        return; // Keluar dari try...catch, tapi modal tetap tampil
-      }
-
-      // 8. Jika admin DITEMUKAN, pasang fungsi ke tombol "Ya"
-      yesBtn.onclick = () => {
-        const waLink = `https://wa.me/${admin.whatsapp
-          }?text=${encodeURIComponent(
-            "Halo Admin, saya tertarik untuk berkontribusi dalam pengembangan web Karang Taruna Banjarsari."
-          )}`;
+      // Jeda 800ms sebelum mengalihkan untuk memberi kesan sistem memproses permintaan
+      setTimeout(() => {
+        const adminWhatsapp = "6285876983793"; // Nomor WA Admin sesuai Request
+        const message = "Halo Web Admin Karang Taruna Banjarsari, " +
+                        "saya sangat tertarik untuk ikut berkontribusi dalam pengembangan website ini. " +
+                        "Bisa infokan langkah selanjutnya?";
+        const waLink = `https://wa.me/${adminWhatsapp}?text=${encodeURIComponent(message)}`;
+        
+        // Membuka tab WhatsApp
         window.open(waLink, "_blank");
+        
+        // Kembalikan status tombol seperti semula
+        yesBtn.innerHTML = originalText;
+        yesBtn.disabled = false;
+        yesBtn.style.opacity = '1';
+        yesBtn.style.transform = 'scale(1)';
         closeModal();
-      };
-    } catch (error) {
-      // 9. Jika terjadi error apapun (file tidak ada, salah format, dll)
-      console.error("Gagal memuat data kontak admin:", error);
-      yesBtn.textContent = "Error Memuat Data"; // Beri tahu pengguna
-      yesBtn.disabled = true; // Nonaktifkan tombol "Ya"
-    }
+      }, 800);
+    };
   }
 
   // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
