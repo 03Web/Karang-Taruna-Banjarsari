@@ -14,6 +14,9 @@ const App = (() => {
     pengurus: [],
     kontak: [],
     lastScrollTop: 0,
+    scrollLockY: 0,
+    inactivityTrackerStarted: false,
+    viewportSyncBound: false,
     currentUser: {
       // State baru untuk identitas pengguna
       identity: "anonim", // 'anonim', 'warga', 'custom'
@@ -299,9 +302,12 @@ const App = (() => {
       "scroll",
       "touchstart",
     ];
-    events.forEach((event) => {
-      window.addEventListener(event, resetInactivityTimer, { passive: true });
-    });
+    if (!state.inactivityTrackerStarted) {
+      events.forEach((event) => {
+        window.addEventListener(event, resetInactivityTimer, { passive: true });
+      });
+      state.inactivityTrackerStarted = true;
+    }
     resetInactivityTimer();
   }
 
@@ -311,69 +317,201 @@ const App = (() => {
     window.location.href = "index.html";
   }
 
-  // === MODAL KONTRIBUSI ===
-  // === MODAL KONTRIBUSI (VERSI PERBAIKAN) ===
-  function showContributionModal() {
-    const modal = document.getElementById("contribution-modal");
-    if (!modal) return;
+  const MOBILE_BREAKPOINT = 768;
+  const CONTRIBUTION_WHATSAPP_ADMIN = "6285876983793";
+  const CONTRIBUTION_BUTTON_LABEL = "Ya, Saya Mau Berkontribusi!";
 
-    // 1. TAMPILKAN MODALNYA DULU!
-    // Ini adalah kunci perbaikannya, kita pindahkan dari bawah ke atas.
-    modal.classList.remove("hidden");
+  function syncViewportMetrics() {
+    const root = document.documentElement;
+    const isMobileViewport = window.innerWidth <= MOBILE_BREAKPOINT;
+    const viewportHeight =
+      window.visualViewport?.height ||
+      window.innerHeight ||
+      document.documentElement.clientHeight;
 
-    // 2. Sembunyikan formulir login (overlay) yang tadi sudah di-submit
-    const welcomeOverlay = document.getElementById("welcome-overlay");
-    if (welcomeOverlay) {
-      welcomeOverlay.classList.add("hidden");
+    if (viewportHeight) {
+      root.style.setProperty(
+        "--app-viewport-height",
+        `${Math.round(viewportHeight)}px`
+      );
     }
 
-    // 3. Ambil semua tombol
+    const topHeaderContainer = document.querySelector(".mobile-header-container");
+    const bottomNav = document.querySelector("header#main-header nav ul");
+    const resolvedTopHeight = isMobileViewport
+      ? Math.max(
+          50,
+          Math.min(
+            68,
+            Math.round(topHeaderContainer?.getBoundingClientRect().height || 60)
+          )
+        )
+      : 60;
+    const resolvedBottomHeight = isMobileViewport
+      ? Math.max(
+          56,
+          Math.min(68, Math.round(bottomNav?.getBoundingClientRect().height || 60))
+        )
+      : 60;
+
+    root.style.setProperty("--mobile-top-header-height", `${resolvedTopHeight}px`);
+    root.style.setProperty(
+      "--mobile-bottom-nav-height",
+      `${resolvedBottomHeight}px`
+    );
+  }
+
+  function bindViewportSync() {
+    if (state.viewportSyncBound) return;
+
+    window.addEventListener("resize", syncViewportMetrics, { passive: true });
+    window.addEventListener("orientationchange", syncViewportMetrics, {
+      passive: true,
+    });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", syncViewportMetrics, {
+        passive: true,
+      });
+    }
+
+    state.viewportSyncBound = true;
+  }
+
+  function lockBodyScroll() {
+    if (document.body.classList.contains("modal-open")) return;
+
+    state.scrollLockY =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.documentElement.style.setProperty(
+      "--scroll-lock-top",
+      `-${state.scrollLockY}px`
+    );
+    document.body.classList.add("modal-open");
+  }
+
+  function unlockBodyScroll() {
+    if (!document.body.classList.contains("modal-open")) return;
+
+    document.body.classList.remove("modal-open");
+    document.documentElement.style.removeProperty("--scroll-lock-top");
+    window.scrollTo(0, state.scrollLockY || 0);
+  }
+
+  function getContributionWhatsAppLink() {
+    const message =
+      "Halo Web Admin Karang Taruna Banjarsari, " +
+      "saya tertarik ikut berkontribusi dalam pengembangan website ini. " +
+      "Bisa infokan langkah selanjutnya?";
+
+    return `https://wa.me/${CONTRIBUTION_WHATSAPP_ADMIN}?text=${encodeURIComponent(message)}`;
+  }
+
+  // === MODAL KONTRIBUSI ===
+  function showContributionModal() {
+    const modal = document.getElementById("contribution-modal");
+    const modalContent = modal?.querySelector(".modal-content");
+    const modalBody = modal?.querySelector(".modal-body");
+    const welcomeOverlay = document.getElementById("welcome-overlay");
     const yesBtn = document.getElementById("contribute-yes-btn");
     const noBtn = document.getElementById("contribute-no-btn");
-    const closeBtn = modal.querySelector(".modal-close-btn");
+    const closeBtn = modal?.querySelector(".modal-close-btn");
+    const fallbackLink = document.getElementById("contribution-fallback-link");
+    if (!modal || !modalContent || !yesBtn || !noBtn || !closeBtn) return;
 
-    // Pastikan status tombol kembali normal (jika sebelumnya digunakan)
-    yesBtn.innerHTML = "Ya, Saya Mau Berkontribusi!";
-    yesBtn.disabled = false;
+    const waLink = getContributionWhatsAppLink();
+    let redirectTimer = null;
+    let isClosed = false;
 
-    // 4. Buat fungsi untuk menutup modal
-    const closeModal = () => {
-      modal.classList.add("hidden");
-      startInactivityTracker(); // Mulai timer sesi setelah semua selesai
+    const restorePrimaryButton = () => {
+      yesBtn.innerHTML = CONTRIBUTION_BUTTON_LABEL;
+      yesBtn.disabled = false;
+      yesBtn.classList.remove("is-loading");
+      yesBtn.removeAttribute("aria-busy");
     };
 
-    // 5. Pasang fungsi 'closeModal' ke tombol "Tidak" dan "X"
+    const cleanupListeners = () => {
+      window.removeEventListener("keydown", handleKeydown);
+      modal.removeEventListener("click", handleBackdropClick);
+    };
+
+    const closeModal = () => {
+      if (isClosed) return;
+      isClosed = true;
+
+      if (redirectTimer) {
+        clearTimeout(redirectTimer);
+        redirectTimer = null;
+      }
+
+      restorePrimaryButton();
+      fallbackLink?.classList.remove("visible");
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("contribution-modal-open");
+      unlockBodyScroll();
+      cleanupListeners();
+      startInactivityTracker();
+    };
+
+    const handleKeydown = (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+
+    const handleBackdropClick = (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    welcomeOverlay?.classList.add("hidden");
+    syncViewportMetrics();
+    lockBodyScroll();
+    document.body.classList.add("contribution-modal-open");
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    fallbackLink?.classList.remove("visible");
+    fallbackLink?.setAttribute("href", waLink);
+    modalBody?.scrollTo({ top: 0, behavior: "auto" });
+    restorePrimaryButton();
+
     noBtn.onclick = closeModal;
     closeBtn.onclick = closeModal;
-
-    // 6. Hubungkan langsung ke Web Admin WhatsApp dengan interaksi UX yang modern
     yesBtn.onclick = () => {
-      // UX Enhancement: Tampilkan state "Loading" untuk interaksi pro
-      const originalText = yesBtn.innerHTML;
-      yesBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Sedang Mengalihkan...';
+      yesBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i><span>Sedang Mengalihkan...</span>';
       yesBtn.disabled = true;
-      yesBtn.style.opacity = '0.8.5';
-      yesBtn.style.transform = 'scale(0.96)';
+      yesBtn.classList.add("is-loading");
+      yesBtn.setAttribute("aria-busy", "true");
 
-      // Jeda 800ms sebelum mengalihkan untuk memberi kesan sistem memproses permintaan
-      setTimeout(() => {
-        const adminWhatsapp = "6285876983793"; // Nomor WA Admin sesuai Request
-        const message = "Halo Web Admin Karang Taruna Banjarsari, " +
-                        "saya sangat tertarik untuk ikut berkontribusi dalam pengembangan website ini. " +
-                        "Bisa infokan langkah selanjutnya?";
-        const waLink = `https://wa.me/${adminWhatsapp}?text=${encodeURIComponent(message)}`;
-        
-        // Membuka tab WhatsApp
-        window.open(waLink, "_blank");
-        
-        // Kembalikan status tombol seperti semula
-        yesBtn.innerHTML = originalText;
-        yesBtn.disabled = false;
-        yesBtn.style.opacity = '1';
-        yesBtn.style.transform = 'scale(1)';
+      redirectTimer = window.setTimeout(() => {
+        const whatsappWindow = window.open(waLink, "_blank", "noopener,noreferrer");
+        const openedSuccessfully = Boolean(whatsappWindow);
+
+        restorePrimaryButton();
+
+        if (!openedSuccessfully) {
+          fallbackLink?.classList.add("visible");
+          showNotification(
+            "WhatsApp tidak terbuka otomatis. Gunakan tautan manual di popup ini.",
+            "info"
+          );
+          fallbackLink?.focus();
+          return;
+        }
+
         closeModal();
-      }, 800);
+      }, 450);
     };
+
+    window.addEventListener("keydown", handleKeydown);
+    modal.addEventListener("click", handleBackdropClick);
+
+    requestAnimationFrame(() => {
+      modalContent.focus();
+    });
   }
 
   // === LAYAR SELAMAT DATANG (WELCOME SCREEN) ===
@@ -499,7 +637,9 @@ const App = (() => {
   function handleMobileHeaderScroll() {
     const topHeader = document.querySelector(".mobile-top-header");
     const bottomHeader = document.querySelector("header#main-header");
-    if (!topHeader) return;
+    if (!topHeader || document.body.classList.contains("contribution-modal-open")) {
+      return;
+    }
 
     let currentScroll =
       window.pageYOffset || document.documentElement.scrollTop;
@@ -1245,13 +1385,17 @@ const App = (() => {
                 </div>
                 <button type="button" id="search-panel-close-btn" aria-label="Tutup Pencarian">&times;</button>
             </form>
-        `;
+      `;
       document.body.prepend(searchPanel);
     }
+
+    bindViewportSync();
+    syncViewportMetrics();
 
     loadComponent("layout/header.html", "main-header", () => {
       setActiveNavLink();
       initSearch();
+      syncViewportMetrics();
     });
     loadComponent("layout/footer.html", "main-footer");
 
@@ -1268,11 +1412,9 @@ const App = (() => {
       }
     });
 
-    if (window.innerWidth <= 768) {
-      window.addEventListener("scroll", handleMobileHeaderScroll, {
-        passive: true,
-      });
-    }
+    window.addEventListener("scroll", handleMobileHeaderScroll, {
+      passive: true,
+    });
 
     initScrollAnimations();
 

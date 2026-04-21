@@ -10,6 +10,12 @@
   --card-bg: #1a1a1a;
   /* <-- Warna kartu tetap agar ada sedikit kontras */
   --border-color: #333333;
+  --app-viewport-height: 100vh;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --mobile-top-header-height: 60px;
+  --mobile-bottom-nav-height: 60px;
+  --scroll-lock-top: 0px;
 }
 
 /* Reset dasar yang lebih modern */
@@ -31,8 +37,21 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: var(--app-viewport-height, 100vh);
   font-size: 14px;
   padding-top: 85px;
+  overflow-x: hidden;
+  scroll-padding-top: 110px;
+}
+
+body.modal-open {
+  position: fixed;
+  top: var(--scroll-lock-top);
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* TAMBAHKAN KODE INI DI BAWAH 'body' */
@@ -1054,6 +1073,8 @@ select.sorter:focus {
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.3s ease-in-out;
   border-bottom: 1px solid var(--border-color);
+  padding-top: var(--safe-top);
+  height: calc(var(--mobile-top-header-height) + var(--safe-top));
 }
 
 .mobile-top-header.hidden {
@@ -1065,7 +1086,7 @@ select.sorter:focus {
   align-items: center;
   justify-content: space-between;
   padding: 8px 15px;
-  height: 50px;
+  height: var(--mobile-top-header-height);
 }
 
 /* ========================================= */
@@ -1074,12 +1095,15 @@ select.sorter:focus {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 50px;
-    /* Ruang untuk header atas mobile */
-    padding-bottom: 60px;
-    /* Disesuaikan dengan nav bawah */
+    padding-top: calc(var(--mobile-top-header-height) + var(--safe-top));
+    padding-bottom: calc(
+      var(--mobile-bottom-nav-height) + var(--safe-bottom)
+    );
     font-size: 13px;
     /* Ukuran font dasar mobile diperkecil lagi */
+    scroll-padding-top: calc(
+      var(--mobile-top-header-height) + var(--safe-top) + 24px
+    );
   }
 
   /* === TAMPILKAN HEADER ATAS MOBILE === */
@@ -1110,7 +1134,8 @@ select.sorter:focus {
     border-top: 1px solid var(--border-color);
     /* Ganti border-bottom menjadi border-top */
     border-bottom: none;
-    height: 60px;
+    height: calc(var(--mobile-bottom-nav-height) + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
     background-color: rgba(0, 0, 0, 0.9);
     /* Sedikit lebih gelap untuk kontras */
     transition: transform 0.3s ease;
@@ -1176,8 +1201,21 @@ select.sorter:focus {
     /* Hapus garis bawah aktif di mobile */
   }
 
+  body.contribution-modal-open .mobile-top-header {
+    transform: translateY(-100%);
+  }
+
+  body.contribution-modal-open header#main-header {
+    transform: translateY(calc(100% + var(--safe-bottom)));
+  }
+
+  body.contribution-modal-open #search-panel.active {
+    transform: translateY(-150%);
+    visibility: hidden;
+  }
+
   main {
-    padding-top: 20px;
+    padding-top: 16px;
     /* Beri sedikit ruang di atas konten */
   }
 
@@ -2375,9 +2413,8 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-  padding: 10px 0 30px 0;
-  /* Reduced padding top/bottom */
+  gap: clamp(24px, 5vw, 40px);
+  padding: 10px 0 clamp(24px, 4vw, 30px) 0;
   text-align: left;
 }
 
@@ -2577,16 +2614,16 @@ a:hover {
 }
 
 .hero-content h1 {
-  font-size: 2.8em;
+  font-size: clamp(2rem, 5vw, 2.8em);
   line-height: 1.2;
   margin-bottom: 20px;
   color: var(--primary-color);
 }
 
 .hero-content p {
-  font-size: 1.1em;
+  font-size: clamp(1rem, 2.3vw, 1.1em);
   color: var(--dark-text);
-  margin-bottom: 30px;
+  margin-bottom: clamp(22px, 4vw, 30px);
 }
 
 .hero-button {
@@ -2605,12 +2642,13 @@ a:hover {
 }
 
 .hero-image {
-  flex-basis: 300px;
+  flex-basis: clamp(220px, 34vw, 300px);
   animation: float 6s ease-in-out infinite;
 }
 
 .hero-image img {
   width: 100%;
+  display: block;
 }
 
 @keyframes float {
@@ -2689,11 +2727,13 @@ a:hover {
   gap: 10px;
   background: linear-gradient(135deg, var(--primary-color) 0%, #0077cc 100%);
   color: #ffffff;
-  padding: 14px 30px;
+  padding: 14px clamp(20px, 5vw, 30px);
   border-radius: 50px;
   text-decoration: none;
   font-weight: bold;
   font-size: 1em;
+  min-height: 54px;
+  max-width: 100%;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -3090,15 +3130,23 @@ a:hover {
   .hero-section {
     flex-direction: column;
     text-align: center;
+    gap: 18px;
+    padding-top: 6px;
   }
 
   .hero-content h1 {
-    font-size: 2.2em;
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+    margin-bottom: 16px;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+    margin-bottom: 22px;
   }
 
   .hero-image {
     order: -1;
-    width: 200px;
+    width: min(44vw, 200px);
   }
 
   /* Typewriter responsive styles */
@@ -3111,8 +3159,29 @@ a:hover {
   }
 
   .hero-button-animated {
-    padding: 12px 24px;
-    font-size: 0.9em;
+    width: min(100%, 340px);
+    min-height: 52px;
+    padding: 12px 18px;
+    font-size: 0.95em;
+  }
+
+  .hero-button-animated .btn-text {
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 768px) and (max-height: 740px) {
+  .hero-section {
+    gap: 14px;
+    padding-top: 0;
+  }
+
+  .hero-image {
+    width: min(35vw, 160px);
+  }
+
+  .hero-content p {
+    margin-bottom: 18px;
   }
 }
 
@@ -3384,11 +3453,12 @@ a:hover {
 /* ========================================= */
 #contribution-modal {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(10, 10, 14, 0.85); /* Darker, sleek backdrop */
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: var(--app-viewport-height, 100vh);
+  background: rgba(10, 10, 14, 0.88);
   z-index: 10000;
   display: flex;
   justify-content: center;
@@ -3396,37 +3466,56 @@ a:hover {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 20px;
+  visibility: hidden;
+  transition:
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.35s ease;
+  padding:
+    max(18px, calc(var(--safe-top) + 18px))
+    clamp(14px, 4vw, 28px)
+    max(18px, calc(var(--safe-bottom) + 18px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 #contribution-modal:not(.hidden) {
   opacity: 1;
+  visibility: visible;
 }
 
 #contribution-modal.hidden {
   pointer-events: none;
 }
 
-.modal-content {
+#contribution-modal .modal-content {
   background: linear-gradient(145deg, rgba(30, 30, 34, 0.95), rgba(20, 20, 24, 0.98));
-  padding: 40px;
+  padding: clamp(24px, 5vw, 38px);
   border-radius: 24px;
-  text-align: center;
-  width: 90%;
-  max-width: 520px;
+  text-align: left;
+  width: min(100%, 560px);
+  max-height: min(
+    760px,
+    calc(
+      var(--app-viewport-height, 100vh) -
+        max(36px, calc(var(--safe-top) + var(--safe-bottom) + 36px))
+    )
+  );
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 
-              0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-              0 0 30px rgba(0, 170, 255, 0.15);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 0 30px rgba(0, 170, 255, 0.15);
   position: relative;
-  transform: scale(0.95) translateY(20px);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.96) translateY(24px);
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
+  margin: auto;
 }
 
 /* Aksen cahaya redup di dalam modal untuk kesan premium */
-.modal-content::before {
+#contribution-modal .modal-content::before {
   content: '';
   position: absolute;
   top: -50px;
@@ -3441,12 +3530,34 @@ a:hover {
   transform: scale(1) translateY(0);
 }
 
-.modal-icon {
+#contribution-modal .modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 34px;
+}
+
+#contribution-modal .modal-eyebrow {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 170, 255, 0.12);
+  border: 1px solid rgba(0, 170, 255, 0.18);
+  color: #8ed8ff;
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#contribution-modal .modal-icon {
   font-size: 3.5em;
   background: linear-gradient(135deg, #00aaff, #00ffaa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 20px;
+  margin-bottom: 4px;
   filter: drop-shadow(0 4px 6px rgba(0, 170, 255, 0.3));
   animation: floatIcon 3s ease-in-out infinite;
 }
@@ -3456,32 +3567,125 @@ a:hover {
   50% { transform: translateY(-8px); }
 }
 
-.modal-content h2 {
-  margin-bottom: 15px;
+#contribution-modal .modal-content h2 {
   font-size: 1.8em;
   font-family: inherit;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
-.modal-content p {
+#contribution-modal .modal-content p {
   font-size: 1.05em;
-  margin-bottom: 35px;
   color: #a0a0b0;
   line-height: 1.7;
 }
 
-.modal-content p strong {
+#contribution-modal .modal-content p strong {
   color: #fff;
   font-weight: 600;
 }
 
-.modal-actions {
+#contribution-modal .modal-intro {
+  max-width: 44ch;
+}
+
+#contribution-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  margin-top: 22px;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 170, 255, 0.45) transparent;
+}
+
+#contribution-modal .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+#contribution-modal .modal-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 170, 255, 0.35);
+  border-radius: 999px;
+}
+
+#contribution-modal .modal-feature-list {
+  display: grid;
+  gap: 12px;
+}
+
+#contribution-modal .modal-feature-list span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #d9e8f3;
+  font-size: 0.96em;
+  font-weight: 500;
+}
+
+#contribution-modal .modal-feature-list i {
+  color: var(--primary-color);
+  font-size: 1em;
+}
+
+#contribution-modal .modal-helper-text {
+  color: #c0c9d4;
+}
+
+#contribution-modal .modal-fallback-link {
+  display: none;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  color: #8ed8ff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(142, 216, 255, 0.45);
+  padding-bottom: 2px;
+}
+
+#contribution-modal .modal-fallback-link.visible {
+  display: inline-flex;
+}
+
+#contribution-modal .modal-fallback-link:hover {
+  color: #c8eeff;
+  border-bottom-color: rgba(200, 238, 255, 0.7);
+}
+
+#contribution-modal .modal-actions {
   display: flex;
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+#contribution-modal .modal-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(23, 23, 27, 0) 0%,
+    rgba(23, 23, 27, 0.92) 28%,
+    rgba(23, 23, 27, 1) 100%
+  );
+}
+
+#contribution-modal .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  font-size: 1rem;
 }
 
 #contribute-yes-btn {
@@ -3501,6 +3705,12 @@ a:hover {
   background: linear-gradient(135deg, #1ab5ff, #00d4ff);
 }
 
+#contribute-yes-btn.is-loading {
+  opacity: 0.85;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
 .btn-secondary {
   background-color: rgba(255, 255, 255, 0.05);
   color: #e0e0e0;
@@ -3518,7 +3728,7 @@ a:hover {
   transform: translateY(-2px);
 }
 
-.modal-close-btn {
+#contribution-modal .modal-close-btn {
   position: absolute;
   top: 15px;
   right: 20px;
@@ -3536,7 +3746,7 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.modal-close-btn:hover {
+#contribution-modal .modal-close-btn:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
   transform: rotate(90deg);
@@ -3547,35 +3757,82 @@ a:hover {
 /* ========================================= */
 
 @media (max-width: 768px) {
-  .modal-content {
-    padding: 30px 25px;
-    border-radius: 20px;
+  #contribution-modal {
+    align-items: flex-start;
   }
 
-  .modal-icon {
+  #contribution-modal .modal-content {
+    max-height: calc(
+      var(--app-viewport-height, 100vh) -
+        max(24px, calc(var(--safe-top) + var(--safe-bottom) + 24px))
+    );
+    padding: 24px 20px 20px;
+    border-radius: 22px;
+  }
+
+  #contribution-modal .modal-header {
+    gap: 12px;
+    padding-right: 36px;
+  }
+
+  #contribution-modal .modal-icon {
     font-size: 3em;
-    margin-bottom: 15px;
   }
 
-  .modal-content h2 {
+  #contribution-modal .modal-content h2 {
     font-size: 1.5em;
   }
 
-  .modal-content p {
+  #contribution-modal .modal-content p {
     font-size: 0.95em;
-    margin-bottom: 25px;
   }
 
-  .modal-actions {
+  #contribution-modal .modal-actions {
     flex-direction: column;
     width: 100%;
     gap: 12px;
   }
 
-  .modal-actions .btn {
+  #contribution-modal .modal-actions .btn {
     width: 100%;
-    padding: 14px;
-    font-size: 1.05em;
+  }
+
+  #contribution-modal .modal-feature-list span {
+    font-size: 0.93em;
+    padding: 11px 12px;
+  }
+}
+
+@media (max-width: 480px), (max-height: 720px) {
+  #contribution-modal .modal-content {
+    border-radius: 18px;
+    padding: 22px 18px 18px;
+  }
+
+  #contribution-modal .modal-body {
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  #contribution-modal .modal-footer {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+}
+
+@media (max-height: 620px) {
+  #contribution-modal .modal-icon {
+    font-size: 2.45em;
+  }
+
+  #contribution-modal .modal-content h2 {
+    font-size: 1.35em;
+  }
+
+  #contribution-modal .modal-intro,
+  #contribution-modal .modal-content p,
+  #contribution-modal .modal-feature-list span {
+    font-size: 0.9em;
   }
 }
 
@@ -4019,8 +4276,7 @@ body[data-page-id="aspirasi"] .container {
 /* Penyesuaian untuk mobile */
 @media (max-width: 768px) {
   .notification-banner {
-    top: 60px;
-    /* Muncul di bawah header mobile */
+    top: calc(var(--mobile-top-header-height) + var(--safe-top));
     width: 90%;
   }
 }
@@ -4043,8 +4299,8 @@ body[data-page-id="aspirasi"] .container {
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.3s ease-in-out;
   border-bottom: 1px solid var(--border-color);
-  height: 60px;
-  /* Tinggi header dibuat ramping */
+  padding-top: var(--safe-top);
+  height: calc(var(--mobile-top-header-height) + var(--safe-top));
 }
 
 .mobile-top-header.hidden {
@@ -4082,8 +4338,7 @@ body[data-page-id="aspirasi"] .container {
 #search-panel {
   display: block;
   position: fixed;
-  top: 60px;
-  /* Tepat di bawah header */
+  top: calc(var(--mobile-top-header-height) + var(--safe-top));
   left: 0;
   width: 100%;
   z-index: 1000;
@@ -4152,7 +4407,7 @@ body[data-page-id="aspirasi"] .container {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 60px;
+    padding-top: calc(var(--mobile-top-header-height) + var(--safe-top));
   }
 
   /* Sembunyikan modal desktop di mobile */
@@ -4205,6 +4460,38 @@ body[data-page-id="aspirasi"] .container {
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+#search-modal .modal-icon {
+  font-size: 3em;
+  background: linear-gradient(135deg, #00aaff, #00ffaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+#search-modal .modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5em;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#search-modal .modal-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
 }
 
 #search-modal:not(.hidden) .search-modal-content {
