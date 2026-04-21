@@ -5,8 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const HISTORY_LIMIT = 30;
   const API_HISTORY_LIMIT = 15;
   const SUGGESTION_LIMIT = 5;
-  const DEFAULT_STATUS =
-    "";
+  const DEFAULT_STATUS = "";
   const DEFAULT_GREETING =
     "Halo! Saya siap membantu Anda memahami informasi Karang Taruna Banjarsari secara cepat, rapi, dan relevan.";
   const prefersReducedMotion =
@@ -189,7 +188,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatbotSuggestionsLabel = document.getElementById(
     "chatbot-suggestions-label",
   );
-  const chatbotSuggestionWrap = document.getElementById("chatbot-suggestion-wrap");
+  const chatbotSuggestionWrap = document.getElementById(
+    "chatbot-suggestion-wrap",
+  );
   const chatForm = document.getElementById("chat-input-container");
 
   if (
@@ -272,13 +273,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if (state.history.length === 0) {
-    const defaultGreeting = extractInitialGreeting(chatbotContainer) || DEFAULT_GREETING;
-    state.history = [{ role: "assistant", content: defaultGreeting, timestamp: new Date().toISOString() }];
+    const defaultGreeting =
+      extractInitialGreeting(chatbotContainer) || DEFAULT_GREETING;
+    state.history = [
+      {
+        role: "assistant",
+        content: defaultGreeting,
+        timestamp: new Date().toISOString(),
+      },
+    ];
   }
 
   renderConversation();
   renderSuggestions(
-    state.suggestions.length ? state.suggestions : buildSuggestions(state.history),
+    state.suggestions.length
+      ? state.suggestions
+      : buildSuggestions(state.history),
   );
   updateHeroVisibility();
   updateStatus(DEFAULT_STATUS, "ready");
@@ -289,7 +299,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function enhanceMarkup(container, launcher, greeting) {
     container.setAttribute("role", "dialog");
-    container.setAttribute("aria-label", "AI Assistant Karang Taruna Banjarsari");
+    container.setAttribute(
+      "aria-label",
+      "AI Assistant Karang Taruna Banjarsari",
+    );
     container.setAttribute("aria-modal", "false");
     container.innerHTML = `
       <div class="chatbot-panel">
@@ -392,7 +405,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const raw = localStorage.getItem(CHAT_HISTORY_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
       return Array.isArray(parsed)
-        ? parsed.map(normalizeHistoryEntry).filter(Boolean).slice(-HISTORY_LIMIT)
+        ? parsed
+            .map(normalizeHistoryEntry)
+            .filter(Boolean)
+            .slice(-HISTORY_LIMIT)
         : [];
     } catch (error) {
       console.error("Error reading chat history:", error);
@@ -472,8 +488,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buildSuggestions(history) {
-    const pageSuggestions = PAGE_SUGGESTIONS[getPageId()] || DEFAULT_SUGGESTIONS;
-    const lastUser = [...history].reverse().find((item) => item.role === "user");
+    const pageSuggestions =
+      PAGE_SUGGESTIONS[getPageId()] || DEFAULT_SUGGESTIONS;
+    const lastUser = [...history]
+      .reverse()
+      .find((item) => item.role === "user");
     const lastAssistant = [...history]
       .reverse()
       .find((item) => item.role === "assistant");
@@ -487,7 +506,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     return uniqueSuggestions([
-      ...detectTopics(`${lastUser.content} ${stripHtml(lastAssistant?.content || "")}`),
+      ...detectTopics(
+        `${lastUser.content} ${stripHtml(lastAssistant?.content || "")}`,
+      ),
       ...pageSuggestions,
       ...GENERIC_FOLLOW_UPS,
       ...DEFAULT_SUGGESTIONS,
@@ -497,7 +518,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSuggestions(suggestions) {
-    const normalized = uniqueSuggestions(suggestions).slice(0, SUGGESTION_LIMIT);
+    const normalized = uniqueSuggestions(suggestions).slice(
+      0,
+      SUGGESTION_LIMIT,
+    );
     chatbotSuggestions.innerHTML = "";
     chatbotSuggestionsLabel.textContent = state.history.length
       ? "Pertanyaan lanjutan yang relevan"
@@ -507,7 +531,8 @@ document.addEventListener("DOMContentLoaded", () => {
     aspirasiBtn.type = "button";
     aspirasiBtn.className = "chat-suggestion-btn action-pill";
     // Inline style tambahan agar menonjol sebagai alat utama
-    aspirasiBtn.style.cssText = "background: rgba(0, 170, 255, 0.15); border-color: rgba(0, 170, 255, 0.4); color: var(--primary-color); font-weight: bold;";
+    aspirasiBtn.style.cssText =
+      "background: rgba(0, 170, 255, 0.15); border-color: rgba(0, 170, 255, 0.4); color: var(--primary-color); font-weight: bold;";
     aspirasiBtn.innerHTML = "<i class='fas fa-paper-plane'></i> Lapor Aspirasi";
     aspirasiBtn.dataset.action = "aspirasi";
     aspirasiBtn.disabled = state.isSending;
@@ -618,7 +643,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (state.isOpen) {
       scrollChatToBottom(true, "auto");
-      window.setTimeout(() => chatInput.focus(), prefersReducedMotion ? 0 : 180);
+      window.setTimeout(
+        () => chatInput.focus(),
+        prefersReducedMotion ? 0 : 180,
+      );
     }
   }
 
@@ -678,7 +706,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateHeroVisibility() {
-    if (chatbotHero) chatbotHero.classList.toggle("is-hidden", state.history.length > 0);
+    if (chatbotHero)
+      chatbotHero.classList.toggle("is-hidden", state.history.length > 0);
   }
 
   function updateStatus(text, mode) {
@@ -703,14 +732,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (chatbotSuggestionWrap) {
       chatbotSuggestionWrap.style.display = state.isSending ? "none" : "flex";
     }
-    chatbotSuggestions.querySelectorAll(".chat-suggestion-btn").forEach((button) => {
-      button.disabled = state.isSending;
-    });
+    chatbotSuggestions
+      .querySelectorAll(".chat-suggestion-btn")
+      .forEach((button) => {
+        button.disabled = state.isSending;
+      });
   }
 
   function resizeChatInput() {
     chatInput.style.height = "0px";
-    chatInput.style.height = `${Math.min(chatInput.scrollHeight, 140)}px`;
+    chatInput.style.height = `${Math.min(chatInput.scrollHeight, 96)}px`;
   }
 
   function formatTime(timestamp) {
@@ -718,9 +749,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return Number.isNaN(date.getTime())
       ? "Baru saja"
       : date.toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+          hour: "2-digit",
+          minute: "2-digit",
+        });
   }
 
   function isNearBottom(container) {
@@ -769,8 +800,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/<[^>\n]*$/g, "")
       .replace(/<[^>]+>/g, "");
 
-    let cleaned = decodeEntities(plain).replace(/\n{3,}/g, "\n\n").trimStart();
-    cleaned = cleaned.replace(/\[SUBMIT_ASPIRASI.*$/s, "... [Memproses ping ke database Aspirasi]");
+    let cleaned = decodeEntities(plain)
+      .replace(/\n{3,}/g, "\n\n")
+      .trimStart();
+    cleaned = cleaned.replace(
+      /\[SUBMIT_ASPIRASI.*$/s,
+      "... [Memproses ping ke database Aspirasi]",
+    );
     return cleaned;
   }
 
@@ -895,7 +931,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function isExternalHref(href) {
     try {
-      return new URL(href, window.location.origin).origin !== window.location.origin;
+      return (
+        new URL(href, window.location.origin).origin !== window.location.origin
+      );
     } catch (error) {
       return false;
     }
@@ -920,8 +958,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (lines.every((line) => /^\d+\.\s+/.test(line))) {
           return `<ol>${lines
-            .map((line) =>
-              `<li>${escapeHtml(line.replace(/^\d+\.\s+/, ""))}</li>`,
+            .map(
+              (line) => `<li>${escapeHtml(line.replace(/^\d+\.\s+/, ""))}</li>`,
             )
             .join("")}</ol>`;
         }
@@ -952,7 +990,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#39;");
   }
 
-  async function streamAiResponse({ userQuestion, history, mode, onStatus, onChunk }) {
+  async function streamAiResponse({
+    userQuestion,
+    history,
+    mode,
+    onStatus,
+    onChunk,
+  }) {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -1136,19 +1180,23 @@ document.addEventListener("DOMContentLoaded", () => {
       let resolvedAnswer = finalAnswer || streamState.raw;
 
       // DETEKSI DAN EKSEKUSI FORMAT [SUBMIT_ASPIRASI: {...}]
-      const submitMatch = resolvedAnswer.match(/\[SUBMIT_ASPIRASI:\s*(\{.*\})\s*\]/is);
+      const submitMatch = resolvedAnswer.match(
+        /\[SUBMIT_ASPIRASI:\s*(\{.*\})\s*\]/is,
+      );
       if (submitMatch) {
-         try {
-             const payload = JSON.parse(submitMatch[1]);
-             resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
-             pushAspirasiToFirebase(payload);
-             resolvedAnswer += "\n\n**✅ Laporan Berhasil Dikirim!**\nSaran atau keluhan Anda sudah diteruskan secara otomatis secara *real-time* ke meja asprasi Karang Taruna Banjarsari. Terima kasih ya sudah peduli!";
-             state.activeMode = "qna"; // Kembalikan mode ke default setelah sukses
-         } catch (e) {
-             console.error("Gagal mengirim aspirasi ke Firebase", e);
-             resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
-             resolvedAnswer += "\n\n*(Mohon maaf, terjadi kesalahan teknis saat meneruskan aspirasi Anda ke Database. Anda bisa mencobanya lagi sebentar lagi).*";
-         }
+        try {
+          const payload = JSON.parse(submitMatch[1]);
+          resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
+          pushAspirasiToFirebase(payload);
+          resolvedAnswer +=
+            "\n\n**✅ Laporan Berhasil Dikirim!**\nSaran atau keluhan Anda sudah diteruskan secara otomatis secara *real-time* ke meja asprasi Karang Taruna Banjarsari. Terima kasih ya sudah peduli!";
+          state.activeMode = "qna"; // Kembalikan mode ke default setelah sukses
+        } catch (e) {
+          console.error("Gagal mengirim aspirasi ke Firebase", e);
+          resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
+          resolvedAnswer +=
+            "\n\n*(Mohon maaf, terjadi kesalahan teknis saat meneruskan aspirasi Anda ke Database. Anda bisa mencobanya lagi sebentar lagi).*";
+        }
       }
 
       streamState.content.removeAttribute("data-streaming");
@@ -1175,7 +1223,7 @@ document.addEventListener("DOMContentLoaded", () => {
       streamState.content.removeAttribute("data-streaming");
       streamState.content.innerHTML = formatPlainTextAsHtml(
         error.message ||
-        "Maaf, koneksi ke server sedang bermasalah. Silakan coba lagi.",
+          "Maaf, koneksi ke server sedang bermasalah. Silakan coba lagi.",
       );
       streamState.meta.textContent = "Perlu dicoba lagi";
 
@@ -1202,13 +1250,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Helper untuk mengirim langsung ke Firebase Database
   function pushAspirasiToFirebase(payload) {
     if (typeof firebase === "undefined") {
-      console.warn("Script Firebase belum dimuat di halaman ini. Menunggu atau membutuhkan muat ulang.");
+      console.warn(
+        "Script Firebase belum dimuat di halaman ini. Menunggu atau membutuhkan muat ulang.",
+      );
       return;
     }
     const firebaseConfig = {
       apiKey: "AIzaSyA_SYgK13vSvwvOr6qVfbHMmYAHEIzTU7A",
       authDomain: "karang-taruna-banjarsari.firebaseapp.com",
-      databaseURL: "https://karang-taruna-banjarsari-default-rtdb.asia-southeast1.firebasedatabase.app",
+      databaseURL:
+        "https://karang-taruna-banjarsari-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "karang-taruna-banjarsari",
       storageBucket: "karang-taruna-banjarsari.firebasestorage.app",
       messagingSenderId: "802982045794",
@@ -1218,11 +1269,13 @@ document.addEventListener("DOMContentLoaded", () => {
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.database();
-    db.ref("aspirasi").push({
-      nama: payload.nama || "Saran Anonim",
-      subjek: payload.subjek || "Tanpa Subjek",
-      pesan: payload.pesan || "",
-      tanggal_masuk: new Date().toISOString()
-    }).catch(e => console.error("Firebase push error:", e));
+    db.ref("aspirasi")
+      .push({
+        nama: payload.nama || "Saran Anonim",
+        subjek: payload.subjek || "Tanpa Subjek",
+        pesan: payload.pesan || "",
+        tanggal_masuk: new Date().toISOString(),
+      })
+      .catch((e) => console.error("Firebase push error:", e));
   }
 });
