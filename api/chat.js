@@ -49,7 +49,8 @@ function ensureDataLoaded() {
   LOAD_ATTEMPTS++;
 
   if (CACHED_DATA) {
-    console.log(`[chat.js] ✓ Using cached data (attempt #${LOAD_ATTEMPTS})`);
+    // Log dinonaktifkan agar tidak spam di Vercel 
+    // console.log(`[chat.js] ✓ Using cached data (attempt #${LOAD_ATTEMPTS})`);
     return CACHED_DATA;
   }
 
