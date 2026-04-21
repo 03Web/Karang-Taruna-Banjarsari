@@ -1,6 +1,7 @@
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
+const DATA_BUNDLE = require("./data-bundle");
 
 // ============================================================
 // LOAD & CACHE ALL JSON DATA ON SERVER STARTUP
@@ -9,22 +10,29 @@ const path = require("path");
 
 // Try multiple path strategies for Vercel compatibility
 function loadJsonFile(relativePath) {
+  // Vercel: __dirname = /var/task/api, data should be at /var/task/data
   const strategies = [
-    path.join(__dirname, "..", relativePath),
+    path.join(__dirname, "..", relativePath),  // /var/task/api/../data = /var/task/data
+    path.join(__dirname, "../..", relativePath),  // /var/task/api/../.. = /var/task
     path.join(process.cwd(), relativePath),
     path.resolve(relativePath),
   ];
 
+  console.log(`[chat.js] Trying to load ${relativePath}...`);
+
   for (const fullPath of strategies) {
     try {
+      console.log(`[chat.js]   Checking: ${fullPath}`);
       if (fs.existsSync(fullPath)) {
         const raw = fs.readFileSync(fullPath, "utf-8");
         const parsed = JSON.parse(raw);
         console.log(`[chat.js] ✓ Loaded ${relativePath} from ${fullPath}`);
         return parsed;
+      } else {
+        console.log(`[chat.js]   File not found: ${fullPath}`);
       }
     } catch (err) {
-      // Try next strategy
+      console.log(`[chat.js]   Error reading ${fullPath}: ${err.message}`);
     }
   }
 
@@ -35,11 +43,22 @@ function loadJsonFile(relativePath) {
 }
 
 let CACHED_DATA = null;
+let LOAD_ATTEMPTS = 0;
 
 function ensureDataLoaded() {
-  if (CACHED_DATA) return CACHED_DATA;
+  LOAD_ATTEMPTS++;
 
-  CACHED_DATA = {
+  if (CACHED_DATA) {
+    console.log(`[chat.js] ✓ Using cached data (attempt #${LOAD_ATTEMPTS})`);
+    return CACHED_DATA;
+  }
+
+  console.log(`[chat.js] Loading JSON data for attempt #${LOAD_ATTEMPTS}...`);
+  console.log(`[chat.js] __dirname = ${__dirname}`);
+  console.log(`[chat.js] process.cwd() = ${process.cwd()}`);
+
+  // Try filesystem first
+  const fileData = {
     pengurus: loadJsonFile("data/pengurus.json"),
     produk: loadJsonFile("data/produk.json"),
     kegiatan: loadJsonFile("data/kegiatan.json"),
@@ -48,11 +67,28 @@ function ensureDataLoaded() {
     kontak: loadJsonFile("data/kontak.json"),
   };
 
+  // Fallback to embedded bundle if file loading fails
+  CACHED_DATA = {
+    pengurus: fileData.pengurus || DATA_BUNDLE.pengurus,
+    produk: fileData.produk || DATA_BUNDLE.produk,
+    kegiatan: fileData.kegiatan || DATA_BUNDLE.kegiatan,
+    galeri: fileData.galeri || DATA_BUNDLE.galeri,
+    testimonials: fileData.testimonials || DATA_BUNDLE.testimonials,
+    kontak: fileData.kontak || DATA_BUNDLE.kontak,
+  };
+
   // Log which data loaded successfully
   const status = Object.entries(CACHED_DATA)
-    .map(([k, v]) => `${k}: ${v ? "✓" : "✗"}`)
+    .map(([k, v]) => {
+      const source = v ? (fileData[k] ? "file✓" : "bundle✓") : "✗";
+      return `${k}: ${source}`;
+    })
     .join(", ");
   console.log(`[chat.js] Data status: ${status}`);
+
+  // Log total knowledge base size
+  const totalSize = JSON.stringify(CACHED_DATA).length;
+  console.log(`[chat.js] Total knowledge base size: ${(totalSize / 1024).toFixed(2)} KB`);
 
   return CACHED_DATA;
 }
@@ -273,10 +309,17 @@ module.exports = async (req, res) => {
   }
 
   // Ensure data is loaded (lazy init)
-  ensureDataLoaded();
+  const data = ensureDataLoaded();
 
   // Build system prompt with knowledge base (server-side only)
   const systemPrompt = buildSystemPrompt();
+
+  // Debug: Log data availability per request
+  const dataAvailable = Object.entries(data)
+    .filter(([_, v]) => v !== null)
+    .map(([k, _]) => k)
+    .join(", ");
+  console.log(`[chat.js] Request received. Data available: ${dataAvailable}`);
 
   // Build messages for DeepSeek
   const messages = [{ role: "system", content: systemPrompt }];
