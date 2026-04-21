@@ -214,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     isReady: false,
     isSending: false,
     shouldStickToBottom: true,
+    activeMode: "qna",
   };
 
   openBtn.addEventListener("click", () => setOpenState(true));
@@ -245,6 +246,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = event.target.closest(".chat-suggestion-btn");
 
     if (!button || button.disabled) {
+      return;
+    }
+
+    if (button.dataset.action === "aspirasi") {
+      state.activeMode = "aspirasi";
+      setOpenState(true);
+      const promptText = "Bantu saya menulis aspirasi / saran.";
+      chatInput.value = promptText;
+      resizeChatInput();
+      handleSendMessage(promptText);
       return;
     }
 
@@ -491,6 +502,16 @@ document.addEventListener("DOMContentLoaded", () => {
     chatbotSuggestionsLabel.textContent = state.history.length
       ? "Pertanyaan lanjutan yang relevan"
       : "Mulai dari topik ini";
+
+    const aspirasiBtn = document.createElement("button");
+    aspirasiBtn.type = "button";
+    aspirasiBtn.className = "chat-suggestion-btn action-pill";
+    // Inline style tambahan agar menonjol sebagai alat utama
+    aspirasiBtn.style.cssText = "background: rgba(0, 170, 255, 0.15); border-color: rgba(0, 170, 255, 0.4); color: var(--primary-color); font-weight: bold;";
+    aspirasiBtn.innerHTML = "<i class='fas fa-paper-plane'></i> Lapor Aspirasi";
+    aspirasiBtn.dataset.action = "aspirasi";
+    aspirasiBtn.disabled = state.isSending;
+    chatbotSuggestions.appendChild(aspirasiBtn);
 
     normalized.forEach((suggestion) => {
       const button = document.createElement("button");
@@ -748,7 +769,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/<[^>\n]*$/g, "")
       .replace(/<[^>]+>/g, "");
 
-    return decodeEntities(plain).replace(/\n{3,}/g, "\n\n").trimStart();
+    let cleaned = decodeEntities(plain).replace(/\n{3,}/g, "\n\n").trimStart();
+    cleaned = cleaned.replace(/\[SUBMIT_ASPIRASI.*$/s, "... [Memproses ping ke database Aspirasi]");
+    return cleaned;
   }
 
   function sanitizeAssistantContent(text) {
@@ -929,7 +952,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#39;");
   }
 
-  async function streamAiResponse({ userQuestion, history, onStatus, onChunk }) {
+  async function streamAiResponse({ userQuestion, history, mode, onStatus, onChunk }) {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -940,6 +963,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userQuestion,
         history,
         stream: true,
+        mode,
       }),
     });
 
@@ -1096,6 +1120,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const finalAnswer = await streamAiResponse({
         userQuestion: question,
         history: historyForApi,
+        mode: state.activeMode,
         onStatus: updateStatus,
         onChunk: (chunk) => {
           streamState.raw += chunk;
@@ -1108,7 +1133,24 @@ document.addEventListener("DOMContentLoaded", () => {
         streamState.frameId = 0;
       }
 
-      const resolvedAnswer = finalAnswer || streamState.raw;
+      let resolvedAnswer = finalAnswer || streamState.raw;
+
+      // DETEKSI DAN EKSEKUSI FORMAT [SUBMIT_ASPIRASI: {...}]
+      const submitMatch = resolvedAnswer.match(/\[SUBMIT_ASPIRASI:\s*(\{.*\})\s*\]/is);
+      if (submitMatch) {
+         try {
+             const payload = JSON.parse(submitMatch[1]);
+             resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
+             pushAspirasiToFirebase(payload);
+             resolvedAnswer += "\n\n**✅ Laporan Berhasil Dikirim!**\nSaran atau keluhan Anda sudah diteruskan secara otomatis secara *real-time* ke meja asprasi Karang Taruna Banjarsari. Terima kasih ya sudah peduli!";
+             state.activeMode = "qna"; // Kembalikan mode ke default setelah sukses
+         } catch (e) {
+             console.error("Gagal mengirim aspirasi ke Firebase", e);
+             resolvedAnswer = resolvedAnswer.replace(submitMatch[0], "").trim();
+             resolvedAnswer += "\n\n*(Mohon maaf, terjadi kesalahan teknis saat meneruskan aspirasi Anda ke Database. Anda bisa mencobanya lagi sebentar lagi).*";
+         }
+      }
+
       streamState.content.removeAttribute("data-streaming");
       streamState.content.innerHTML = sanitizeAssistantContent(resolvedAnswer);
       streamState.meta.textContent = formatTime(new Date().toISOString());
@@ -1155,5 +1197,32 @@ document.addEventListener("DOMContentLoaded", () => {
         chatInput.focus();
       }
     }
+  }
+
+  // Helper untuk mengirim langsung ke Firebase Database
+  function pushAspirasiToFirebase(payload) {
+    if (typeof firebase === "undefined") {
+      console.warn("Script Firebase belum dimuat di halaman ini. Menunggu atau membutuhkan muat ulang.");
+      return;
+    }
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_SYgK13vSvwvOr6qVfbHMmYAHEIzTU7A",
+      authDomain: "karang-taruna-banjarsari.firebaseapp.com",
+      databaseURL: "https://karang-taruna-banjarsari-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "karang-taruna-banjarsari",
+      storageBucket: "karang-taruna-banjarsari.firebasestorage.app",
+      messagingSenderId: "802982045794",
+      appId: "1:802982045794:web:953482fd61e2255a1c093b",
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    db.ref("aspirasi").push({
+      nama: payload.nama || "Saran Anonim",
+      subjek: payload.subjek || "Tanpa Subjek",
+      pesan: payload.pesan || "",
+      tanggal_masuk: new Date().toISOString()
+    }).catch(e => console.error("Firebase push error:", e));
   }
 });

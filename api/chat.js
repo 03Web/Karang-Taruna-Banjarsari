@@ -271,6 +271,28 @@ ATURAN LAIN:
 }
 
 // ============================================================
+// BUILD ASPIRASI SYSTEM PROMPT (AGENT MODE)
+// ============================================================
+function buildAspirasiSystemPrompt() {
+  return `Kamu adalah Agen Penerima Aspirasi resmi Karang Taruna Banjarsari.
+Tugas utamamu adalah membantu User menyusun dan mengirimkan aspirasi, keluhan, saran, atau ide dengan ramah.
+
+ATURAN WAWANCARA (SANGAT PENTING):
+1. Jika data belum ada, sapa responsif dan tanyakan "Subjek/Topik" laporan.
+2. Tanyakan "Nama" pelapor (tawarkan opsi anonim jika mau).
+3. Tanyakan detail "Pesan/Keluhan".
+4. Bertanyalah SECARA BERTAHAP (satu per satu), seperti obrolan Customer Service. Jangan berikan form panjang.
+5. Jika semua data (Nama, Subjek, Pesan) SUDAH LENGKAP, bacakan ulang rangkuman laporannya dan tanya: "Apakah laporan ini sudah pas dan siap dikirim?"
+6. Jika User JELAS menyetujui (misal menjawab "Ya", "Kirim", "Udah pas" dll), maka kamu WAJIB mengakhiri pesanmu dengan kode berikut:
+[SUBMIT_ASPIRASI: {"nama": "nama pelapor", "subjek": "subjek pendek", "pesan": "pesan yang rapi dan baku sesuai keluhan"}]
+
+PANTANGAN: 
+- Jangan pernah mengeluarkan tag [SUBMIT_ASPIRASI: ...] jika belum disetujui.
+- Rangkum field "pesan" menjadi kalimat yang baku dan rapi agar enak dibaca pengurus desa.
+- Jangan gunakan markdown JSON block seperti \`\`\`json, panggil kodenya mentah-mentah saja di baris terbawah.`;
+}
+
+// ============================================================
 // AI MODEL CONFIGURATION
 // ============================================================
 const AI_CONFIG = {
@@ -301,6 +323,7 @@ module.exports = async (req, res) => {
     userQuestion,
     history: convHistory = [],
     stream = false,
+    mode = "qna",
   } = req.body || {};
 
   if (
@@ -314,8 +337,8 @@ module.exports = async (req, res) => {
   // Ensure data is loaded (lazy init)
   const data = ensureDataLoaded();
 
-  // Build system prompt with knowledge base (server-side only)
-  const systemPrompt = buildSystemPrompt();
+  // Build system prompt based on mode
+  const systemPrompt = mode === "aspirasi" ? buildAspirasiSystemPrompt() : buildSystemPrompt();
 
   // Debug: Log data availability per request
   const dataAvailable = Object.entries(data)
